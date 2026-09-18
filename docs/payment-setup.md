@@ -38,7 +38,6 @@ Hoàn tiền là thao tác quản trị, không có API public: sau khi người
 
 Bổ sung email/kênh hỗ trợ thật và chính sách hoàn tiền trước mở bán. Không lưu raw webhook có thông tin ngân hàng ngoài các trường đối soát tối thiểu trong schema.
 
-
 ### Chạy đối soát
 
 Điền `CRON_SECRET` ngẫu nhiên độc lập và `SEPAY_API_TOKEN` cho **User API v1**. Endpoint nội bộ yêu cầu `Authorization: Bearer <CRON_SECRET>`; thiếu cấu hình trả 503, sai credential trả 401. Không đưa secret vào URL hoặc frontend. Gọi bằng scheduler nội bộ mỗi 15–30 phút khi gói hosting cho phép, hoặc công cụ HTTP quản trị. Chưa khai báo Vercel cron vì chưa biết gói triển khai.
@@ -48,7 +47,6 @@ Mặc định mỗi lần lấy lại 48 giờ gần nhất; có thể truyền 
 Dùng API v1 vì ID số khớp webhook. V2 dùng UUID và không được thay endpoint tùy ý vì sẽ làm lệch khóa chống trùng. V1 không có page/offset; adapter chia nhỏ cửa sổ thời gian khi đạt 5.000 hàng, overlap biên inclusive và loại trùng. Tối đa 15 request, cách nhau ít nhất 400ms, tối đa xử lý 300 giao dịch/lần. Khi đầy một giây hoặc vượt budget, trả lỗi để quản trị gọi khoảng nhỏ hơn; không báo thành công nếu có khả năng bỏ sót. Nếu runtime ngắt sau commit một phần, chạy lại cùng cửa sổ an toàn.
 
 Mọi giao dịch đối soát đi qua cùng parser, kiểm tra tài khoản/giá/thời gian và RPC `apply_payment` như webhook; không tin trạng thái frontend. Response chỉ chứa tổng số và trạng thái, không chứa raw ngân hàng. Source: [SePay API v1](https://developer.sepay.vn/vi/sepay-api/v1/api-giao-dich). Adapter và chia trang có unit tests; cần test API token thật trước vận hành. Chạy `supabase/tests/commerce.sql` trên DB test sau migration để kiểm tra RPC; script rollback toàn bộ dữ liệu test.
-
 
 ### Bảo trì database
 

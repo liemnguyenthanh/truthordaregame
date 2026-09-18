@@ -2,15 +2,15 @@
 
 ## Đã chạy thành công
 
-| Phần | Bằng chứng |
-|---|---|
-| Production build | `npm run build` pass; trang home/category/pack/game/info prerender hoặc SSG; `/api/*` dynamic |
-| TypeScript | `npm run typecheck` pass |
-| Unit/content | `npm test`: 27/27 pass, tổng 36 câu mẫu hợp lệ |
-| SQL | PGlite chạy migration và `supabase/tests/commerce.sql` pass |
-| Browser | 16/16 kịch bản Playwright đã pass (13 ở lượt tổng, 1 rerun sau sửa selector, 2 bổ sung offline/thiếu cấu hình); một selector alert được giới hạn vào main để tránh trùng Next route announcer rồi rerun thành công |
-| UI | Kiểm tra trực quan desktop 1440px và mobile 390px; test 320px không tràn ngang ở game/paywall/nhóm; kiểm tra trực quan trang AI tại 390px |
-| Runtime | Không có page error/console error trong kiểm tra trực tiếp free game bằng agent-browser |
+| Phần             | Bằng chứng                                                                                                                                                                                                         |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Production build | `npm run build` pass; trang home/category/pack/game/info prerender hoặc SSG; `/api/*` dynamic                                                                                                                      |
+| TypeScript       | `npm run typecheck` pass                                                                                                                                                                                           |
+| Unit/content     | `npm test`: 27/27 pass, tổng 36 câu mẫu hợp lệ                                                                                                                                                                     |
+| SQL              | PGlite chạy migration và `supabase/tests/commerce.sql` pass                                                                                                                                                        |
+| Browser          | 16/16 kịch bản Playwright đã pass (13 ở lượt tổng, 1 rerun sau sửa selector, 2 bổ sung offline/thiếu cấu hình); một selector alert được giới hạn vào main để tránh trùng Next route announcer rồi rerun thành công |
+| UI               | Kiểm tra trực quan desktop 1440px và mobile 390px; test 320px không tràn ngang ở game/paywall/nhóm; kiểm tra trực quan trang AI tại 390px                                                                          |
+| Runtime          | Không có page error/console error trong kiểm tra trực tiếp free game bằng agent-browser                                                                                                                            |
 
 ## Kịch bản browser
 

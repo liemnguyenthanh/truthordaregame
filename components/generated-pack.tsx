@@ -23,7 +23,9 @@ function GeneratedPackContent({ id }: { id: string }) {
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
     if (!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(id)) {
-      setError('Đường dẫn bộ câu hỏi không hợp lệ. Chọn bộ trong lịch sử của nhóm nhé.'); setLoading(false); return;
+      setError('Đường dẫn bộ câu hỏi không hợp lệ. Chọn bộ trong lịch sử của nhóm nhé.');
+      setLoading(false);
+      return;
     }
     const controller = new AbortController();
     let busy = false;
@@ -31,55 +33,182 @@ function GeneratedPackContent({ id }: { id: string }) {
     let local: GeneratedPack | null = null;
     try {
       const data = JSON.parse(localStorage.getItem(`tod:generated:v1:${id}`) || 'null');
-      if (data?.id === id && data.status === 'complete' && data.pack && data.questionSet && data.group) {
-        local = data; setGeneration(data); setCached(true); setLoading(false);
+      if (
+        data?.id === id &&
+        data.status === 'complete' &&
+        data.pack &&
+        data.questionSet &&
+        data.group
+      ) {
+        local = data;
+        setGeneration(data);
+        setCached(true);
+        setLoading(false);
       }
-    } catch { setStorageWarning(true); }
+    } catch {
+      setStorageWarning(true);
+    }
     async function check() {
-      if (busy || finished || controller.signal.aborted || document.visibilityState === 'hidden') return;
-      if (!navigator.onLine) { setLoading(false); if (!local) setError('Bộ này chưa được lưu trên thiết bị. Kết nối mạng để tải và chơi.'); return; }
+      if (busy || finished || controller.signal.aborted || document.visibilityState === 'hidden')
+        return;
+      if (!navigator.onLine) {
+        setLoading(false);
+        if (!local) setError('Bộ này chưa được lưu trên thiết bị. Kết nối mạng để tải và chơi.');
+        return;
+      }
       busy = true;
       try {
-        const response = await fetch(`/api/generations/${encodeURIComponent(id)}`, { cache: 'no-store', signal: controller.signal });
+        const response = await fetch(`/api/generations/${encodeURIComponent(id)}`, {
+          cache: 'no-store',
+          signal: controller.signal,
+        });
         const data = await response.json();
         if (!response.ok) {
           if ([400, 401, 403, 404].includes(response.status)) finished = true;
           throw new Error(data.error || 'Chưa tải được bộ câu hỏi. Hãy thử lại.');
         }
         const next: GeneratedPack = data.generation;
-        if (next?.id !== id || !['pending', 'complete', 'failed'].includes(next.status) || (next.status === 'complete' && (!next.pack || !next.questionSet || !next.group))) throw new Error('Máy chủ trả về dữ liệu chưa hợp lệ. Hãy thử lại.');
+        if (
+          next?.id !== id ||
+          !['pending', 'complete', 'failed'].includes(next.status) ||
+          (next.status === 'complete' && (!next.pack || !next.questionSet || !next.group))
+        )
+          throw new Error('Máy chủ trả về dữ liệu chưa hợp lệ. Hãy thử lại.');
         if (controller.signal.aborted) return;
-        setGeneration(next); setCached(false); setError('');
+        setGeneration(next);
+        setCached(false);
+        setError('');
         if (next.status !== 'pending') finished = true;
         if (next.status === 'complete' && next.pack && next.questionSet) {
           local = next;
-          try { localStorage.setItem(`tod:generated:v1:${id}`, JSON.stringify(next)); } catch { setStorageWarning(true); }
+          try {
+            localStorage.setItem(`tod:generated:v1:${id}`, JSON.stringify(next));
+          } catch {
+            setStorageWarning(true);
+          }
         }
         try {
           const old = JSON.parse(localStorage.getItem('tod:generated-history:v1') || '[]');
-          localStorage.setItem('tod:generated-history:v1', JSON.stringify([next, ...(Array.isArray(old) ? old.filter((item: GeneratedPack) => item.id !== id) : [])].slice(0, 30)));
-          if (next.status !== 'pending' && localStorage.getItem('tod:generation-pending:v1') === id) localStorage.removeItem('tod:generation-pending:v1');
-        } catch { setStorageWarning(true); }
+          localStorage.setItem(
+            'tod:generated-history:v1',
+            JSON.stringify(
+              [
+                next,
+                ...(Array.isArray(old) ? old.filter((item: GeneratedPack) => item.id !== id) : []),
+              ].slice(0, 30),
+            ),
+          );
+          if (next.status !== 'pending' && localStorage.getItem('tod:generation-pending:v1') === id)
+            localStorage.removeItem('tod:generation-pending:v1');
+        } catch {
+          setStorageWarning(true);
+        }
       } catch (cause) {
-        if (!controller.signal.aborted) { if (local) { setGeneration(local); setCached(true); } else setError(cause instanceof Error ? cause.message : 'Chưa thể kiểm tra bộ câu hỏi.'); }
-      } finally { busy = false; if (!controller.signal.aborted) setLoading(false); }
+        if (!controller.signal.aborted) {
+          if (local) {
+            setGeneration(local);
+            setCached(true);
+          } else setError(cause instanceof Error ? cause.message : 'Chưa thể kiểm tra bộ câu hỏi.');
+        }
+      } finally {
+        busy = false;
+        if (!controller.signal.aborted) setLoading(false);
+      }
     }
     void check();
     const timer = window.setInterval(() => void check(), 4000);
     const resume = () => void check();
-    window.addEventListener('online', resume); window.addEventListener('focus', resume); document.addEventListener('visibilitychange', resume);
-    return () => { controller.abort(); clearInterval(timer); window.removeEventListener('online', resume); window.removeEventListener('focus', resume); document.removeEventListener('visibilitychange', resume); };
+    window.addEventListener('online', resume);
+    window.addEventListener('focus', resume);
+    document.addEventListener('visibilitychange', resume);
+    return () => {
+      controller.abort();
+      clearInterval(timer);
+      window.removeEventListener('online', resume);
+      window.removeEventListener('focus', resume);
+      document.removeEventListener('visibilitychange', resume);
+    };
   }, [id, attempt]);
-  if (generation?.status === 'complete' && generation.pack && generation.questionSet) return <>
-    {cached && <p className={styles.cached}>Đang dùng bộ đã lưu trên thiết bị. Tên và câu hỏi của nhóm được giữ riêng trong trình duyệt này.</p>}
-    <Game pack={generation.pack} initialSet={generation.questionSet} fixedGroup={generation.group} />
-    {!storageWarning && <OfflineAiPack />}
-    <div className={styles.shell}><Link className={styles.back} href="/vi/tao-bo-ai"><ArrowLeft size={17} /> Những bộ của nhóm</Link>{storageWarning && <p className="notice">Chưa thể lưu bộ để mở lại khi offline. Bạn vẫn có thể chơi ngay.</p>}</div>
-  </>;
-  return <section className={styles.shell}><Link className={styles.back} href="/vi/tao-bo-ai"><ArrowLeft size={17} /> Về nhóm của bạn</Link>
-    <div className={`${styles.panel} ${styles.statusPanel}`}>
-      <Sparkles size={40} className={loading || generation?.status === 'pending' ? styles.spinner : undefined} />
-      {generation?.status === 'failed' ? <><h1>Chưa tạo được bộ lần này</h1><p>{generation.error || 'AI chưa hoàn tất bộ câu hỏi phù hợp. Bạn có thể kiểm tra lại nhóm rồi chủ động tạo yêu cầu mới.'}</p><Link className="button button-primary" href="/vi/tao-bo-ai">Về nhóm và thử lần mới</Link><p>Chỉ tạo lại khi bạn bấm nút. Yêu cầu mới có thể tính vào giới hạn trong ngày.</p></> : error ? <><h1>Chưa mở được bộ câu hỏi</h1><p role="alert">{error}</p><button className="button button-secondary" onClick={() => { setError(''); setLoading(true); setAttempt(value => value + 1); }}><RefreshCw size={17} /> Kiểm tra lại</button></> : <><h1>{loading ? 'Đang tìm bộ của nhóm…' : 'AI đang kết nối cả nhóm'}</h1><p role="status">{loading ? 'Đang kiểm tra bộ câu hỏi trong phiên của bạn.' : 'Câu hỏi đang được viết riêng cho từng thành viên. Trang tự cập nhật khi hoàn tất.'}</p><p>Bạn có thể quay lại trang này từ lịch sử. Không cần tạo thêm yêu cầu.</p></>}
-    </div><p className={styles.fine}>Bộ riêng tư gắn với phiên khách và dữ liệu trình duyệt. Link này không cấp quyền truy cập cho thiết bị khác.</p>
-  </section>;
+  if (generation?.status === 'complete' && generation.pack && generation.questionSet)
+    return (
+      <>
+        {cached && (
+          <p className={styles.cached}>
+            Đang dùng bộ đã lưu trên thiết bị. Tên và câu hỏi của nhóm được giữ riêng trong trình
+            duyệt này.
+          </p>
+        )}
+        <Game
+          pack={generation.pack}
+          initialSet={generation.questionSet}
+          fixedGroup={generation.group}
+        />
+        {!storageWarning && <OfflineAiPack />}
+        <div className={styles.shell}>
+          <Link className={styles.back} href="/vi/tao-bo-ai">
+            <ArrowLeft size={17} /> Những bộ của nhóm
+          </Link>
+          {storageWarning && (
+            <p className="notice">
+              Chưa thể lưu bộ để mở lại khi offline. Bạn vẫn có thể chơi ngay.
+            </p>
+          )}
+        </div>
+      </>
+    );
+  return (
+    <section className={styles.shell}>
+      <Link className={styles.back} href="/vi/tao-bo-ai">
+        <ArrowLeft size={17} /> Về nhóm của bạn
+      </Link>
+      <div className={`${styles.panel} ${styles.statusPanel}`}>
+        <Sparkles
+          size={40}
+          className={loading || generation?.status === 'pending' ? styles.spinner : undefined}
+        />
+        {generation?.status === 'failed' ? (
+          <>
+            <h1>Chưa tạo được bộ lần này</h1>
+            <p>
+              {generation.error ||
+                'AI chưa hoàn tất bộ câu hỏi phù hợp. Bạn có thể kiểm tra lại nhóm rồi chủ động tạo yêu cầu mới.'}
+            </p>
+            <Link className="button button-primary" href="/vi/tao-bo-ai">
+              Về nhóm và thử lần mới
+            </Link>
+            <p>Chỉ tạo lại khi bạn bấm nút. Yêu cầu mới có thể tính vào giới hạn trong ngày.</p>
+          </>
+        ) : error ? (
+          <>
+            <h1>Chưa mở được bộ câu hỏi</h1>
+            <p role="alert">{error}</p>
+            <button
+              className="button button-secondary"
+              onClick={() => {
+                setError('');
+                setLoading(true);
+                setAttempt((value) => value + 1);
+              }}
+            >
+              <RefreshCw size={17} /> Kiểm tra lại
+            </button>
+          </>
+        ) : (
+          <>
+            <h1>{loading ? 'Đang tìm bộ của nhóm…' : 'AI đang kết nối cả nhóm'}</h1>
+            <p role="status">
+              {loading
+                ? 'Đang kiểm tra bộ câu hỏi trong phiên của bạn.'
+                : 'Câu hỏi đang được viết riêng cho từng thành viên. Trang tự cập nhật khi hoàn tất.'}
+            </p>
+            <p>Bạn có thể quay lại trang này từ lịch sử. Không cần tạo thêm yêu cầu.</p>
+          </>
+        )}
+      </div>
+      <p className={styles.fine}>
+        Bộ riêng tư gắn với phiên khách và dữ liệu trình duyệt. Link này không cấp quyền truy cập
+        cho thiết bị khác.
+      </p>
+    </section>
+  );
 }

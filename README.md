@@ -54,6 +54,17 @@ Xem [content-guide.md](docs/content-guide.md) để thêm bộ và chạy valida
 
 ## Kiểm tra
 
+Định dạng code bằng Prettier:
+
+```sh
+npm run format
+npm run format:check
+```
+
+`npm ci` / `npm install` tự cài Git hooks bằng Husky. Mỗi lần commit,
+`lint-staged` chạy Prettier trên các file đã stage và stage lại kết quả;
+nếu định dạng lỗi thì commit bị chặn. Các file build tự sinh được bỏ qua.
+
 ```sh
 npm run typecheck
 npm test

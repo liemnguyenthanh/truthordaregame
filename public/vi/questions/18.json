@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "packId": "premium-18",
+  "locale": "vi",
+  "contentVersion": "1",
+  "trialQuestionIds": ["t01", "t02", "t03", "t04", "d01", "d02", "d03", "d04"],
+  "questions": [
+    {
+      "id": "t01",
+      "type": "truth",
+      "text": "Bạn thích bị người kia chạm vào chỗ nào nhất khi đang âu yếm?"
+    },
+    {
+      "id": "t02",
+      "type": "truth",
+      "text": "Điều gì khiến bạn hứng thú nhất khi nhìn người kia cởi đồ?"
+    },
+    {
+      "id": "t03",
+      "type": "truth",
+      "text": "Bạn từng tưởng tượng làm chuyện ấy với người kia ở địa điểm nào công cộng?"
+    },
+    {
+      "id": "t04",
+      "type": "truth",
+      "text": "Bạn thích kiểu hôn nào nhất: nhẹ nhàng, sâu, hay đầy dục vọng?"
+    },
+    {
+      "id": "t05",
+      "type": "truth",
+      "text": "Có bộ phận nào trên cơ thể người kia khiến bạn muốn liếm/hôn ngay lập tức không?"
+    },
+    {
+      "id": "t06",
+      "type": "truth",
+      "text": "Bạn muốn thử tư thế nào mà cả hai chưa từng làm?"
+    },
+    {
+      "id": "d01",
+      "type": "dare",
+      "text": "Hôn người kia ở cổ và tai trong 20 giây, không được dùng tay."
+    },
+    {
+      "id": "d02",
+      "type": "dare",
+      "text": "Thì thầm vào tai người kia 3 câu dâm đãng bạn muốn làm với họ."
+    },
+    {
+      "id": "d03",
+      "type": "dare",
+      "text": "Cởi một món đồ của người kia bằng miệng (nếu cả hai đồng ý)."
+    },
+    {
+      "id": "d04",
+      "type": "dare",
+      "text": "Ngồi lên đùi người kia và hôn sâu trong 15 giây."
+    },
+    {
+      "id": "d05",
+      "type": "dare",
+      "text": "Mô tả chi tiết 1 phút cách bạn muốn 'ăn' người kia tối nay."
+    },
+    {
+      "id": "d06",
+      "type": "dare",
+      "text": "Chạm vào chỗ nhạy cảm của người kia qua quần áo trong 10 giây."
+    }
+  ]
+}

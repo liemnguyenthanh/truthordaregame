@@ -3,9 +3,18 @@ import assert from 'node:assert/strict';
 import type { QuestionSet } from '../lib/types';
 import { createGameState, drawQuestion, getAvailableQuestions, shuffle } from '../lib/game';
 const premium: QuestionSet = {
-  schemaVersion: 1, packId: 'test-premium', locale: 'vi', contentVersion: '1',
+  schemaVersion: 1,
+  packId: 'test-premium',
+  locale: 'vi',
+  contentVersion: '1',
   trialQuestionIds: ['t1', 't2', 't3', 't4', 'd1', 'd2', 'd3', 'd4'],
-  questions: (['truth', 'dare'] as const).flatMap(type => Array.from({ length: 6 }, (_, index) => ({ id: `${type === 'truth' ? 't' : 'd'}${index + 1}`, type, text: `Question ${index + 1}` }))),
+  questions: (['truth', 'dare'] as const).flatMap((type) =>
+    Array.from({ length: 6 }, (_, index) => ({
+      id: `${type === 'truth' ? 't' : 'd'}${index + 1}`,
+      type,
+      text: `Question ${index + 1}`,
+    })),
+  ),
 };
 test('trial cannot reveal a fifth truth; all eight remain readable before paywall', () => {
   let state = createGameState(premium);
@@ -25,14 +34,16 @@ test('trial cannot reveal a fifth truth; all eight remain readable before paywal
 });
 test('unlock continues the same game without repeating preview questions', () => {
   let state = createGameState(premium);
-  for (const type of ['truth', 'dare'] as const) for (let i = 0; i < 4; i++) state = drawQuestion(premium, state, type, false).state;
+  for (const type of ['truth', 'dare'] as const)
+    for (let i = 0; i < 4; i++) state = drawQuestion(premium, state, type, false).state;
   const previews = [...state.seenIds];
-  for (const type of ['truth', 'dare'] as const) for (let i = 0; i < 2; i++) {
-    const result = drawQuestion(premium, state, type, true);
-    assert.equal(result.status, 'drawn');
-    assert.ok(!previews.includes(result.question!.id));
-    state = result.state;
-  }
+  for (const type of ['truth', 'dare'] as const)
+    for (let i = 0; i < 2; i++) {
+      const result = drawQuestion(premium, state, type, true);
+      assert.equal(result.status, 'drawn');
+      assert.ok(!previews.includes(result.question!.id));
+      state = result.state;
+    }
   assert.equal(new Set(state.seenIds).size, 12);
   assert.equal(drawQuestion(premium, state, 'truth', true).status, 'complete');
 });

@@ -9,9 +9,18 @@ type AnimatedRevealProps = HTMLAttributes<HTMLDivElement> & {
 };
 
 /** Replays the reveal motion whenever the supplied key changes. */
-export function AnimatedReveal({ animationKey, children, className, ...props }: AnimatedRevealProps) {
+export function AnimatedReveal({
+  animationKey,
+  children,
+  className,
+  ...props
+}: AnimatedRevealProps) {
   return (
-    <div key={animationKey} className={[styles.reveal, className].filter(Boolean).join(' ')} {...props}>
+    <div
+      key={animationKey}
+      className={[styles.reveal, className].filter(Boolean).join(' ')}
+      {...props}
+    >
       {children}
     </div>
   );

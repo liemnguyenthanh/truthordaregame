@@ -66,17 +66,17 @@ Google nêu rằng AI Overviews/AI Mode không yêu cầu tối ưu kỹ thuật
 
 ## 6. Bằng chứng nghiệm thu cần lưu
 
-| Kiểm tra | Bằng chứng |
-|---|---|
-| SSG | Build output + HTML response của home/category/pack/hướng dẫn |
-| Metadata | Title, description, canonical, lang của mẫu URL từng loại |
-| Index policy | robots, sitemap, noindex và status codes thực tế |
-| Structured data | Kết quả validator và đối chiếu nội dung visible |
-| Sharing | Preview link trên thiết bị/app mục tiêu |
-| Cache | Response headers catalog, versioned JSON, API private và SW |
-| Mobile | Screenshot 320/390px và test thao tác cơ bản |
-| Performance | Lab report trước launch, field dashboard khi có dữ liệu |
-| Content | Danh sách trang review, người review, ngày chỉnh sửa thật |
+| Kiểm tra        | Bằng chứng                                                    |
+| --------------- | ------------------------------------------------------------- |
+| SSG             | Build output + HTML response của home/category/pack/hướng dẫn |
+| Metadata        | Title, description, canonical, lang của mẫu URL từng loại     |
+| Index policy    | robots, sitemap, noindex và status codes thực tế              |
+| Structured data | Kết quả validator và đối chiếu nội dung visible               |
+| Sharing         | Preview link trên thiết bị/app mục tiêu                       |
+| Cache           | Response headers catalog, versioned JSON, API private và SW   |
+| Mobile          | Screenshot 320/390px và test thao tác cơ bản                  |
+| Performance     | Lab report trước launch, field dashboard khi có dữ liệu       |
+| Content         | Danh sách trang review, người review, ngày chỉnh sửa thật     |
 
 ## 7. Sau launch
 

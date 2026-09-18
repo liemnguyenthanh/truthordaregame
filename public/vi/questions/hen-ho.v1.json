@@ -3,16 +3,7 @@
   "packId": "couples-premium",
   "locale": "vi",
   "contentVersion": "1",
-  "trialQuestionIds": [
-    "t01",
-    "t02",
-    "t03",
-    "t04",
-    "d01",
-    "d02",
-    "d03",
-    "d04"
-  ],
+  "trialQuestionIds": ["t01", "t02", "t03", "t04", "d01", "d02", "d03", "d04"],
   "questions": [
     {
       "id": "t01",

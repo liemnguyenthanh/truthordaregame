@@ -2,15 +2,26 @@ import { expect, test, type Page } from '@playwright/test';
 
 test.use({ serviceWorkers: 'block' });
 const route = '/vi/choi/ban-be-khoi-dong';
-async function progress(page: Page) { return page.evaluate(() => JSON.parse(localStorage.getItem('tod:game:v1:friends-free') || 'null')); }
+async function progress(page: Page) {
+  return page.evaluate(() =>
+    JSON.parse(localStorage.getItem('tod:game:v1:friends-free') || 'null'),
+  );
+}
 async function draw(page: Page, name: 'Thật' | 'Thách' | 'Bỏ qua', count: number) {
   // Respect the intentional 260 ms double-tap guard.
   await page.waitForTimeout(270);
-  await page.getByRole('button', { name: name === 'Bỏ qua' ? name : new RegExp(name), exact: name === 'Bỏ qua' }).click();
+  await page
+    .getByRole('button', {
+      name: name === 'Bỏ qua' ? name : new RegExp(name),
+      exact: name === 'Bỏ qua',
+    })
+    .click();
   await expect.poll(async () => (await progress(page))?.seenIds.length).toBe(count);
 }
 
-test('optional group names rotate; skip retains actor; reload and editing preserve/reset the intended state', async ({ page }) => {
+test('optional group names rotate; skip retains actor; reload and editing preserve/reset the intended state', async ({
+  page,
+}) => {
   await page.goto(route);
   await expect(page.getByRole('button', { name: 'Tạo nhóm', exact: true })).toBeEnabled();
   await expect(page.getByTestId('current-actor')).toHaveCount(0);
@@ -43,7 +54,9 @@ test('optional group names rotate; skip retains actor; reload and editing preser
   await expect(page.getByTestId('current-actor')).toHaveText('Lượt của An mới');
 });
 
-test('group shortcut opens editor, rejects normalized duplicate names, fits 320px', async ({ page }) => {
+test('group shortcut opens editor, rejects normalized duplicate names, fits 320px', async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 320, height: 740 });
   await page.goto(`${route}?group=1`);
   await expect(page.getByRole('form', { name: 'Thông tin nhóm chơi' })).toBeVisible();

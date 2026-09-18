@@ -10,11 +10,19 @@ function readPublicJson<T>(file: string): T {
 }
 
 export function getPacks(): Pack[] {
-  return readPublicJson<{ packs: Pack[] }>('/vi/packs.json').packs.filter(pack => pack.published);
+  return readPublicJson<{ packs: Pack[] }>('/vi/packs.json').packs.filter((pack) => pack.published);
 }
 export function getCategories(): Category[] {
-  return readPublicJson<{ categories: Category[] }>('/vi/categories.json').categories.sort((a, b) => a.sortOrder - b.sortOrder);
+  return readPublicJson<{ categories: Category[] }>('/vi/categories.json').categories.sort(
+    (a, b) => a.sortOrder - b.sortOrder,
+  );
 }
-export function getPack(slug: string): Pack | undefined { return getPacks().find(pack => pack.slug === slug); }
-export function getCategory(slug: string): Category | undefined { return getCategories().find(category => category.slug === slug); }
-export function getQuestionSet(pack: Pack): QuestionSet { return readPublicJson<QuestionSet>(pack.questionFile); }
+export function getPack(slug: string): Pack | undefined {
+  return getPacks().find((pack) => pack.slug === slug);
+}
+export function getCategory(slug: string): Category | undefined {
+  return getCategories().find((category) => category.slug === slug);
+}
+export function getQuestionSet(pack: Pack): QuestionSet {
+  return readPublicJson<QuestionSet>(pack.questionFile);
+}

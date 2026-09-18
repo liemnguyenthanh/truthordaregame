@@ -4,13 +4,13 @@ Dự án hiện có **36 câu mẫu**, chia thành ba bộ để dễ thay bằn
 
 ## Các file cần biết
 
-| File | Vai trò |
-|---|---|
-| `public/vi/categories.json` | Danh mục Bạn bè, Cặp đôi và danh sách ID các bộ |
-| `public/vi/packs.json` | Catalog bộ, tiêu đề, mô tả, số câu, giá tham khảo, đường dẫn JSON |
-| `public/vi/questions/ban-be-khoi-dong.v1.json` | Bộ miễn phí `friends-free` |
-| `public/vi/questions/ban-be-gan-ket.v1.json` | Bộ premium `friends-premium` |
-| `public/vi/questions/hen-ho.v1.json` | Bộ premium `couples-premium` |
+| File                                           | Vai trò                                                           |
+| ---------------------------------------------- | ----------------------------------------------------------------- |
+| `public/vi/categories.json`                    | Danh mục Bạn bè, Cặp đôi và danh sách ID các bộ                   |
+| `public/vi/packs.json`                         | Catalog bộ, tiêu đề, mô tả, số câu, giá tham khảo, đường dẫn JSON |
+| `public/vi/questions/ban-be-khoi-dong.v1.json` | Bộ miễn phí `friends-free`                                        |
+| `public/vi/questions/ban-be-gan-ket.v1.json`   | Bộ premium `friends-premium`                                      |
+| `public/vi/questions/hen-ho.v1.json`           | Bộ premium `couples-premium`                                      |
 
 File trong `public/vi/` được truy cập bằng URL `/vi/…`, **không có `/public`**. Mỗi bộ có một JSON riêng chứa cả Thật và Thách; không ghép mọi câu vào catalog.
 

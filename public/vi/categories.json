@@ -9,10 +9,7 @@
       "name": "Bạn bè",
       "description": "Phá băng, bật cười và hiểu nhóm bạn hơn qua từng lượt chơi.",
       "icon": "🎉",
-      "packIds": [
-        "friends-free",
-        "friends-premium"
-      ],
+      "packIds": ["friends-free", "friends-premium"],
       "sortOrder": 10
     },
     {
@@ -21,9 +18,7 @@
       "name": "Cặp đôi",
       "description": "Gợi mở những cuộc trò chuyện dễ thương cho hai người.",
       "icon": "💞",
-      "packIds": [
-        "couples-premium"
-      ],
+      "packIds": ["couples-premium"],
       "sortOrder": 20
     }
   ]

@@ -1,1 +1,145 @@
-.editor{background:var(--surface);border:1px solid #a86de442;border-radius:22px;padding:24px;margin:18px 0}.header{display:flex;align-items:center;gap:10px;color:#dbb4fa}.header h2{font-size:19px;margin:0;color:var(--text)}.description{font-size:12px;line-height:1.8;color:var(--muted);margin:12px 0 20px}.label{display:block;font-size:12px;font-weight:650;margin-bottom:8px}.input{width:100%;background:#141d2b;border:1px solid #70617e;border-radius:10px;min-height:46px;padding:11px 13px;font:inherit;font-size:13px;color:var(--text)}.input::placeholder{color:#8995ac}.players{margin:18px 0 8px}.player{display:flex;align-items:center;gap:9px;margin:12px 0}.player>div{flex:1;min-width:0}.number{display:flex;width:26px;height:26px;flex-shrink:0;justify-content:center;align-items:center;background:#a43bea20;border-radius:50%;color:#dcb5f9;font-size:11px;margin-top:20px}.playerLabel{display:block;font-size:10px;color:var(--muted);margin-bottom:5px}.remove{width:36px;height:44px;flex-shrink:0;display:flex;justify-content:center;align-items:center;color:#d1c2dc;background:none;border:0;cursor:pointer;margin-top:19px}.remove:disabled,.add:disabled{opacity:.35;cursor:default}.add{display:flex;align-items:center;justify-content:center;gap:7px;min-height:44px;background:none;border:1px dashed #9a6abd75;border-radius:10px;color:#d8b5f3;cursor:pointer;width:100%;font-size:12px}.actions{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap}.actions :global(.button){font-size:12px;min-height:46px}.error{color:#ffbbc6;font-size:12px;line-height:1.7;padding:12px;background:#de3d6110;border-radius:10px}@media(max-width:400px){.editor{padding:20px 16px}.player{gap:6px}.number{width:20px;height:20px}.remove{width:28px}.actions :global(.button){width:100%;justify-content:center}}
+.editor {
+  background: var(--surface);
+  border: 1px solid #a86de442;
+  border-radius: 22px;
+  padding: 24px;
+  margin: 18px 0;
+}
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #dbb4fa;
+}
+.header h2 {
+  font-size: 19px;
+  margin: 0;
+  color: var(--text);
+}
+.description {
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--muted);
+  margin: 12px 0 20px;
+}
+.label {
+  display: block;
+  font-size: 12px;
+  font-weight: 650;
+  margin-bottom: 8px;
+}
+.input {
+  width: 100%;
+  background: #141d2b;
+  border: 1px solid #70617e;
+  border-radius: 10px;
+  min-height: 46px;
+  padding: 11px 13px;
+  font: inherit;
+  font-size: 13px;
+  color: var(--text);
+}
+.input::placeholder {
+  color: #8995ac;
+}
+.players {
+  margin: 18px 0 8px;
+}
+.player {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 12px 0;
+}
+.player > div {
+  flex: 1;
+  min-width: 0;
+}
+.number {
+  display: flex;
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  justify-content: center;
+  align-items: center;
+  background: #a43bea20;
+  border-radius: 50%;
+  color: #dcb5f9;
+  font-size: 11px;
+  margin-top: 20px;
+}
+.playerLabel {
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+  margin-bottom: 5px;
+}
+.remove {
+  width: 36px;
+  height: 44px;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #d1c2dc;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  margin-top: 19px;
+}
+.remove:disabled,
+.add:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 44px;
+  background: none;
+  border: 1px dashed #9a6abd75;
+  border-radius: 10px;
+  color: #d8b5f3;
+  cursor: pointer;
+  width: 100%;
+  font-size: 12px;
+}
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 22px;
+  flex-wrap: wrap;
+}
+.actions :global(.button) {
+  font-size: 12px;
+  min-height: 46px;
+}
+.error {
+  color: #ffbbc6;
+  font-size: 12px;
+  line-height: 1.7;
+  padding: 12px;
+  background: #de3d6110;
+  border-radius: 10px;
+}
+@media (max-width: 400px) {
+  .editor {
+    padding: 20px 16px;
+  }
+  .player {
+    gap: 6px;
+  }
+  .number {
+    width: 20px;
+    height: 20px;
+  }
+  .remove {
+    width: 28px;
+  }
+  .actions :global(.button) {
+    width: 100%;
+    justify-content: center;
+  }
+}

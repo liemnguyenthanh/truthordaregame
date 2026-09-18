@@ -3,8 +3,27 @@ import assert from 'node:assert/strict';
 import { createGroupGameState, drawGroupQuestion, groupFingerprint } from '../lib/group-game';
 import type { PlayGroup, QuestionSet } from '../lib/types';
 
-const group: PlayGroup = { id: 'group', name: 'Bạn thân', players: [{ id: 'a', name: 'An' }, { id: 'b', name: 'Bình' }, { id: 'c', name: 'Chi' }] };
-const set: QuestionSet = { schemaVersion: 1, packId: 'free', locale: 'vi', contentVersion: '1', trialQuestionIds: [], questions: Array.from({ length: 8 }, (_, i) => ({ id: `q${i}`, text: `Câu ${i}`, type: 'truth' })) };
+const group: PlayGroup = {
+  id: 'group',
+  name: 'Bạn thân',
+  players: [
+    { id: 'a', name: 'An' },
+    { id: 'b', name: 'Bình' },
+    { id: 'c', name: 'Chi' },
+  ],
+};
+const set: QuestionSet = {
+  schemaVersion: 1,
+  packId: 'free',
+  locale: 'vi',
+  contentVersion: '1',
+  trialQuestionIds: [],
+  questions: Array.from({ length: 8 }, (_, i) => ({
+    id: `q${i}`,
+    text: `Câu ${i}`,
+    type: 'truth',
+  })),
+};
 
 test('normal group rotates in order, skip retains actor, persisted reload keeps next turn', () => {
   let state = createGroupGameState(set, group);
@@ -12,7 +31,15 @@ test('normal group rotates in order, skip retains actor, persisted reload keeps 
   assert.equal(state.actorId, 'a');
   state = drawGroupQuestion(set, state, 'truth', true, group, true, () => 0).state;
   assert.equal(state.actorId, 'a');
-  state = drawGroupQuestion(set, JSON.parse(JSON.stringify(state)), 'truth', true, group, false, () => 0).state;
+  state = drawGroupQuestion(
+    set,
+    JSON.parse(JSON.stringify(state)),
+    'truth',
+    true,
+    group,
+    false,
+    () => 0,
+  ).state;
   assert.equal(state.actorId, 'b');
   state = drawGroupQuestion(set, state, 'truth', true, group, false, () => 0).state;
   assert.equal(state.actorId, 'c');
@@ -34,12 +61,15 @@ test('exhausted and trial requests do not change actor or progress', () => {
 });
 
 test('personalized draws always match actor and partner remains text metadata', () => {
-  const personalized: QuestionSet = { ...set, questions: [
-    { id: 'a1', type: 'truth', playerId: 'a', partnerId: 'b', text: 'An hỏi Bình một điều.' },
-    { id: 'b1', type: 'truth', playerId: 'b', text: 'Bình chia sẻ một kỷ niệm.' },
-    { id: 'c1', type: 'dare', playerId: 'c', text: 'Chi tạo dáng vui.' },
-    { id: 'a2', type: 'truth', playerId: 'a', text: 'An kể một bí mật nhỏ.' },
-  ] };
+  const personalized: QuestionSet = {
+    ...set,
+    questions: [
+      { id: 'a1', type: 'truth', playerId: 'a', partnerId: 'b', text: 'An hỏi Bình một điều.' },
+      { id: 'b1', type: 'truth', playerId: 'b', text: 'Bình chia sẻ một kỷ niệm.' },
+      { id: 'c1', type: 'dare', playerId: 'c', text: 'Chi tạo dáng vui.' },
+      { id: 'a2', type: 'truth', playerId: 'a', text: 'An kể một bí mật nhỏ.' },
+    ],
+  };
   let state = createGroupGameState(personalized, group);
   const first = drawGroupQuestion(personalized, state, 'truth', true, group, false, () => 0);
   assert.equal(first.state.actorId, first.question?.playerId);
@@ -59,8 +89,17 @@ test('personalized draws always match actor and partner remains text metadata', 
 });
 
 test('group fingerprint changes for renamed and reordered players; no group preserves classic gameplay', () => {
-  assert.notEqual(groupFingerprint(group), groupFingerprint({ ...group, players: [...group.players].reverse() }));
-  assert.notEqual(groupFingerprint(group), groupFingerprint({ ...group, players: [{ id: 'a', name: 'An mới' }, ...group.players.slice(1)] }));
+  assert.notEqual(
+    groupFingerprint(group),
+    groupFingerprint({ ...group, players: [...group.players].reverse() }),
+  );
+  assert.notEqual(
+    groupFingerprint(group),
+    groupFingerprint({
+      ...group,
+      players: [{ id: 'a', name: 'An mới' }, ...group.players.slice(1)],
+    }),
+  );
   assert.equal(groupFingerprint(null), '');
   const state = createGroupGameState(set);
   const result = drawGroupQuestion(set, state, 'truth', true, undefined, false, () => 0);

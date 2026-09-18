@@ -25,9 +25,7 @@
       "published": true,
       "icon": "🎉",
       "color": "purple",
-      "categoryIds": [
-        "friends"
-      ]
+      "categoryIds": ["friends"]
     },
     {
       "id": "friends-premium",
@@ -51,25 +49,23 @@
       "published": true,
       "icon": "💖",
       "color": "pink",
-      "categoryIds": [
-        "friends"
-      ]
+      "categoryIds": ["friends"]
     },
     {
-      "id": "couples-premium",
+      "id": "premium-18",
       "slug": "hen-ho",
-      "title": "Hẹn hò thật vui",
-      "description": "Những gợi ý trò chuyện và thử thách dễ thương cho hai người.",
+      "title": "18+",
+      "description": "Những câu hỏi và thử thách dành cho các cặp đôi muốn hâm nóng tình cảm.",
       "tier": "premium",
-      "questionFile": "/vi/questions/hen-ho.v1.json",
+      "questionFile": "/vi/questions/18.json",
       "contentVersion": "1",
       "questionCount": 12,
       "truthCount": 6,
       "dareCount": 6,
       "trialCount": 8,
       "priceHintVnd": 30000,
-      "productId": "pack-couples-premium",
-      "ageLabel": "16+",
+      "productId": "premium-18",
+      "ageLabel": "18+",
       "playerRange": {
         "min": 2,
         "max": 2
@@ -77,9 +73,7 @@
       "published": true,
       "icon": "✨",
       "color": "orange",
-      "categoryIds": [
-        "couples"
-      ]
+      "categoryIds": ["couples"]
     }
   ]
 }

@@ -8,20 +8,20 @@ Tài liệu dùng để bàn giao thiết kế, lập trình và kiểm thử. C
 
 Xây dựng trò chơi Thật hay Thách trên điện thoại: mở website → chọn danh mục → chọn bộ → chọn Thật/Thách → chơi ngay. Ưu tiên thao tác nhanh, dễ đọc khi chuyền điện thoại trong nhóm, không đăng ký hoặc đăng nhập.
 
-| Hạng mục | Quyết định |
-|---|---|
-| Frontend | Next.js App Router + TypeScript; trang nội dung và khung trang chơi được SSG |
-| Hosting | Vercel |
-| Nội dung | JSON trong `public/vi/`; mỗi bộ có đúng một file chứa cả câu Thật và Thách |
-| Free / premium | Phân loại theo bộ; tải toàn bộ JSON của bộ đang chọn; frontend quyết định câu nào được hiển thị |
-| Trial — đề xuất | 8 câu độc nhất mỗi bộ premium, gồm 4 Thật + 4 Thách được biên tập trước |
-| Giá — đề xuất | 30.000 VND/bộ, trả một lần, quyền chơi không hết hạn trong thời gian dịch vụ hoạt động |
-| Phạm vi mua — đề xuất | Mở khóa bộ đã mua và cập nhật của cùng bộ; không tự bao gồm bộ mới khác |
-| Backend tối thiểu | Next.js Route Handlers trên Vercel + Supabase Postgres |
-| Thanh toán | Chuyển khoản VietQR qua hệ thống SePay và xác nhận bằng webhook |
-| Không tài khoản | Cookie khách + quyền mua trên DB + mã khôi phục; không dùng Supabase Auth |
-| PWA | Cài lên màn hình chính; chơi bộ đã tải khi offline; mua và khôi phục cần mạng |
-| SEO / GEO | Trang HTML SSG có nội dung hữu ích, metadata, liên kết, structured data phù hợp; checklist riêng đi kèm |
+| Hạng mục              | Quyết định                                                                                              |
+| --------------------- | ------------------------------------------------------------------------------------------------------- |
+| Frontend              | Next.js App Router + TypeScript; trang nội dung và khung trang chơi được SSG                            |
+| Hosting               | Vercel                                                                                                  |
+| Nội dung              | JSON trong `public/vi/`; mỗi bộ có đúng một file chứa cả câu Thật và Thách                              |
+| Free / premium        | Phân loại theo bộ; tải toàn bộ JSON của bộ đang chọn; frontend quyết định câu nào được hiển thị         |
+| Trial — đề xuất       | 8 câu độc nhất mỗi bộ premium, gồm 4 Thật + 4 Thách được biên tập trước                                 |
+| Giá — đề xuất         | 30.000 VND/bộ, trả một lần, quyền chơi không hết hạn trong thời gian dịch vụ hoạt động                  |
+| Phạm vi mua — đề xuất | Mở khóa bộ đã mua và cập nhật của cùng bộ; không tự bao gồm bộ mới khác                                 |
+| Backend tối thiểu     | Next.js Route Handlers trên Vercel + Supabase Postgres                                                  |
+| Thanh toán            | Chuyển khoản VietQR qua hệ thống SePay và xác nhận bằng webhook                                         |
+| Không tài khoản       | Cookie khách + quyền mua trên DB + mã khôi phục; không dùng Supabase Auth                               |
+| PWA                   | Cài lên màn hình chính; chơi bộ đã tải khi offline; mua và khôi phục cần mạng                           |
+| SEO / GEO             | Trang HTML SSG có nội dung hữu ích, metadata, liên kết, structured data phù hợp; checklist riêng đi kèm |
 
 **Trade-off được chấp nhận theo yêu cầu:** người biết kỹ thuật có thể đọc toàn bộ câu premium trong JSON hoặc bỏ qua khóa frontend. Đây là paywall về trải nghiệm, không phải cơ chế bảo mật nội dung. Không xây DRM, mã hóa câu hỏi hoặc API trả từng câu. Tuy nhiên, số tiền và trạng thái thanh toán vẫn do backend xác nhận để tránh mở khóa nhầm, thất lạc đơn và ghi nhận doanh thu sai.
 
@@ -45,20 +45,20 @@ Phòng chơi trực tuyến, đồng bộ lượt giữa nhiều điện thoại
 
 **Category** là chủ đề, **pack** là sản phẩm/bộ câu hỏi, **question** là một câu có loại `truth` hoặc `dare`. Không dùng category làm mã sản phẩm thanh toán. Ví dụ danh mục Bạn bè có một bộ free và hai bộ premium.
 
-| URL đề xuất | Nội dung | Render / index |
-|---|---|---|
-| `/` | Redirect cố định sang `/vi` | Không là trang nội dung trùng |
-| `/vi` | Giới thiệu, danh mục, bộ nổi bật, cách chơi ngắn | SSG / index |
-| `/vi/danh-muc` | Tất cả danh mục | SSG / index |
-| `/vi/danh-muc/[slug]` | Giới thiệu chủ đề, danh sách bộ | SSG / index |
-| `/vi/bo-cau-hoi/[slug]` | Số câu, đối tượng, preview, quyền mua, FAQ hữu ích | SSG / index |
-| `/vi/choi/[packSlug]` | Khung chơi và logic client | SSG / noindex |
-| `/vi/cach-choi` | Luật và các biến thể chơi | SSG / index |
-| `/vi/huong-dan/[slug]` | Bài hướng dẫn được biên tập | SSG / index |
-| `/vi/thanh-toan` | Checkout theo đơn đang lưu trên thiết bị | SSG shell / noindex |
-| `/vi/khoi-phuc` | Nhập mã khôi phục | SSG shell / noindex |
-| `/vi/chinh-sach-thanh-toan`, `/vi/quyen-rieng-tu`, `/vi/lien-he` | Thông tin minh bạch và hỗ trợ | SSG; index nếu có nội dung hoàn chỉnh |
-| `/api/*` | Session, đơn, quyền chơi, webhook | Runtime / không index, không cache công khai |
+| URL đề xuất                                                      | Nội dung                                           | Render / index                               |
+| ---------------------------------------------------------------- | -------------------------------------------------- | -------------------------------------------- |
+| `/`                                                              | Redirect cố định sang `/vi`                        | Không là trang nội dung trùng                |
+| `/vi`                                                            | Giới thiệu, danh mục, bộ nổi bật, cách chơi ngắn   | SSG / index                                  |
+| `/vi/danh-muc`                                                   | Tất cả danh mục                                    | SSG / index                                  |
+| `/vi/danh-muc/[slug]`                                            | Giới thiệu chủ đề, danh sách bộ                    | SSG / index                                  |
+| `/vi/bo-cau-hoi/[slug]`                                          | Số câu, đối tượng, preview, quyền mua, FAQ hữu ích | SSG / index                                  |
+| `/vi/choi/[packSlug]`                                            | Khung chơi và logic client                         | SSG / noindex                                |
+| `/vi/cach-choi`                                                  | Luật và các biến thể chơi                          | SSG / index                                  |
+| `/vi/huong-dan/[slug]`                                           | Bài hướng dẫn được biên tập                        | SSG / index                                  |
+| `/vi/thanh-toan`                                                 | Checkout theo đơn đang lưu trên thiết bị           | SSG shell / noindex                          |
+| `/vi/khoi-phuc`                                                  | Nhập mã khôi phục                                  | SSG shell / noindex                          |
+| `/vi/chinh-sach-thanh-toan`, `/vi/quyen-rieng-tu`, `/vi/lien-he` | Thông tin minh bạch và hỗ trợ                      | SSG; index nếu có nội dung hoàn chỉnh        |
+| `/api/*`                                                         | Session, đơn, quyền chơi, webhook                  | Runtime / không index, không cache công khai |
 
 Điều hướng category → pack → chơi là chuẩn. Nếu category chỉ có một bộ, nút “Chơi ngay” có thể vào thẳng bộ đó; trang giới thiệu bộ vẫn tồn tại để người dùng đọc và máy tìm kiếm truy cập.
 
@@ -124,19 +124,19 @@ Giá trong copy là biến động theo báo giá. Có dòng ngắn “Giữ mã
 
 ### Design tokens đề xuất
 
-| Token | Giá trị ban đầu |
-|---|---|
-| Nền trang | `#151D2B` đến `#1B2635` |
-| Bề mặt phụ | `#243044` |
-| Thật | Nút `#8B20D9`; thẻ gradient tím |
-| Thách | Nút `#C91467`; thẻ gradient `#D82C88` → `#B81163` |
-| Text chính | `#FFFFFF` |
-| Text phụ | `#CBD5E1` |
-| Radius thẻ | 24px |
-| Radius nút | 999px |
-| Font | Be Vietnam Pro hoặc font sans có tiếng Việt; self-host qua `next/font` |
-| Cỡ câu hỏi | `clamp(22px, 4.5vw, 28px)`, weight 650–700, line-height 1.4 |
-| Chuyển cảnh | Fade/slide nhẹ 160–220ms, tắt khi `prefers-reduced-motion` |
+| Token       | Giá trị ban đầu                                                        |
+| ----------- | ---------------------------------------------------------------------- |
+| Nền trang   | `#151D2B` đến `#1B2635`                                                |
+| Bề mặt phụ  | `#243044`                                                              |
+| Thật        | Nút `#8B20D9`; thẻ gradient tím                                        |
+| Thách       | Nút `#C91467`; thẻ gradient `#D82C88` → `#B81163`                      |
+| Text chính  | `#FFFFFF`                                                              |
+| Text phụ    | `#CBD5E1`                                                              |
+| Radius thẻ  | 24px                                                                   |
+| Radius nút  | 999px                                                                  |
+| Font        | Be Vietnam Pro hoặc font sans có tiếng Việt; self-host qua `next/font` |
+| Cỡ câu hỏi  | `clamp(22px, 4.5vw, 28px)`, weight 650–700, line-height 1.4            |
+| Chuyển cảnh | Fade/slide nhẹ 160–220ms, tắt khi `prefers-reduced-motion`             |
 
 Đây là token đề xuất lấy cảm hứng từ ảnh, không phải lấy mẫu màu chính xác. Thẻ được làm đậm hơn để chữ trắng dễ đọc; phải đo contrast trên toàn dải gradient trước nghiệm thu, điều chỉnh nếu thiếu.
 
@@ -152,16 +152,16 @@ Giá trong copy là biến động theo báo giá. Có dòng ngắn “Giữ mã
 
 ### Các màn hình cần thiết kế
 
-| Màn | Thành phần bắt buộc |
-|---|---|
-| Trang chủ / danh mục | Tên, icon, mô tả một câu, số bộ, CTA chơi; không popup khi mới vào |
-| Danh sách bộ | Tên, số câu Thật/Thách, nhãn free/premium, nhãn đã mua, preview |
-| Chi tiết bộ | Đối tượng, số người gợi ý, mức độ, mẫu câu, cách chơi, CTA, điều kiện mua |
-| Chơi | Empty/loading/active/type exhausted/all exhausted/offline/error |
-| Paywall | Lợi ích cụ thể, giá, phạm vi quyền, đóng, đổi bộ, khôi phục |
-| Checkout | QR, số tiền, ngân hàng, tên chủ tài khoản, nội dung chuyển khoản, copy/save, trạng thái |
-| Thành công | “Đã mở khóa”, CTA “Chơi tiếp”, mã khôi phục có copy/lưu |
-| Khôi phục | Ô nhập mã, đang kiểm tra, thành công, mã không hợp lệ, mất mã cần hỗ trợ |
+| Màn                  | Thành phần bắt buộc                                                                     |
+| -------------------- | --------------------------------------------------------------------------------------- |
+| Trang chủ / danh mục | Tên, icon, mô tả một câu, số bộ, CTA chơi; không popup khi mới vào                      |
+| Danh sách bộ         | Tên, số câu Thật/Thách, nhãn free/premium, nhãn đã mua, preview                         |
+| Chi tiết bộ          | Đối tượng, số người gợi ý, mức độ, mẫu câu, cách chơi, CTA, điều kiện mua               |
+| Chơi                 | Empty/loading/active/type exhausted/all exhausted/offline/error                         |
+| Paywall              | Lợi ích cụ thể, giá, phạm vi quyền, đóng, đổi bộ, khôi phục                             |
+| Checkout             | QR, số tiền, ngân hàng, tên chủ tài khoản, nội dung chuyển khoản, copy/save, trạng thái |
+| Thành công           | “Đã mở khóa”, CTA “Chơi tiếp”, mã khôi phục có copy/lưu                                 |
+| Khôi phục            | Ô nhập mã, đang kiểm tra, thành công, mã không hợp lệ, mất mã cần hỗ trợ                |
 
 Accessibility: focus nhìn rõ, điều khiển bằng bàn phím, nút có accessible name, trạng thái câu dùng `aria-live="polite"`, modal giữ focus và trả focus khi đóng; contrast tối thiểu 4.5:1 cho chữ thường, 3:1 cho chữ lớn. Nút/icon tương tác tối thiểu 44×44px. Không tự phát âm thanh hoặc rung mặc định.
 
@@ -320,14 +320,14 @@ Ví dụ file bộ rút gọn còn 10 câu để mô tả schema; catalog produc
 
 **Có:** Vercel phục vụ static asset qua hạ tầng CDN. **Cần bổ sung:** đặt file trong `public` không có nghĩa trình duyệt tự giữ file một năm; Next.js mặc định dùng `Cache-Control: public, max-age=0` cho public assets. Tách chính sách browser, CDN và service worker. [Vercel Caching](https://vercel.com/docs/caching), [Next.js public folder](https://nextjs.org/docs/app/api-reference/file-conventions/public-folder).
 
-| Tài nguyên | Browser policy đề xuất | CDN / PWA |
-|---|---|---|
-| `/vi/categories.json`, `/vi/packs.json` | `public, max-age=0, must-revalidate` | Vercel CDN TTL 300s, SWR 600s; SW network-first có fallback |
-| `/vi/questions/*.vN.json` hoặc tên có content hash | `public, max-age=31536000, immutable` | Cache-first vì URL đổi khi nội dung đổi |
-| `/api/session`, `/api/orders*`, `/api/entitlements*` | `private, no-store` | Không CDN, không service worker cache |
-| `/api/products/*` | `no-store` ở MVP | Kiểm tra giá hiện tại; chưa cần tối ưu cache |
-| `/sw.js` | `no-cache` | Kiểm tra cập nhật; không immutable |
-| HTML SSG và `_next/static/*` | Dùng cơ chế framework | Không override rộng làm ảnh hưởng HTML/RSC |
+| Tài nguyên                                           | Browser policy đề xuất                | CDN / PWA                                                   |
+| ---------------------------------------------------- | ------------------------------------- | ----------------------------------------------------------- |
+| `/vi/categories.json`, `/vi/packs.json`              | `public, max-age=0, must-revalidate`  | Vercel CDN TTL 300s, SWR 600s; SW network-first có fallback |
+| `/vi/questions/*.vN.json` hoặc tên có content hash   | `public, max-age=31536000, immutable` | Cache-first vì URL đổi khi nội dung đổi                     |
+| `/api/session`, `/api/orders*`, `/api/entitlements*` | `private, no-store`                   | Không CDN, không service worker cache                       |
+| `/api/products/*`                                    | `no-store` ở MVP                      | Kiểm tra giá hiện tại; chưa cần tối ưu cache                |
+| `/sw.js`                                             | `no-cache`                            | Kiểm tra cập nhật; không immutable                          |
+| HTML SSG và `_next/static/*`                         | Dùng cơ chế framework                 | Không override rộng làm ảnh hưởng HTML/RSC                  |
 
 Thiết lập cụ thể trong `headers()` của Next.js hoặc `vercel.json`, chọn một nguồn cấu hình. Cho catalog có thể dùng `Vercel-CDN-Cache-Control: public, s-maxage=300, stale-while-revalidate=600` riêng với header browser bên trên. Header dành riêng Vercel có thứ tự ưu tiên riêng; kiểm tra header thực tế sau deploy thay vì suy từ config. [Vercel Cache-Control headers](https://vercel.com/docs/caching/cache-control-headers).
 
@@ -394,19 +394,19 @@ Thuật toán xử lý nghiệp vụ của dự án:
 
 ### Trường hợp ngoại lệ
 
-| Tình huống | Chính sách MVP đề xuất |
-|---|---|
-| Bấm mua nhiều lần | Idempotency key cùng guest trả cùng đơn; kiểm tra/reuse đơn pending cùng pack còn hạn |
-| Đã sở hữu pack | Trả quyền hiện có, không tạo QR thu tiền mới |
-| Thiếu hoặc thừa tiền | Review thủ công, không tự mở khóa; MVP không cộng dồn nhiều chuyển khoản nhỏ |
-| Sai/mất mã chuyển khoản | Lưu unmatched và đối soát hỗ trợ; không đoán theo số tiền 30.000đ vì dễ trùng |
-| Trả tiền sau khi hết hạn | Nếu đúng giá snapshot, đúng mã/tài khoản và trong 24h từ lúc tạo: vẫn cấp quyền; ngoài 24h đưa review |
-| Webhook đến trễ | Dùng thời điểm giao dịch ngân hàng để xét cửa sổ, không dùng thời điểm nhận webhook |
-| Hai đơn cùng pack đều đã trả | Cấp một quyền chơi, đánh dấu thanh toán dư; hỗ trợ xử lý tiền thừa |
-| Đóng tab sau chuyển khoản | Webhook vẫn ghi paid; mở lại cùng guest đọc DB để mở khóa |
-| Giá thay đổi | Giữ giá snapshot đơn; đơn mới dùng giá mới |
-| Webhook thất lạc | Job đối soát dùng API SePay; cùng pipeline idempotent như webhook |
-| Hoàn tiền | Xử lý nội bộ, ghi audit, thu hồi entitlement online; cache offline có thể còn quyền theo trade-off FE |
+| Tình huống                   | Chính sách MVP đề xuất                                                                                |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Bấm mua nhiều lần            | Idempotency key cùng guest trả cùng đơn; kiểm tra/reuse đơn pending cùng pack còn hạn                 |
+| Đã sở hữu pack               | Trả quyền hiện có, không tạo QR thu tiền mới                                                          |
+| Thiếu hoặc thừa tiền         | Review thủ công, không tự mở khóa; MVP không cộng dồn nhiều chuyển khoản nhỏ                          |
+| Sai/mất mã chuyển khoản      | Lưu unmatched và đối soát hỗ trợ; không đoán theo số tiền 30.000đ vì dễ trùng                         |
+| Trả tiền sau khi hết hạn     | Nếu đúng giá snapshot, đúng mã/tài khoản và trong 24h từ lúc tạo: vẫn cấp quyền; ngoài 24h đưa review |
+| Webhook đến trễ              | Dùng thời điểm giao dịch ngân hàng để xét cửa sổ, không dùng thời điểm nhận webhook                   |
+| Hai đơn cùng pack đều đã trả | Cấp một quyền chơi, đánh dấu thanh toán dư; hỗ trợ xử lý tiền thừa                                    |
+| Đóng tab sau chuyển khoản    | Webhook vẫn ghi paid; mở lại cùng guest đọc DB để mở khóa                                             |
+| Giá thay đổi                 | Giữ giá snapshot đơn; đơn mới dùng giá mới                                                            |
+| Webhook thất lạc             | Job đối soát dùng API SePay; cùng pipeline idempotent như webhook                                     |
+| Hoàn tiền                    | Xử lý nội bộ, ghi audit, thu hồi entitlement online; cache offline có thể còn quyền theo trade-off FE |
 
 Job đối soát đề xuất mỗi 15–30 phút nếu gói hosting cho phép; nếu lịch job trên Vercel không đáp ứng, dùng scheduler Supabase hoặc job riêng. Có kiểm tra thủ công qua công cụ nội bộ để hỗ trợ trước khi job chạy. Đây là quy trình do dự án chọn; không phụ thuộc giả định SePay luôn retry trong một khoảng thời gian cố định. [SePay hướng dẫn bảo mật và đối soát](https://developer.sepay.vn/vi/sepay-webhooks/bao-mat).
 
@@ -414,30 +414,30 @@ Job đối soát đề xuất mỗi 15–30 phút nếu gói hosting cho phép; 
 
 Supabase chỉ giữ commerce/quyền mua; câu hỏi tiếp tục nằm trong JSON. Backend truy cập DB bằng credential server; browser không ghi trực tiếp bảng order/entitlement. Nếu các bảng thuộc schema exposed, bật RLS và không cấp quyền đọc/ghi công khai; service credential chỉ ở backend. [Supabase RLS](https://supabase.com/docs/guides/database/postgres/row-level-security).
 
-| Bảng | Trường chính / ràng buộc |
-|---|---|
-| `guest_sessions` | `id`, `token_hash UNIQUE`, `created_at`, `expires_at` |
-| `products` | `id`, `pack_id UNIQUE`, `price_vnd INTEGER > 0`, `price_version`, `active` |
-| `orders` | `id UUID`, `guest_id`, `product_id`, `pack_id`, `amount_vnd`, `currency=VND`, `title_snapshot`, `price_version`, `payment_code UNIQUE`, `status`, `expires_at`, `created_at`, `paid_at` |
-| `order_requests` | `(guest_id, idempotency_key) UNIQUE`, `order_id`; bảo vệ retry tạo đơn |
-| `payment_events` | `provider`, `provider_transaction_id`, `order_id nullable`, `amount`, `received_at`, `bank_transaction_at`, `processing_status`; `UNIQUE(provider, provider_transaction_id)` |
-| `purchases` | `id`, `order_id UNIQUE`, `pack_id`, `status`, `recovery_hash UNIQUE`, `recovery_ciphertext`, `created_at` |
-| `entitlements` | `id`, `guest_id`, `purchase_id`, `pack_id`, `granted_at`, `revoked_at`; `UNIQUE(guest_id, purchase_id)` |
-| `audit_events` | Thay đổi trạng thái, hoàn tiền, khôi phục, đối soát; không chứa secret |
+| Bảng             | Trường chính / ràng buộc                                                                                                                                                                |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `guest_sessions` | `id`, `token_hash UNIQUE`, `created_at`, `expires_at`                                                                                                                                   |
+| `products`       | `id`, `pack_id UNIQUE`, `price_vnd INTEGER > 0`, `price_version`, `active`                                                                                                              |
+| `orders`         | `id UUID`, `guest_id`, `product_id`, `pack_id`, `amount_vnd`, `currency=VND`, `title_snapshot`, `price_version`, `payment_code UNIQUE`, `status`, `expires_at`, `created_at`, `paid_at` |
+| `order_requests` | `(guest_id, idempotency_key) UNIQUE`, `order_id`; bảo vệ retry tạo đơn                                                                                                                  |
+| `payment_events` | `provider`, `provider_transaction_id`, `order_id nullable`, `amount`, `received_at`, `bank_transaction_at`, `processing_status`; `UNIQUE(provider, provider_transaction_id)`            |
+| `purchases`      | `id`, `order_id UNIQUE`, `pack_id`, `status`, `recovery_hash UNIQUE`, `recovery_ciphertext`, `created_at`                                                                               |
+| `entitlements`   | `id`, `guest_id`, `purchase_id`, `pack_id`, `granted_at`, `revoked_at`; `UNIQUE(guest_id, purchase_id)`                                                                                 |
+| `audit_events`   | Thay đổi trạng thái, hoàn tiền, khôi phục, đối soát; không chứa secret                                                                                                                  |
 
 Quyền effective của guest là tập pack có purchase active và entitlement chưa revoked. Khôi phục tạo entitlement từ cùng purchase; hoàn tiền purchase thu hồi tất cả các grant liên quan. Không xóa order/event khi hoàn tiền.
 
 ### Hợp đồng API tối thiểu
 
-| Endpoint | Input | Output / điều kiện |
-|---|---|---|
-| `POST /api/session` | Không cần thông tin cá nhân | Set cookie khách, idempotent nếu session còn hợp lệ |
-| `GET /api/products/:packId` | Pack ID | Giá, currency, priceVersion, active |
-| `POST /api/orders` | `{packId}`, `Idempotency-Key` | Đơn + QR + giá snapshot hoặc trạng thái đã sở hữu; cần cookie |
-| `GET /api/orders/:orderId` | Cookie sở hữu | `pending/paid/expired/review_required/refunded`; không lộ đơn guest khác |
-| `GET /api/entitlements` | Cookie | Danh sách pack đã mua, metadata tối thiểu và thông tin khôi phục thuộc guest |
-| `POST /api/entitlements/restore` | `{recoveryCode}` + cookie | Cấp quyền trên thiết bị hiện tại hoặc lỗi chung |
-| `POST /api/webhooks/sepay` | Raw body + xác thực SePay | Ack protocol sau commit hoặc mã lỗi thích hợp |
+| Endpoint                         | Input                         | Output / điều kiện                                                           |
+| -------------------------------- | ----------------------------- | ---------------------------------------------------------------------------- |
+| `POST /api/session`              | Không cần thông tin cá nhân   | Set cookie khách, idempotent nếu session còn hợp lệ                          |
+| `GET /api/products/:packId`      | Pack ID                       | Giá, currency, priceVersion, active                                          |
+| `POST /api/orders`               | `{packId}`, `Idempotency-Key` | Đơn + QR + giá snapshot hoặc trạng thái đã sở hữu; cần cookie                |
+| `GET /api/orders/:orderId`       | Cookie sở hữu                 | `pending/paid/expired/review_required/refunded`; không lộ đơn guest khác     |
+| `GET /api/entitlements`          | Cookie                        | Danh sách pack đã mua, metadata tối thiểu và thông tin khôi phục thuộc guest |
+| `POST /api/entitlements/restore` | `{recoveryCode}` + cookie     | Cấp quyền trên thiết bị hiện tại hoặc lỗi chung                              |
+| `POST /api/webhooks/sepay`       | Raw body + xác thực SePay     | Ack protocol sau commit hoặc mã lỗi thích hợp                                |
 
 Chọn mã lỗi nhất quán: 400 dữ liệu sai, 401 session/xác thực thiếu, 404 tài nguyên không tồn tại hoặc không thuộc guest, 409 trạng thái xung đột, 429 giới hạn tần suất, 503 phụ thuộc tạm lỗi. API trạng thái không trả raw dữ liệu ngân hàng. Mã khôi phục chỉ trả cho người sở hữu qua kết nối HTTPS và response no-store.
 
@@ -479,13 +479,13 @@ Về Google AI Overviews/AI Mode, không có schema đặc biệt hoặc file AI
 
 ### Bộ năng lực / skill khi triển khai
 
-| Công việc | Skill hoặc checklist cần có |
-|---|---|
-| Next.js SSG / metadata / routes | `vercel:nextjs` |
-| CDN, version nội dung và headers | `vercel:cdn-caching` |
-| Component và hiệu năng React | `vercel:react-best-practices` khi triển khai UI |
-| Browser/PWA/flow thực tế | `vercel:agent-browser`, `vercel:verification` khi triển khai và kiểm tra |
-| SEO kỹ thuật + biên tập + GEO | Checklist chuyên biệt `seo-geo-checklist.md` đi kèm, dựa trên tài liệu chính thức |
+| Công việc                        | Skill hoặc checklist cần có                                                       |
+| -------------------------------- | --------------------------------------------------------------------------------- |
+| Next.js SSG / metadata / routes  | `vercel:nextjs`                                                                   |
+| CDN, version nội dung và headers | `vercel:cdn-caching`                                                              |
+| Component và hiệu năng React     | `vercel:react-best-practices` khi triển khai UI                                   |
+| Browser/PWA/flow thực tế         | `vercel:agent-browser`, `vercel:verification` khi triển khai và kiểm tra          |
+| SEO kỹ thuật + biên tập + GEO    | Checklist chuyên biệt `seo-geo-checklist.md` đi kèm, dựa trên tài liệu chính thức |
 
 Trong phiên hiện tại không có skill riêng mang tên SEO/GEO. Spec cung cấp checklist đầy đủ để thực thi và nghiệm thu; không giả định đã cài thêm skill hoặc plugin nào. Nếu sau này cần đóng gói thành Codex skill tái sử dụng, dùng checklist này làm đầu vào.
 
@@ -511,35 +511,35 @@ Sau khi có traffic đủ để so sánh, thử 5/8/10 câu bằng thiết kế 
 
 ## 16. Acceptance criteria
 
-| ID | Kịch bản | Kết quả bắt buộc |
-|---|---|---|
-| GAME-01 | Chọn bộ free | Chơi được không cookie/session API và không login |
-| GAME-02 | Rút câu cùng loại | Không lặp đến khi hết hàng đợi |
-| GAME-03 | Double tap / reload | Không tăng hai lượt ngoài ý định; reload giữ câu |
-| GAME-04 | Hết một loại | Thông báo và chuyển lựa chọn rõ ràng, không crash |
-| TRIAL-01 | Chọn premium | Chỉ 8 ID trial, đúng 4/4 trước mở khóa |
-| TRIAL-02 | Chọn Thật lần thứ 5 | Gợi ý thử Thách hoặc mở khóa, không lấy câu thứ 5 ngoài trial |
-| TRIAL-03 | Đã xem câu thứ 8 | Vẫn đọc được; thao tác rút tiếp mới yêu cầu mua |
-| TRIAL-04 | Refresh/đổi ván/quay lại | Không có câu trial mới ngoài tập preview |
-| BUY-01 | Sửa giá trong request | Server bỏ qua giá client, tính từ product |
-| BUY-02 | Bấm mua lặp hoặc API retry | Một đơn hiệu lực/idempotency key; không nhân đôi QR ngoài ý định |
-| PAY-01 | Webhook hợp lệ, tiền đúng | Một paid order và một purchase, mở khóa pack đúng |
-| PAY-02 | Gửi cùng event nhiều lần/song song | Không tạo quyền hoặc doanh thu trùng |
-| PAY-03 | Webhook giả/sai tài khoản/sai mã | Không tự cấp quyền |
-| PAY-04 | DB lỗi giữa event và entitlement | Rollback, lần retry có thể hoàn tất |
-| PAY-05 | Thiếu/thừa tiền hoặc chuyển trễ | Đi đúng chính sách review/cửa sổ thanh toán |
-| PAY-06 | Đóng tab hoặc chuyển app ngân hàng | Paid vẫn ghi nhận; quay lại refresh và chơi tiếp |
-| PAY-07 | Biết UUID đơn người khác | Không đọc được trạng thái hoặc recovery code |
-| RESTORE-01 | Thiết bị mới nhập mã đúng | Có quyền mua, không cần tài khoản |
-| RESTORE-02 | Nhập mã sai/rate limit | Thông báo chung, không lộ thông tin đơn |
-| PWA-01 | Cài và cold start offline sau tải | Mở được shell, danh sách đã tải và bộ đã tải |
-| PWA-02 | Offline lúc checkout | Không tạo/xác nhận giả; tiếp tục kiểm tra khi có mạng |
-| PWA-03 | Deploy khi đang chơi | Không reload mất tiến độ hoặc thay nội dung giữa ván |
-| CDN-01 | Version mới và catalog cũ cùng tồn tại | Cả ván cũ và ván mới tải được file phù hợp |
-| SEO-01 | Tắt JS/xem raw HTML | Nội dung giới thiệu, metadata và liên kết có sẵn |
-| SEO-02 | Kiểm tra sitemap/canonical/noindex | Chỉ URL nội dung đúng xuất hiện trong sitemap |
-| UI-01 | 320px, 390px, tablet, desktop | Không tràn ngang/cắt câu; QR và nút dùng được |
-| A11Y-01 | Keyboard/screen reader/reduced motion | Chơi, checkout và đóng modal sử dụng được |
+| ID         | Kịch bản                               | Kết quả bắt buộc                                                 |
+| ---------- | -------------------------------------- | ---------------------------------------------------------------- |
+| GAME-01    | Chọn bộ free                           | Chơi được không cookie/session API và không login                |
+| GAME-02    | Rút câu cùng loại                      | Không lặp đến khi hết hàng đợi                                   |
+| GAME-03    | Double tap / reload                    | Không tăng hai lượt ngoài ý định; reload giữ câu                 |
+| GAME-04    | Hết một loại                           | Thông báo và chuyển lựa chọn rõ ràng, không crash                |
+| TRIAL-01   | Chọn premium                           | Chỉ 8 ID trial, đúng 4/4 trước mở khóa                           |
+| TRIAL-02   | Chọn Thật lần thứ 5                    | Gợi ý thử Thách hoặc mở khóa, không lấy câu thứ 5 ngoài trial    |
+| TRIAL-03   | Đã xem câu thứ 8                       | Vẫn đọc được; thao tác rút tiếp mới yêu cầu mua                  |
+| TRIAL-04   | Refresh/đổi ván/quay lại               | Không có câu trial mới ngoài tập preview                         |
+| BUY-01     | Sửa giá trong request                  | Server bỏ qua giá client, tính từ product                        |
+| BUY-02     | Bấm mua lặp hoặc API retry             | Một đơn hiệu lực/idempotency key; không nhân đôi QR ngoài ý định |
+| PAY-01     | Webhook hợp lệ, tiền đúng              | Một paid order và một purchase, mở khóa pack đúng                |
+| PAY-02     | Gửi cùng event nhiều lần/song song     | Không tạo quyền hoặc doanh thu trùng                             |
+| PAY-03     | Webhook giả/sai tài khoản/sai mã       | Không tự cấp quyền                                               |
+| PAY-04     | DB lỗi giữa event và entitlement       | Rollback, lần retry có thể hoàn tất                              |
+| PAY-05     | Thiếu/thừa tiền hoặc chuyển trễ        | Đi đúng chính sách review/cửa sổ thanh toán                      |
+| PAY-06     | Đóng tab hoặc chuyển app ngân hàng     | Paid vẫn ghi nhận; quay lại refresh và chơi tiếp                 |
+| PAY-07     | Biết UUID đơn người khác               | Không đọc được trạng thái hoặc recovery code                     |
+| RESTORE-01 | Thiết bị mới nhập mã đúng              | Có quyền mua, không cần tài khoản                                |
+| RESTORE-02 | Nhập mã sai/rate limit                 | Thông báo chung, không lộ thông tin đơn                          |
+| PWA-01     | Cài và cold start offline sau tải      | Mở được shell, danh sách đã tải và bộ đã tải                     |
+| PWA-02     | Offline lúc checkout                   | Không tạo/xác nhận giả; tiếp tục kiểm tra khi có mạng            |
+| PWA-03     | Deploy khi đang chơi                   | Không reload mất tiến độ hoặc thay nội dung giữa ván             |
+| CDN-01     | Version mới và catalog cũ cùng tồn tại | Cả ván cũ và ván mới tải được file phù hợp                       |
+| SEO-01     | Tắt JS/xem raw HTML                    | Nội dung giới thiệu, metadata và liên kết có sẵn                 |
+| SEO-02     | Kiểm tra sitemap/canonical/noindex     | Chỉ URL nội dung đúng xuất hiện trong sitemap                    |
+| UI-01      | 320px, 390px, tablet, desktop          | Không tràn ngang/cắt câu; QR và nút dùng được                    |
+| A11Y-01    | Keyboard/screen reader/reduced motion  | Chơi, checkout và đóng modal sử dụng được                        |
 
 Test trên Safari iOS, Chrome Android, Chrome/Safari desktop và chế độ PWA standalone. Thanh toán test với payload mô phỏng, lỗi mạng, replay đồng thời; trước production thực hiện giao dịch thật giá nhỏ theo quy trình của chủ dự án, đối chiếu từ tiền vào đến entitlement. Không tự thực hiện chuyển tiền trong giai đoạn viết spec.
 
@@ -557,15 +557,15 @@ Vận hành: sửa nội dung bằng PR → schema/content review → build → 
 
 ## 18. Các quyết định mở để chủ sản phẩm điều chỉnh
 
-| Mục | Mặc định đề xuất trong spec |
-|---|---|
-| Phạm vi 30.000đ | Một bộ premium, không hết hạn |
-| Trial | 8 câu cố định/bộ, chia 4/4 |
-| Chuyển thiết bị | Mã khôi phục, không giới hạn số thiết bị ở MVP |
-| Nội dung sau mua | Cập nhật cùng pack được bao gồm; pack mới bán riêng |
-| Thời hạn checkout | 15 phút; đối chiếu tự động giao dịch đúng trong 24h từ lúc tạo |
-| Thiếu/thừa/sai nội dung | Review và hỗ trợ thủ công |
-| Nội dung 18+ | Chưa có trong MVP mặc định |
-| Admin | Git + Supabase nội bộ, chưa làm dashboard |
+| Mục                     | Mặc định đề xuất trong spec                                    |
+| ----------------------- | -------------------------------------------------------------- |
+| Phạm vi 30.000đ         | Một bộ premium, không hết hạn                                  |
+| Trial                   | 8 câu cố định/bộ, chia 4/4                                     |
+| Chuyển thiết bị         | Mã khôi phục, không giới hạn số thiết bị ở MVP                 |
+| Nội dung sau mua        | Cập nhật cùng pack được bao gồm; pack mới bán riêng            |
+| Thời hạn checkout       | 15 phút; đối chiếu tự động giao dịch đúng trong 24h từ lúc tạo |
+| Thiếu/thừa/sai nội dung | Review và hỗ trợ thủ công                                      |
+| Nội dung 18+            | Chưa có trong MVP mặc định                                     |
+| Admin                   | Git + Supabase nội bộ, chưa làm dashboard                      |
 
 Các giá trị này phải nằm trong config/rule rõ ràng, không rải hardcode vào component. Đổi trial phải đồng bộ tập preview; đổi giá chỉ cần nguồn giá backend, đồng bộ lại giá giới thiệu nếu có.
