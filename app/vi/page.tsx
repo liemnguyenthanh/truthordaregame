@@ -4,7 +4,7 @@ import { SiteShell } from '@/components/site-shell';
 import { PackLibrary } from '@/components/pack-library';
 import { StructuredData } from '@/components/structured-data';
 import { AiInvitation } from '@/components/ai-invitation';
-import { getCategories, getPacks } from '@/lib/content';
+import { getPacks } from '@/lib/content';
 import { pageMetadata, siteUrl } from '@/lib/seo';
 export const metadata = pageMetadata(
   'Thật hay Thách — Chọn một câu, gần nhau hơn',
@@ -13,7 +13,6 @@ export const metadata = pageMetadata(
 );
 export default function Home() {
   const packs = getPacks();
-  const categories = getCategories();
   return (
     <SiteShell>
       <main id="main" className="page-width home">
@@ -74,7 +73,7 @@ export default function Home() {
           </div>
         </section>
         <AiInvitation />
-        <PackLibrary packs={packs} categories={categories} />
+        <PackLibrary packs={packs} />
         <section className="how-strip">
           <div className="how-heart">
             <Heart size={22} />
