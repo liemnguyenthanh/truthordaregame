@@ -1,4 +1,5 @@
 import 'server-only';
+import { hasSameOrigin } from '@/lib/request-origin';
 import { createHash, randomBytes, createCipheriv, createDecipheriv } from 'node:crypto';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
@@ -64,8 +65,7 @@ export async function limit(scope: string, count: number) {
   if (!data) throw new HttpError(429, 'Bạn thao tác quá nhanh. Vui lòng thử lại sau một phút.');
 }
 export function sameOrigin(req: Request) {
-  if (req.headers.get('origin') !== new URL(req.url).origin)
-    throw new HttpError(403, 'Yêu cầu không hợp lệ.');
+  if (!hasSameOrigin(req)) throw new HttpError(403, 'Yêu cầu không hợp lệ.');
 }
 export async function body(req: Request) {
   const text = await req.text();

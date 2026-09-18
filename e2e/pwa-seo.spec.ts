@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('SSG HTML exposes useful text, canonical and accurate sitemap', async ({ request }) => {
+test('Server HTML exposes useful text, canonical and accurate sitemap', async ({ request }) => {
   const response = await request.get('/vi/bo-cau-hoi/ban-be-gan-ket');
   const html = await response.text();
   expect(response.status()).toBe(200);
@@ -39,14 +39,14 @@ test('saved pack survives a fresh page offline and still draws questions', async
   page.on('pageerror', (error) => errors.push(error.message));
   await context.setOffline(true);
   await page.reload();
-  await expect(page.getByRole('heading', { name: 'Bạn bè khởi động', exact: true })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Bạn bè khởi động', exact: true })).toBeVisible();
   await page.getByRole('button', { name: '☁️ Thật', exact: true }).click();
-  await expect(page.getByText('Đã xem 1/12 câu', { exact: true })).toBeVisible();
+  await expect(page.getByText('Đã xem 1/100 câu', { exact: true })).toBeVisible();
   expect(errors).toEqual([]);
   const fresh = await context.newPage();
   await fresh.goto('/vi');
   await expect(fresh.getByRole('heading', { name: 'Hôm nay, chơi cùng ai?' })).toBeVisible();
   await fresh.getByRole('link', { name: 'Chơi ngay miễn phí', exact: true }).click();
-  await expect(fresh.getByText('Đã xem 1/12 câu', { exact: true })).toBeVisible();
+  await expect(fresh.getByText('Đã xem 1/100 câu', { exact: true })).toBeVisible();
   await context.setOffline(false);
 });

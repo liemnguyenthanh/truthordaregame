@@ -2,13 +2,11 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { SiteShell } from '@/components/site-shell';
 import { PackCard } from '@/components/pack-card';
-import { getCategories, getCategory, getPacks } from '@/lib/content';
+import { getCategory, getPacks } from '@/lib/live-content';
 import { pageMetadata, siteUrl } from '@/lib/seo';
 import { StructuredData } from '@/components/structured-data';
-export const dynamicParams = false;
-export function generateStaticParams() {
-  return getCategories().map((c) => ({ slug: c.slug }));
-}
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const c = getCategory(slug);
@@ -20,7 +18,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
   const { slug } = await params;
   const c = getCategory(slug);
   if (!c) notFound();
-  const packs = getPacks().filter((p) => c.packIds.includes(p.id));
+  const packs = (await getPacks()).filter((p) => p.categoryIds.includes(c.id));
   return (
     <SiteShell>
       <main id="main" className="page-width content-page">

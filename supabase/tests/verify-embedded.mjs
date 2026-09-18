@@ -8,7 +8,7 @@ const { PGlite } = createRequire('/tmp/tod-db-verify/package.json')('@electric-s
 const db = new PGlite();
 try {
   await db.exec('create role anon; create role authenticated; create role service_role bypassrls;');
-  await db.exec(await readFile(`${root}/supabase/migrations/001_commerce.sql`, 'utf8'));
+  await db.exec(await readFile(`${root}/supabase/migrations/20260918065848_commerce.sql`, 'utf8'));
   await db.exec(await readFile(`${root}/supabase/tests/commerce.sql`, 'utf8'));
   console.log(
     'PASS: migration, service-role RPCs, idempotency, restore, wrong amount, rollback/retry, rate limits, RLS/privilege assertions.',

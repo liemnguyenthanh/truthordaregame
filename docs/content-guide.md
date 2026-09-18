@@ -1,3 +1,5 @@
+> **Luồng quản trị hiện tại:** dùng `/admin` để thêm/sửa bộ và nhập JSON. Khi Supabase đã được cấu hình, không cần sửa các file bên dưới. Xem [hướng dẫn quản trị](admin-guide.md). Phần còn lại mô tả dữ liệu gốc và chế độ local không có Supabase.
+
 # Hướng dẫn sửa nội dung câu hỏi
 
 Dự án hiện có **36 câu mẫu**, chia thành ba bộ để dễ thay bằng nội dung của bạn. Đây là dữ liệu mẫu, không phải thư viện nội dung hoàn chỉnh.

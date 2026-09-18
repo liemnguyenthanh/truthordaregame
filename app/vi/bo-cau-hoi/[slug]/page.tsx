@@ -3,20 +3,18 @@ import { notFound } from 'next/navigation';
 import { ArrowRight, Users, Layers, Check } from 'lucide-react';
 import { SiteShell } from '@/components/site-shell';
 import { StructuredData } from '@/components/structured-data';
-import { getPacks, getPack, getQuestionSet } from '@/lib/content';
+import { getPack, getQuestionSet } from '@/lib/live-content';
 import { pageMetadata, siteUrl } from '@/lib/seo';
-export const dynamicParams = false;
-export function generateStaticParams() {
-  return getPacks().map((p) => ({ slug: p.slug }));
-}
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
-  const p = getPack((await params).slug);
+  const p = await getPack((await params).slug);
   return p ? pageMetadata(p.title, p.description, `/vi/bo-cau-hoi/${p.slug}`) : {};
 }
 export default async function PackPage({ params }: { params: Promise<{ slug: string }> }) {
-  const p = getPack((await params).slug);
+  const p = await getPack((await params).slug);
   if (!p) notFound();
-  const set = getQuestionSet(p);
+  const set = await getQuestionSet(p);
   const samples = set.questions
     .filter((q) => p.tier === 'free' || set.trialQuestionIds.includes(q.id))
     .slice(0, 2);

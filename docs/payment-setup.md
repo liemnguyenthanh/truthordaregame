@@ -1,10 +1,18 @@
-# Thiết lập thanh toán (chưa kết nối production)
+# Thiết lập thanh toán
+
+## Trạng thái Supabase — 2026-09-18
+
+Project `spgaczspjwuqfkxbrnai` đã kết nối bằng cấu hình `.env` và kiểm chứng đọc products qua Supabase Data API. Đã áp dụng migrations `20260918065848_commerce`, `20260918065856_ai_generations` và `20260918070011_restrict_rls_auto_enable`; tên file local khớp lịch sử remote.
+
+Đã chạy thành công `supabase/tests/commerce.sql` và `supabase/tests/ai-generations.sql` trên instance này, rollback dữ liệu thử. Có 10 bảng bật RLS và 5 RPC nghiệp vụ chỉ cho server gọi. Đã thu hồi quyền gọi public của helper `rls_auto_enable`; security advisor chỉ còn thông báo INFO về RLS không có policy, phù hợp thiết kế chỉ truy cập qua server.
+
+Không có Supabase Edge Functions trong kiến trúc hiện tại: các endpoint nằm trong Next.js `app/api` và được triển khai cùng website. Kiểm tra này chưa xác nhận website production, credentials SePay, AI Gateway hay giao dịch ngân hàng thật. `.env` hiện còn thiếu các giá trị cấu hình thanh toán và AI Gateway.
 
 Mã nguồn dùng Next.js runtime API + Supabase Postgres. Không dùng Supabase Auth. Trang nội dung vẫn SSG; không đặt `output: export`.
 
 ## Bật dịch vụ
 
-1. Tạo Supabase, chạy `supabase/migrations/001_commerce.sql` qua SQL Editor hoặc Supabase CLI. Migration chạy một lần; bảng có RLS, không có policy public. Browser không nhận service-role key.
+1. Tạo Supabase, chạy `supabase/migrations/20260918065848_commerce.sql` qua SQL Editor hoặc Supabase CLI. Migration chạy một lần; bảng có RLS, không có policy public. Browser không nhận service-role key.
 2. Sao chép `.env.example` thành `.env.local`. Điền URL/service key. Sinh `RECOVERY_ENCRYPTION_KEY` bằng `openssl rand -hex 32`; giữ ổn định, sao lưu an toàn. Đổi/mất key sẽ làm mất khả năng hiển thị mã đã mã hóa (hash vẫn dùng khôi phục được).
 3. Điền số tài khoản, tên chủ tài khoản và tên gateway ngân hàng chính xác như payload SePay. Kiểm tra URL QR sinh ra đúng ngân hàng trước mở bán.
 4. Tạo webhook SePay trỏ HTTPS `/api/webhooks/sepay`, loại tiền vào, bảo mật **API Key** với cùng `SEPAY_WEBHOOK_API_KEY`. Header là `Authorization: Apikey …`. Cấu hình mã thanh toán tiền tố `TOD`, hậu tố min = max = **10**, loại **Số và chữ** (server sinh 10 ký tự hex A–F/0–9). Server cũng tìm mã đầy đủ trong `content` nếu `code` rỗng. Không bật bộ lọc làm bỏ giao dịch sai mã nếu muốn lưu unmatched.
@@ -28,7 +36,7 @@ Nguồn chính thức: [xác thực](https://developer.sepay.vn/vi/sepay-webhook
 
 Chạy `npm test` cho validation. Kiểm thử SQL tích hợp vẫn cần Supabase thật: gửi song song cùng event → một purchase; làm lỗi ghi entitlement → event rollback, retry thành công; hai đơn cùng pack cùng trả → một quyền và event review; sửa giá client; đọc UUID đơn thiết bị khác; khôi phục thiết bị mới; mua khi mất mạng; sai tiền/tài khoản/mã; mốc 15 phút/24h; retry webhook đến muộn.
 
-Chưa thực hiện giao dịch thật, chưa kiểm chứng RPC trên instance Supabase của chủ dự án. Trước mở bán, chủ dự án thực hiện giao dịch giá nhỏ đã thống nhất, đối chiếu tiền vào → paid → quyền → mã → khôi phục. Không deploy như một tích hợp đã nghiệm thu ngân hàng.
+Đã kiểm chứng RPC bằng SQL trên instance Supabase của chủ dự án; chưa thực hiện giao dịch ngân hàng thật. Trước mở bán, chủ dự án thực hiện giao dịch giá nhỏ đã thống nhất, đối chiếu tiền vào → paid → quyền → mã → khôi phục. Không deploy như một tích hợp đã nghiệm thu ngân hàng.
 
 ## Đối soát và hoàn tiền
 
