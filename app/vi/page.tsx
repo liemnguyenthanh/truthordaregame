@@ -3,7 +3,6 @@ import { ArrowRight, Zap, Download, Heart } from 'lucide-react';
 import { SiteShell } from '@/components/site-shell';
 import { PackLibrary } from '@/components/pack-library';
 import { StructuredData } from '@/components/structured-data';
-import { AiInvitation } from '@/components/ai-invitation';
 import { getPacks } from '@/lib/content';
 import { pageMetadata, siteUrl } from '@/lib/seo';
 export const metadata = pageMetadata(
@@ -35,8 +34,9 @@ export default function Home() {
                 Chơi ngay miễn phí
                 <ArrowRight size={19} />
               </a>
-              <a className="group-start" href="/vi/choi/ban-be-khoi-dong?group=1">
-                Tạo nhóm & chơi →
+              <a className="button button-secondary ai-start" href="/vi/tao-bo-ai">
+                Tạo bộ câu hỏi bằng AI
+                <ArrowRight size={17} />
               </a>
             </div>
             <div className="intro-notes">
@@ -72,7 +72,6 @@ export default function Home() {
             <span className="floating-spark">✦</span>
           </div>
         </section>
-        <AiInvitation />
         <PackLibrary packs={packs} />
         <section className="how-strip">
           <div className="how-heart">
