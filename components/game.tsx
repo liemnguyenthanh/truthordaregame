@@ -100,11 +100,8 @@ function PackGame({ pack, initialSet, fixedGroup }: GameProps) {
   const complete = Boolean(set && progress && truthRemaining + dareRemaining === 0);
   const price = new Intl.NumberFormat('vi-VN').format(pack.priceHintVnd);
   return <section className={styles.game}>
-    <div className={styles.top}><Link href={fixedGroup ? '/vi/tao-bo-ai' : `/vi/bo-cau-hoi/${pack.slug}`} className={styles.back}><ArrowLeft size={18} /> {fixedGroup ? 'Bộ AI của bạn' : 'Bộ câu hỏi'}</Link><span className={styles.badge}>{pack.tier === 'free' ? 'Miễn phí' : unlocked ? 'Đã mở khóa' : 'Chơi thử 8 câu'}</span></div>
-    <div className={styles.heading}><p className="eyebrow">CHUYỀN ĐIỆN THOẠI. BẮT ĐẦU CUỘC VUI.</p><h1>{pack.title}</h1></div>
-    <div className={styles.groupBar}>
-      {group ? <><div><Users size={16} /><span><strong>{group.name}</strong><small>{group.players.length} thành viên · {group.players.map(player => player.name).join(', ')}</small></span></div>{fixedGroup ? <Link href="/vi/tao-bo-ai">Tạo bộ mới</Link> : <button onClick={() => setEditingGroup(value => !value)}><Pencil size={14} /> Sửa nhóm</button>}</> : <><span>Chơi cùng bạn bè? Chia lượt theo tên.</span><button disabled={!set} onClick={() => setEditingGroup(value => !value)}><Users size={15} /> Tạo nhóm</button></>}
-    </div>
+    <div className={styles.top}><Link href={fixedGroup ? '/vi/tao-bo-ai' : `/vi/bo-cau-hoi/${pack.slug}`} className={styles.back}><ArrowLeft size={18} /> {pack.title}</Link><div className={styles.topActions}><span className={styles.badge}>{pack.tier === 'free' ? 'Miễn phí' : unlocked ? 'Đã mở khóa' : 'Chơi thử 8 câu'}</span>{!group && !fixedGroup && <button className={styles.createGroup} disabled={!set} onClick={() => setEditingGroup(value => !value)}><Users size={15} /> Tạo nhóm</button>}</div></div>
+    {group && <div className={styles.groupBar}><div><Users size={16} /><span><strong>{group.name}</strong><small>{group.players.length} thành viên · {group.players.map(player => player.name).join(', ')}</small></span></div>{fixedGroup ? <Link href="/vi/tao-bo-ai">Tạo bộ mới</Link> : <button onClick={() => setEditingGroup(value => !value)}><Pencil size={14} /> Sửa nhóm</button>}</div>}
     {editingGroup && !fixedGroup && <div><GroupEditor key={groupFingerprint(group)} initialGroup={group ?? undefined} onSave={saveGroup} onCancel={() => setEditingGroup(false)} /><p className={styles.groupHint}>Lưu thay đổi sẽ bắt đầu ván mới. Lượt chơi thử đã dùng vẫn được giữ.</p>{group && <button className={styles.leaveGroup} onClick={() => saveGroup(null)}>Bỏ chia lượt & bắt đầu ván mới</button>}</div>}
     {offline && <p className={styles.network}><WifiOff size={16} /> Bạn đang chơi offline · thanh toán cần mạng</p>}
     {error ? <div className={styles.error} role="alert"><p>{error}</p><button className="button button-primary" onClick={() => setAttempt(value => value + 1)}>Thử lại</button></div> : <>
@@ -112,7 +109,6 @@ function PackGame({ pack, initialSet, fixedGroup }: GameProps) {
         {group && <span className={styles.actor} data-testid="current-actor"><UserRound size={14} /> {actor ? `Lượt của ${actor.name}` : `Bắt đầu với ${nextActor?.name}`}</span>}
         <span className={styles.cardIndex}>{current ? `CÂU ${truthSeen + dareSeen < 10 ? '0' : ''}${truthSeen + dareSeen}` : 'SẴN SÀNG CHƯA?'}</span>
         <div className={styles.cardContent}><div className={styles.cardEmoji}>{current ? current.type === 'truth' ? '☁️' : '💖' : '✨'}</div><h2>{current ? current.type === 'truth' ? 'Thật' : 'Thách' : 'Một lựa chọn.\nNhiều bất ngờ.'}</h2><p key={current?.id}>{current?.text ?? (set ? 'Chọn Thật để kể một điều chưa ai biết.\nChọn Thách để thử một điều mới.' : 'Đang chuẩn bị cuộc vui…')}</p></div>
-        <span className={styles.cardFoot}>CỨ LÀ CHÍNH MÌNH · BỎ QUA NẾU KHÔNG THOẢI MÁI</span>
       </AnimatedReveal>
       <div className={styles.controls}><p>{group && current ? (fixedGroup ? 'Chọn loại câu để chuyển lượt tiếp theo' : `Lượt tiếp: ${nextActor?.name} · chọn Thật hay Thách`) : `Chọn loại câu ${current ? 'tiếp theo' : 'đầu tiên'}`}</p><div className={styles.choices}>
         <button className={`${styles.choice} ${styles.truth}`} disabled={!set || (unlocked && !truthRemaining)} onClick={() => draw('truth')}><span>☁️</span> Thật <ArrowRight size={17} /></button>
