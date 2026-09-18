@@ -34,6 +34,9 @@ export default function Home() {
                 Chơi ngay miễn phí
                 <ArrowRight size={19} />
               </a>
+              <a className="group-start" href="/vi/choi/ban-be-khoi-dong?group=1">
+                Tạo nhóm & chơi →
+              </a>
               <a className="button button-secondary ai-start" href="/vi/tao-bo-ai">
                 Tạo bộ câu hỏi bằng AI
                 <ArrowRight size={17} />
