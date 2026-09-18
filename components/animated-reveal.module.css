@@ -1,15 +1,24 @@
 .reveal {
-  animation: reveal-in 420ms cubic-bezier(.22, 1, .36, 1) both;
+  perspective: 1200px;
+  transform-origin: center;
+  animation: card-flip-in 620ms cubic-bezier(.22, 1, .36, 1) both;
 }
 
-@keyframes reveal-in {
-  from {
+@keyframes card-flip-in {
+  0% {
     opacity: 0;
-    transform: translateY(16px) scale(.97) rotate(-1deg);
+    transform: translateY(22px) rotateY(-72deg) rotateZ(-3deg) scale(.9);
+    filter: brightness(1.35) saturate(.8);
   }
-  to {
+  55% {
     opacity: 1;
-    transform: translateY(0) scale(1) rotate(0);
+    transform: translateY(-5px) rotateY(9deg) rotateZ(1deg) scale(1.015);
+    filter: brightness(1.12) saturate(1.08);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotateY(0) rotateZ(0) scale(1);
+    filter: brightness(1) saturate(1);
   }
 }
 
