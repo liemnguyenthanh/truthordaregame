@@ -7,25 +7,38 @@ export { getCategories, getCategory } from './content';
 const configured = () => !!process.env.SUPABASE_URL && !!process.env.SUPABASE_SERVICE_ROLE_KEY;
 export const getPacks = cache(async (): Promise<Pack[]> => {
   if (!configured()) return localPacks();
-  const { data, error } = await db()
-    .from('content_packs')
-    .select('metadata')
-    .eq('published', true)
-    .order('id');
-  check(error);
-  return (data || []).map((row) => row.metadata as Pack);
+
+  try {
+    const { data, error } = await db()
+      .from('content_packs')
+      .select('metadata')
+      .eq('published', true)
+      .order('id');
+    check(error);
+    const packs = (data || []).map((row) => row.metadata as Pack);
+    return packs.length > 0 ? packs : localPacks();
+  } catch (error) {
+    console.error('[content] Falling back to bundled packs:', error);
+    return localPacks();
+  }
 });
 export async function getPack(slug: string) {
   return (await getPacks()).find((p) => p.slug === slug);
 }
 export async function getQuestionSet(pack: Pack): Promise<QuestionSet> {
   if (!configured()) return localSet(pack);
-  const { data, error } = await db()
-    .from('content_pack_versions')
-    .select('question_set')
-    .eq('pack_id', pack.id)
-    .eq('version', pack.contentVersion)
-    .single();
-  check(error);
-  return data!.question_set as QuestionSet;
+
+  try {
+    const { data, error } = await db()
+      .from('content_pack_versions')
+      .select('question_set')
+      .eq('pack_id', pack.id)
+      .eq('version', pack.contentVersion)
+      .single();
+    check(error);
+    return data!.question_set as QuestionSet;
+  } catch (error) {
+    console.error(`[content] Falling back to bundled questions for ${pack.slug}:`, error);
+    return localSet(pack);
+  }
 }
