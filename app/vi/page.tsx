@@ -40,6 +40,10 @@ export default async function Home() {
               <a className="group-start" href="/vi/choi/ban-be-khoi-dong?group=1">
                 Tạo nhóm & chơi →
               </a>
+              <a className="button button-secondary ai-start" href="/vi/tao-bo-ai">
+                Tạo bộ câu hỏi bằng AI
+                <ArrowRight size={17} />
+              </a>
             </div>
             <div className="intro-notes">
               <span>
@@ -74,8 +78,7 @@ export default async function Home() {
             <span className="floating-spark">✦</span>
           </div>
         </section>
-        <AiInvitation />
-        <PackLibrary packs={packs} categories={categories} />
+        <PackLibrary packs={packs} />
         <section className="how-strip">
           <div className="how-heart">
             <Heart size={22} />

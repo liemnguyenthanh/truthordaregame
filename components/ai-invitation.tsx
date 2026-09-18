@@ -7,12 +7,8 @@ export function AiInvitation() {
         <Sparkles size={25} />
       </div>
       <div className="ai-invitation-copy">
-        <span className="eyebrow">VIẾT RIÊNG CHO NHÓM BẠN</span>
-        <h2 id="ai-invitation-title">Câu hỏi có tên mình. Cuộc vui có chuyện riêng.</h2>
-        <p>
-          Thêm thành viên, chọn mood. Để AI kết nối cả nhóm bằng những câu Thật và Thách dành riêng
-          cho từng người.
-        </p>
+        <h2 id="ai-invitation-title">Tạo bộ câu hỏi riêng bằng AI</h2>
+        <p>Nhập tên nhóm và chọn chủ đề. AI sẽ tạo câu hỏi dành riêng cho bạn.</p>
       </div>
       <Link href="/vi/tao-bo-ai" className="button button-secondary">
         Tạo bộ bằng AI
