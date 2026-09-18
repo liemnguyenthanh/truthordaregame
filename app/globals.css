@@ -282,16 +282,6 @@ summary:focus-visible {
   font-size: 26px;
   margin: 0;
 }
-.library-note {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  color: #aeb8c9;
-  font-size: 11px;
-}
-.library-note svg {
-  color: #d787ff;
-}
 .pack-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
