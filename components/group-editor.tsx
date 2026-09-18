@@ -47,9 +47,6 @@ export function GroupEditor({
         <Users size={19} />
         <h2>{initialGroup ? 'Chỉnh sửa nhóm' : 'Ai cùng chơi hôm nay?'}</h2>
       </div>
-      <p className={styles.description}>
-        Thêm 2–8 tên hoặc biệt danh khác nhau. Lượt chơi sẽ lần lượt theo thứ tự bên dưới.
-      </p>
       <label className={styles.label} htmlFor="group-name">
         Tên nhóm
       </label>
@@ -65,9 +62,11 @@ export function GroupEditor({
       <div className={styles.players}>
         {players.map((player, index) => (
           <div className={styles.player} key={player.id}>
-            <span className={styles.number}>{index + 1}</span>
+            <span className={styles.number} aria-hidden="true">
+              {index + 1}
+            </span>
             <div>
-              <label className={styles.playerLabel} htmlFor={`player-${player.id}`}>
+              <label className={styles.visuallyHidden} htmlFor={`player-${player.id}`}>
                 Thành viên {index + 1}
               </label>
               <input

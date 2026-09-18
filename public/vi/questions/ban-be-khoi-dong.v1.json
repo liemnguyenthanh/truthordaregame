@@ -8,62 +8,502 @@
     {
       "id": "t01",
       "type": "truth",
-      "text": "Kỷ niệm vui nhất của bạn với nhóm là gì?"
+      "text": "Bạn từng thích thầm ai lâu nhất trong bao lâu?"
     },
     {
       "id": "t02",
       "type": "truth",
-      "text": "Món ăn nào khiến bạn vui ngay lập tức?"
+      "text": "Điều gì ở một người khiến bạn dễ rung động nhất?"
     },
     {
       "id": "t03",
       "type": "truth",
-      "text": "Bạn từng hiểu nhầm điều gì khiến mình bật cười?"
+      "text": "Bạn đã từng giả vờ không thích một người dù thật ra rất thích chưa?"
     },
     {
       "id": "t04",
       "type": "truth",
-      "text": "Nếu được nghỉ một ngày, bạn muốn làm gì?"
+      "text": "Kỷ niệm tình cảm nào khiến bạn nhớ lâu nhất?"
     },
     {
       "id": "t05",
       "type": "truth",
-      "text": "Tài lẻ nào của bạn ít người biết?"
+      "text": "Bạn thích được tỏ tình trực tiếp hay qua tin nhắn hơn?"
     },
     {
       "id": "t06",
       "type": "truth",
-      "text": "Bài hát nào bạn thuộc lòng nhất?"
+      "text": "Nếu được hẹn hò với một người nổi tiếng, bạn sẽ chọn ai?"
+    },
+    {
+      "id": "t07",
+      "type": "truth",
+      "text": "Bạn từng ghen nhưng cố tỏ ra không quan tâm chưa?"
+    },
+    {
+      "id": "t08",
+      "type": "truth",
+      "text": "Điều ngọt ngào nhất ai đó từng làm cho bạn là gì?"
+    },
+    {
+      "id": "t09",
+      "type": "truth",
+      "text": "Bạn có tin tình bạn lâu năm có thể biến thành tình yêu không?"
+    },
+    {
+      "id": "t10",
+      "type": "truth",
+      "text": "Kiểu tin nhắn nào có thể khiến bạn mỉm cười cả ngày?"
+    },
+    {
+      "id": "t11",
+      "type": "truth",
+      "text": "Bạn từng chủ động nhắn tin cho crush rồi giả vờ gửi nhầm chưa?"
+    },
+    {
+      "id": "t12",
+      "type": "truth",
+      "text": "Nếu crush đang ở đây, điều gì bạn muốn nói nhưng có thể không dám nói?"
+    },
+    {
+      "id": "t13",
+      "type": "truth",
+      "text": "Bạn thích một buổi hẹn lãng mạn hay một buổi hẹn vui nhộn hơn?"
+    },
+    {
+      "id": "t14",
+      "type": "truth",
+      "text": "Bạn từng đọc lại đoạn chat cũ với người mình thích chưa?"
+    },
+    {
+      "id": "t15",
+      "type": "truth",
+      "text": "Theo bạn, điểm hấp dẫn nhất của chính mình là gì?"
+    },
+    {
+      "id": "t16",
+      "type": "truth",
+      "text": "Bạn từng làm điều ngốc nghếch nào để gây chú ý với người mình thích?"
+    },
+    {
+      "id": "t17",
+      "type": "truth",
+      "text": "Bạn thích người chủ động hay thích tự mình chủ động hơn?"
+    },
+    {
+      "id": "t18",
+      "type": "truth",
+      "text": "Có lời khen nào bạn từng nhận mà đến giờ vẫn còn nhớ không?"
+    },
+    {
+      "id": "t19",
+      "type": "truth",
+      "text": "Bạn từng tưởng tượng chuyện yêu đương với một người bạn chưa?"
+    },
+    {
+      "id": "t20",
+      "type": "truth",
+      "text": "Nếu phải chọn một bài hát mô tả chuyện tình cảm của mình, bạn chọn bài nào?"
+    },
+    {
+      "id": "t21",
+      "type": "truth",
+      "text": "Bạn dễ bị thu hút bởi ngoại hình hay cách nói chuyện hơn?"
+    },
+    {
+      "id": "t22",
+      "type": "truth",
+      "text": "Bạn từng stalk trang cá nhân của crush sâu đến mức nào?"
+    },
+    {
+      "id": "t23",
+      "type": "truth",
+      "text": "Nếu được quay lại một khoảnh khắc với người mình từng thích, bạn chọn lúc nào?"
+    },
+    {
+      "id": "t24",
+      "type": "truth",
+      "text": "Bạn có thể thích một người hoàn toàn trái gu ban đầu của mình không?"
+    },
+    {
+      "id": "t25",
+      "type": "truth",
+      "text": "Điều gì khiến bạn mất cảm tình với một người nhanh nhất?"
+    },
+    {
+      "id": "t26",
+      "type": "truth",
+      "text": "Bạn từng cố tình đăng story chỉ để một người cụ thể xem chưa?"
+    },
+    {
+      "id": "t27",
+      "type": "truth",
+      "text": "Nếu người yêu cũ nhắn 'Anh/em nhớ em/anh', phản ứng đầu tiên của bạn là gì?"
+    },
+    {
+      "id": "t28",
+      "type": "truth",
+      "text": "Bạn thích được nắm tay, ôm hay tựa vai nhất?"
+    },
+    {
+      "id": "t29",
+      "type": "truth",
+      "text": "Bạn từng có một cuộc trò chuyện đến khuya với ai đó mà không muốn kết thúc chưa?"
+    },
+    {
+      "id": "t30",
+      "type": "truth",
+      "text": "Theo bạn, ai trong nhóm này có gu ăn mặc hợp với bạn nhất?"
+    },
+    {
+      "id": "t31",
+      "type": "truth",
+      "text": "Nếu được nhận một món quà bất ngờ từ người mình thích, bạn muốn đó là gì?"
+    },
+    {
+      "id": "t32",
+      "type": "truth",
+      "text": "Bạn từng thích hai người cùng lúc chưa?"
+    },
+    {
+      "id": "t33",
+      "type": "truth",
+      "text": "Bạn nghĩ mình dễ yêu hay rất khó rung động?"
+    },
+    {
+      "id": "t34",
+      "type": "truth",
+      "text": "Nếu phải chọn một người trong nhóm để đi du lịch cùng, bạn chọn ai?"
+    },
+    {
+      "id": "t35",
+      "type": "truth",
+      "text": "Bạn từng chuẩn bị một tin nhắn rất lâu rồi cuối cùng không gửi chưa?"
+    },
+    {
+      "id": "t36",
+      "type": "truth",
+      "text": "Một buổi hẹn đầu tiên hoàn hảo với bạn sẽ diễn ra như thế nào?"
+    },
+    {
+      "id": "t37",
+      "type": "truth",
+      "text": "Bạn thích được gọi bằng biệt danh tình cảm nào?"
+    },
+    {
+      "id": "t38",
+      "type": "truth",
+      "text": "Bạn từng hiểu nhầm rằng ai đó thích mình chưa?"
+    },
+    {
+      "id": "t39",
+      "type": "truth",
+      "text": "Bạn có thể yêu xa nếu thật sự thích một người không?"
+    },
+    {
+      "id": "t40",
+      "type": "truth",
+      "text": "Điều lãng mạn nào bạn muốn trải nghiệm ít nhất một lần?"
+    },
+    {
+      "id": "t41",
+      "type": "truth",
+      "text": "Bạn từng từ chối ai rồi sau đó cảm thấy tiếc chưa?"
+    },
+    {
+      "id": "t42",
+      "type": "truth",
+      "text": "Bạn thích cảm giác mới bắt đầu thích nhau hay cảm giác yêu nhau lâu dài hơn?"
+    },
+    {
+      "id": "t43",
+      "type": "truth",
+      "text": "Nếu phải miêu tả gu của mình bằng ba từ, bạn sẽ chọn từ nào?"
+    },
+    {
+      "id": "t44",
+      "type": "truth",
+      "text": "Bạn từng mơ thấy người mình thích rồi tỉnh dậy vẫn thấy vui chưa?"
+    },
+    {
+      "id": "t45",
+      "type": "truth",
+      "text": "Theo bạn, điều khó nói nhất khi thích một người là gì?"
+    },
+    {
+      "id": "t46",
+      "type": "truth",
+      "text": "Nếu được biết chắc một người trong nhóm từng thích bạn, bạn muốn đó là ai?"
+    },
+    {
+      "id": "t47",
+      "type": "truth",
+      "text": "Bạn từng lưu ảnh của crush trong điện thoại chưa?"
+    },
+    {
+      "id": "t48",
+      "type": "truth",
+      "text": "Bạn nghĩ một nụ hôn đầu lý tưởng nên diễn ra trong hoàn cảnh nào?"
+    },
+    {
+      "id": "t49",
+      "type": "truth",
+      "text": "Nếu chỉ được giữ lại một phẩm chất ở người yêu tương lai, bạn chọn điều gì?"
+    },
+    {
+      "id": "t50",
+      "type": "truth",
+      "text": "Có điều gì về chuyện tình cảm mà bạn muốn thử nhưng vẫn chưa đủ can đảm?"
     },
     {
       "id": "d01",
       "type": "dare",
-      "text": "Diễn tả một con vật bằng động tác để cả nhóm đoán."
+      "text": "Nhìn vào mắt một người trong nhóm và nói một lời khen thật lòng."
     },
     {
       "id": "d02",
       "type": "dare",
-      "text": "Hát một câu trong bài hát bạn yêu thích."
+      "text": "Diễn cảnh tỏ tình với một chiếc gối hoặc đồ vật gần bạn."
     },
     {
       "id": "d03",
       "type": "dare",
-      "text": "Nói một lời khen chân thành với người bên cạnh."
+      "text": "Hát một đoạn bài hát tình yêu mà bạn nhớ nhất."
     },
     {
       "id": "d04",
       "type": "dare",
-      "text": "Tạo dáng như bìa một album trong 5 giây."
+      "text": "Tạo dáng như ảnh bìa album tình yêu và giữ nguyên để cả nhóm chụp hình."
     },
     {
       "id": "d05",
       "type": "dare",
-      "text": "Kể một chuyện vui chỉ trong ba câu."
+      "text": "Chọn một người và diễn cảnh hai bạn vô tình gặp nhau trong phim tình cảm."
     },
     {
       "id": "d06",
       "type": "dare",
-      "text": "Đọc tên mình bằng giọng người dẫn chương trình."
+      "text": "Nói một câu thả thính tự nghĩ ra với người đối diện."
+    },
+    {
+      "id": "d07",
+      "type": "dare",
+      "text": "Dùng ba emoji để diễn tả gu người yêu của bạn và để cả nhóm đoán."
+    },
+    {
+      "id": "d08",
+      "type": "dare",
+      "text": "Nhảy một điệu thật tự tin theo bài hát do cả nhóm chọn."
+    },
+    {
+      "id": "d09",
+      "type": "dare",
+      "text": "Giả giọng một nhân vật nổi tiếng và nói câu 'Mình thích bạn mất rồi'."
+    },
+    {
+      "id": "d10",
+      "type": "dare",
+      "text": "Để một người trong nhóm tạo cho bạn một biệt danh mới dùng đến hết cuộc chơi."
+    },
+    {
+      "id": "d11",
+      "type": "dare",
+      "text": "Diễn tả crush lý tưởng của bạn chỉ bằng hành động để mọi người đoán."
+    },
+    {
+      "id": "d12",
+      "type": "dare",
+      "text": "Kể một câu chuyện tình yêu tưởng tượng trong đúng ba câu."
+    },
+    {
+      "id": "d13",
+      "type": "dare",
+      "text": "Tạo một kiểu bắt tay bí mật với người bên cạnh."
+    },
+    {
+      "id": "d14",
+      "type": "dare",
+      "text": "Nói lời cảm ơn chân thành với một người trong nhóm về điều bạn quý ở họ."
+    },
+    {
+      "id": "d15",
+      "type": "dare",
+      "text": "Đọc tên mình theo phong cách MC giới thiệu nhân vật chính của phim tình cảm."
+    },
+    {
+      "id": "d16",
+      "type": "dare",
+      "text": "Tạo một câu slogan quảng cáo bản thân như thể bạn là 'người yêu lý tưởng'."
+    },
+    {
+      "id": "d17",
+      "type": "dare",
+      "text": "Chọn một người và cùng tạo dáng chụp ảnh kiểu poster phim thanh xuân."
+    },
+    {
+      "id": "d18",
+      "type": "dare",
+      "text": "Dùng giọng cực kỳ nghiêm túc để đọc một câu thả thính ngớ ngẩn."
+    },
+    {
+      "id": "d19",
+      "type": "dare",
+      "text": "Mô phỏng biểu cảm của bạn khi crush bất ngờ nhắn 'Tớ cũng thích cậu'."
+    },
+    {
+      "id": "d20",
+      "type": "dare",
+      "text": "Để cả nhóm chọn một cảm xúc rồi diễn cảm xúc đó như trong phim."
+    },
+    {
+      "id": "d21",
+      "type": "dare",
+      "text": "Nói ba điều tích cực về người ngồi gần bạn nhất."
+    },
+    {
+      "id": "d22",
+      "type": "dare",
+      "text": "Tự sáng tác một câu thơ tình có chứa tên của một người trong nhóm."
+    },
+    {
+      "id": "d23",
+      "type": "dare",
+      "text": "Giả vờ gọi điện cho crush và rủ họ đi hẹn hò."
+    },
+    {
+      "id": "d24",
+      "type": "dare",
+      "text": "Diễn cảnh bị từ chối lời tỏ tình theo cách hài hước nhất có thể."
+    },
+    {
+      "id": "d25",
+      "type": "dare",
+      "text": "Chọn một người và cùng nhau tạo hình trái tim bằng tay."
+    },
+    {
+      "id": "d26",
+      "type": "dare",
+      "text": "Nói một câu khiến bạn nghĩ người khác nghe xong sẽ đỏ mặt."
+    },
+    {
+      "id": "d27",
+      "type": "dare",
+      "text": "Miêu tả một buổi hẹn hoàn hảo bằng cách đóng vai hướng dẫn viên du lịch."
+    },
+    {
+      "id": "d28",
+      "type": "dare",
+      "text": "Đóng vai người dẫn chương trình và giới thiệu người bên cạnh như một ngôi sao."
+    },
+    {
+      "id": "d29",
+      "type": "dare",
+      "text": "Dùng ánh mắt và biểu cảm để thả thính một người mà không được nói."
+    },
+    {
+      "id": "d30",
+      "type": "dare",
+      "text": "Đứng lên catwalk như đang đi gặp crush trong buổi hẹn đầu tiên."
+    },
+    {
+      "id": "d31",
+      "type": "dare",
+      "text": "Kể tên một bài hát bạn muốn dành tặng cho một người trong nhóm và nói lý do."
+    },
+    {
+      "id": "d32",
+      "type": "dare",
+      "text": "Diễn cảnh nhận được tin nhắn từ crush lúc nửa đêm."
+    },
+    {
+      "id": "d33",
+      "type": "dare",
+      "text": "Tạo một lời chúc ngủ ngon vừa ngọt ngào vừa buồn cười."
+    },
+    {
+      "id": "d34",
+      "type": "dare",
+      "text": "Để người bên cạnh chọn một từ và biến nó thành câu thả thính."
+    },
+    {
+      "id": "d35",
+      "type": "dare",
+      "text": "Đóng vai nhân vật chính trong cảnh chia tay nhưng phải khiến cả nhóm bật cười."
+    },
+    {
+      "id": "d36",
+      "type": "dare",
+      "text": "Dùng một đồ vật gần bạn làm đạo cụ và cầu hôn nó thật trang trọng."
+    },
+    {
+      "id": "d37",
+      "type": "dare",
+      "text": "Chọn một người và cùng nghĩ tên cho bộ phim tình cảm nếu hai bạn là nhân vật chính."
+    },
+    {
+      "id": "d38",
+      "type": "dare",
+      "text": "Nói một lời khen với người bạn ít nói chuyện nhất trong nhóm."
+    },
+    {
+      "id": "d39",
+      "type": "dare",
+      "text": "Thể hiện ba biểu cảm: gặp crush, được crush khen và bị crush seen tin nhắn."
+    },
+    {
+      "id": "d40",
+      "type": "dare",
+      "text": "Tưởng tượng bạn đang nhận giải 'Người đáng yêu nhất năm' và phát biểu cảm nghĩ."
+    },
+    {
+      "id": "d41",
+      "type": "dare",
+      "text": "Chọn một người và đặt cho họ một biệt danh dễ thương kèm lời giải thích."
+    },
+    {
+      "id": "d42",
+      "type": "dare",
+      "text": "Dùng tên ba món ăn để tạo thành một câu tỏ tình có nghĩa."
+    },
+    {
+      "id": "d43",
+      "type": "dare",
+      "text": "Diễn lại cách bạn nghĩ mình sẽ phản ứng nếu bất ngờ được tỏ tình."
+    },
+    {
+      "id": "d44",
+      "type": "dare",
+      "text": "Chọn một người và đấu mắt với họ; ai cười trước là người thua."
+    },
+    {
+      "id": "d45",
+      "type": "dare",
+      "text": "Tạo một dáng chụp ảnh mà bạn nghĩ sẽ khiến crush chú ý."
+    },
+    {
+      "id": "d46",
+      "type": "dare",
+      "text": "Đọc một câu bất kỳ trên màn hình bằng giọng lãng mạn nhất có thể."
+    },
+    {
+      "id": "d47",
+      "type": "dare",
+      "text": "Giả vờ làm chuyên gia tình yêu và đưa ra một lời khuyên hài hước cho cả nhóm."
+    },
+    {
+      "id": "d48",
+      "type": "dare",
+      "text": "Chọn một người và cùng diễn cảnh chụp ảnh cưới nhưng không được cười."
+    },
+    {
+      "id": "d49",
+      "type": "dare",
+      "text": "Tự nghĩ một câu mở đầu để làm quen với người lạ mà bạn thật sự dám sử dụng."
+    },
+    {
+      "id": "d50",
+      "type": "dare",
+      "text": "Gửi một cái ôm bằng động tác hoặc lời nói đến người bạn muốn cảm ơn nhất trong nhóm."
     }
   ]
 }

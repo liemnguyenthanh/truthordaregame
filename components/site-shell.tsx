@@ -9,7 +9,7 @@ export function SiteHeader() {
           <Image src="/icon.png" alt="" width={32} height={32} priority />
         </span>
         <span>
-          thật<span className="brand-dot">.</span>thách
+          Thật<span className="brand-dot">.</span>Thách
         </span>
       </Link>
       <nav aria-label="Điều hướng chính">
