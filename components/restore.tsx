@@ -16,8 +16,11 @@ export function Restore() {
   const [copied, setCopied] = useState('');
   useEffect(() => {
     const controller = new AbortController();
-    fetch('/vi/packs.json', { signal: controller.signal })
-      .then((r) => r.json())
+    fetch('/api/catalog', { signal: controller.signal })
+      .then((r) => {
+        if (!r.ok) throw new Error('Catalog unavailable');
+        return r.json();
+      })
       .then((data) => setPacks(data.packs))
       .catch(() => {});
     fetch('/api/entitlements', { cache: 'no-store', signal: controller.signal })

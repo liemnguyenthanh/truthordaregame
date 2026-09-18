@@ -26,7 +26,7 @@ Service worker chỉ được đăng ký ở production để không cache file 
 
 Sao chép `.env.example` sang `.env.local`, điền biến tương ứng. Không commit file thật.
 
-1. Tạo Supabase, chạy `supabase/migrations/001_commerce.sql`.
+1. Tạo Supabase, chạy `supabase/migrations/20260918065848_commerce.sql`.
 2. Cấu hình ngân hàng, webhook SePay API Key, recovery encryption key và mã thanh toán tiền tố `TOD` + 10 ký tự hex.
 3. Đặt domain thật vào `NEXT_PUBLIC_SITE_URL` và kênh hỗ trợ `NEXT_PUBLIC_SUPPORT_EMAIL` trước build production.
 4. Cấu hình endpoint đối soát và scheduler theo gói hosting. Chưa tự tạo lịch cron hoặc hạ tầng cloud.
@@ -40,7 +40,7 @@ Hướng dẫn chi tiết: [payment-setup.md](docs/payment-setup.md). Migration 
 
 Trang `/vi/tao-bo-ai` cho chọn nhóm và mood. Mỗi người có 2 Thật + 2 Thách liên kết với người khác. Mood 18+ yêu cầu xác nhận tuổi và dùng hướng tán tỉnh không tường minh. Mặc định thử nghiệm miễn phí 3 lần/guest/ngày; có thêm giới hạn IP và toàn hệ thống.
 
-Để bật AI, chạy thêm migration `002_ai_generations.sql`, cấu hình Supabase và Vercel AI Gateway theo [ai-setup.md](docs/ai-setup.md). Chưa có credentials thì UI báo chưa sẵn sàng; không giả lập kết quả AI. Bộ riêng lưu trong DB và trình duyệt, có lịch sử và hỗ trợ lưu màn chơi offline. Xem [spec bổ sung](docs/group-ai-spec.md).
+Để bật AI, chạy thêm migration `20260918065856_ai_generations.sql`, cấu hình Supabase và Vercel AI Gateway theo [ai-setup.md](docs/ai-setup.md). Chưa có credentials thì UI báo chưa sẵn sàng; không giả lập kết quả AI. Bộ riêng lưu trong DB và trình duyệt, có lịch sử và hỗ trợ lưu màn chơi offline. Xem [spec bổ sung](docs/group-ai-spec.md).
 
 ## Thay nội dung
 
@@ -91,3 +91,7 @@ Import repository, chọn framework Next.js, build command `npm run build`, gi�
 - [Kết quả kiểm tra](docs/verification.md)
 
 Phạm vi hiện tại: SSG, các trang category/pack, free/trial/game, checkout/restore, JSON versioned, PWA, sitemap/robots/canonical và structured data. Chưa tích hợp bên thứ ba cho analytics, chưa có CMS hay tài khoản, chưa có hình share OG riêng, chưa có bài hướng dẫn ngoài trang cách chơi. Danh sách bài SEO trong spec là lộ trình nội dung, không sinh trang rỗng.
+
+## Quản trị nội dung
+
+Mở `/admin`, đăng nhập bằng `ADMIN_PASSWORD` trong env server. Tạo/sửa bộ, nhập JSON, đặt giá và xuất bản tại đây; nội dung được lưu trong Supabase và xuất hiện ngay, không cần build lại. Xem [hướng dẫn quản trị](docs/admin-guide.md). Khi đã cấu hình Supabase, file JSON trong `public/vi` chỉ là dữ liệu gốc tham khảo.

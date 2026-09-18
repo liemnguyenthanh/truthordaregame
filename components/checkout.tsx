@@ -101,7 +101,7 @@ function PackCheckout({ packId }: { packId: string }) {
     const setup = async () => {
       try {
         const [catalog, currentProduct] = await Promise.all([
-          api('/vi/packs.json'),
+          api('/api/catalog'),
           api(`/api/products/${encodeURIComponent(packId)}`),
         ]);
         const selected = catalog.packs.find((item: Pack) => item.id === packId);

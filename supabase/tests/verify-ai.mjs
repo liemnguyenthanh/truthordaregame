@@ -7,8 +7,8 @@ const db = new PGlite();
 try {
   await db.exec('create role anon; create role authenticated; create role service_role bypassrls;');
   for (const path of [
-    'migrations/001_commerce.sql',
-    'migrations/002_ai_generations.sql',
+    'migrations/20260918065848_commerce.sql',
+    'migrations/20260918065856_ai_generations.sql',
     'tests/ai-generations.sql',
   ])
     await db.exec(await readFile(`${root}/supabase/${path}`, 'utf8'));

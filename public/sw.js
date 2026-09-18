@@ -1,4 +1,4 @@
-const CACHE = 'tod-2389aa2a52a9';
+const CACHE = 'tod-673b469a9223';
 const OFFLINE = '/offline.html';
 self.addEventListener('install', (event) =>
   event.waitUntil(caches.open(CACHE).then((cache) => cache.add(OFFLINE))),
@@ -74,7 +74,9 @@ self.addEventListener('message', (event) => {
         try {
           const pack = event.data.pack;
           if (
-            !/^\/vi\/questions\/[a-zA-Z0-9._-]+\.json$/.test(pack.file) ||
+            !/^\/(?:vi\/questions\/[a-zA-Z0-9._-]+\.json|content\/questions\/[a-z0-9-]+\/[a-zA-Z0-9-]+)$/.test(
+              pack.file,
+            ) ||
             !/^[a-z0-9-]+$/.test(pack.slug)
           )
             throw new Error('Invalid pack');
@@ -97,6 +99,7 @@ self.addEventListener('fetch', (event) => {
     req.method !== 'GET' ||
     url.origin !== self.location.origin ||
     url.pathname.startsWith('/api/') ||
+    url.pathname.startsWith('/admin') ||
     url.pathname === '/sw.js' ||
     url.pathname.startsWith('/vi/thanh-toan') ||
     url.pathname.startsWith('/vi/khoi-phuc')
@@ -119,7 +122,11 @@ self.addEventListener('fetch', (event) => {
     );
     return;
   }
-  if (url.pathname.startsWith('/_next/static/') || url.pathname.startsWith('/vi/questions/')) {
+  if (
+    url.pathname.startsWith('/_next/static/') ||
+    url.pathname.startsWith('/vi/questions/') ||
+    url.pathname.startsWith('/content/questions/')
+  ) {
     event.respondWith(
       (async () => {
         const cached = await matchCached(req);

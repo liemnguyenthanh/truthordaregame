@@ -2,7 +2,7 @@
 
 ## Thiết lập
 
-Chạy migration `001_commerce.sql` trước, sau đó `002_ai_generations.sql`. Đặt server env `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, và một trong hai `AI_GATEWAY_API_KEY` hoặc `VERCEL_OIDC_TOKEN` do Vercel runtime cấp. AI SDK Gateway mặc định hỗ trợ API key hoặc OIDC; không đưa token lên frontend và không lưu token ngắn hạn vào Git. Mặc định `AI_MODEL=openai/gpt-6-astra`, model ID đã kiểm tra trên danh sách Vercel Gateway trong ngày triển khai. Có thể thay model bằng env; cần thử structured output trước khi đưa vào sử dụng.
+Chạy migration `20260918065848_commerce.sql` trước, sau đó `20260918065856_ai_generations.sql`. Đặt server env `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, và một trong hai `AI_GATEWAY_API_KEY` hoặc `VERCEL_OIDC_TOKEN` do Vercel runtime cấp. AI SDK Gateway mặc định hỗ trợ API key hoặc OIDC; không đưa token lên frontend và không lưu token ngắn hạn vào Git. Mặc định `AI_MODEL=openai/gpt-6-astra`, model ID đã kiểm tra trên danh sách Vercel Gateway trong ngày triển khai. Có thể thay model bằng env; cần thử structured output trước khi đưa vào sử dụng.
 
 MVP chưa thu tiền người chơi cho lần tạo AI (`billing: free`), nhưng nhà vận hành vẫn trả phí model. Không liên kết lần tạo AI với đơn SePay hoặc pack premium tĩnh. Giới hạn mặc định mỗi ngày Việt Nam: 3 lần/guest, 6 lần/IP, 20 lần toàn ứng dụng. Chỉnh `AI_DAILY_LIMIT`, `AI_IP_DAILY_LIMIT`, `AI_GLOBAL_DAILY_LIMIT` để giới hạn ngân sách. Cả lần thất bại đều tính quota vì provider có thể đã tính phí. IP được băm; kiểm tra proxy/Vercel cung cấp header IP tin cậy trước mở public. Người cùng mạng có thể chia sẻ giới hạn IP.
 

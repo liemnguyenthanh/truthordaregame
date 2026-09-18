@@ -11,6 +11,7 @@ import {
   recovery,
   orderView,
   limit,
+  env,
 } from '@/lib/payments/server';
 export const dynamic = 'force-dynamic';
 export async function POST(req: Request) {
@@ -19,6 +20,7 @@ export async function POST(req: Request) {
     const id = await guest();
     await limit('order:' + id, 15);
     bank();
+    env('SEPAY_WEBHOOK_API_KEY');
     recovery();
     const input = await body(req);
     const key = req.headers.get('Idempotency-Key');

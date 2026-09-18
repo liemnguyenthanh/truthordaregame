@@ -1,0 +1,377 @@
+body:has(.admin-page),
+body:has(.admin-login) {
+  display: flow-root;
+  background: #faf7ff;
+  color-scheme: light;
+  --text: #292238;
+  --muted: #777080;
+}
+.admin-page .button-secondary,
+.admin-login .button-secondary {
+  background: #fff;
+  border-color: #ddd5e5;
+  color: #4c385c;
+}
+.admin-page .eyebrow,
+.admin-login .eyebrow {
+  color: #86629e;
+}
+.admin-page .back-link,
+.admin-login .back-link {
+  color: #776187;
+}
+.admin-page,
+.admin-login {
+  color: #292238;
+}
+.admin-page {
+  max-width: 1180px;
+  margin: auto;
+  padding: 40px 24px 100px;
+}
+.admin-header,
+.admin-toolbar,
+.admin-save {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.admin-header {
+  margin-bottom: 36px;
+  align-items: flex-start;
+}
+.admin-header .eyebrow {
+  display: block;
+  margin-top: 20px;
+}
+.admin-header h1 {
+  font-size: 40px;
+  margin: 10px 0;
+}
+.admin-header p,
+.admin-login p {
+  color: #777080;
+}
+.admin-page .back-link,
+.admin-login .back-link {
+  display: block;
+  margin-bottom: 20px;
+}
+.admin-toolbar {
+  margin: 16px 0;
+}
+.admin-toolbar h2 {
+  margin: 0 0 8px;
+}
+.admin-list {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.admin-pack {
+  display: flex;
+  width: 100%;
+  text-align: left;
+  gap: 20px;
+  align-items: center;
+  background: white;
+  border: 1px solid #e9e2ef;
+  border-radius: 18px;
+  padding: 22px;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+.admin-pack:hover {
+  border-color: #9b7bb4;
+  background: #fffcff;
+}
+.admin-pack > span:nth-child(2) {
+  flex: 1;
+}
+.admin-pack strong {
+  display: block;
+  font-size: 18px;
+}
+.admin-pack small {
+  display: block;
+  margin-top: 7px;
+  color: #797080;
+}
+.admin-pack-icon {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  font-size: 28px;
+}
+.admin-pack-icon.purple {
+  background: #efe5fb;
+}
+.admin-pack-icon.pink {
+  background: #ffe8f0;
+}
+.admin-pack-icon.orange {
+  background: #fff0dc;
+}
+.admin-badge {
+  background: #f0edf3;
+  padding: 7px 12px;
+  border-radius: 30px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.admin-badge.live {
+  color: #276044;
+  background: #e7f5ec;
+}
+.admin-fields {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+.admin-editor {
+  display: grid;
+  grid-template-columns: 380px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+.admin-card {
+  border: 1px solid #e9e2ef;
+  background: #fff;
+  border-radius: 20px;
+  padding: 24px;
+  min-width: 0;
+}
+.admin-card h2 {
+  font-size: 20px;
+}
+.admin-card label,
+.admin-login label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+.admin-page input,
+.admin-page textarea,
+.admin-page select,
+.admin-login input {
+  border: 1px solid #ddd5e5;
+  border-radius: 10px;
+  background: #fff;
+  color: #322638;
+  font: inherit;
+  padding: 11px 12px;
+  width: 100%;
+  min-width: 0;
+}
+.admin-page input:focus,
+.admin-page textarea:focus,
+.admin-page select:focus,
+.admin-login input:focus {
+  outline: 2px solid #9c75bc;
+  outline-offset: 2px;
+}
+.admin-page input:disabled {
+  background: #f6f3f8;
+  color: #807788;
+}
+.admin-page textarea {
+  resize: vertical;
+  line-height: 1.6;
+}
+.admin-two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.admin-card small {
+  display: block;
+  color: #807788;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+.admin-categories {
+  margin: 18px 0;
+}
+.admin-categories > span {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.admin-categories .admin-check {
+  flex-direction: row;
+  align-items: center;
+  font-weight: 400;
+}
+.admin-check input {
+  width: 18px;
+  height: 18px;
+}
+.admin-question-list {
+  display: grid;
+  gap: 12px;
+  margin: 20px 0;
+  max-height: 800px;
+  overflow: auto;
+  padding: 3px;
+}
+.admin-question {
+  border: 1px solid #e9e2ef;
+  background: #fcfaff;
+  border-radius: 12px;
+  padding: 14px;
+}
+.admin-question-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.admin-question-heading > span {
+  font-size: 12px;
+  color: #807788;
+  flex: 1;
+}
+.admin-question-heading select {
+  width: 120px;
+  font-size: 13px;
+  padding: 6px;
+}
+.admin-delete {
+  border: 0;
+  background: transparent;
+  color: #a86173;
+  padding: 7px;
+  cursor: pointer;
+}
+.admin-hint,
+.admin-import {
+  background: #f5effb;
+  padding: 16px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.admin-import textarea {
+  font-family: monospace;
+}
+.admin-save {
+  position: sticky;
+  bottom: 16px;
+  background: #fffef9;
+  border: 1px solid #e1d7e9;
+  box-shadow: 0 8px 32px #33224412;
+  border-radius: 16px;
+  margin-top: 24px;
+  padding: 16px 24px;
+  z-index: 2;
+}
+.admin-save span {
+  font-size: 13px;
+  color: #766b7e;
+}
+.admin-error,
+.admin-success {
+  padding: 15px 20px;
+  border-radius: 12px;
+  line-height: 1.6;
+}
+.admin-error {
+  color: #a12c3d;
+  background: #fff0f1;
+}
+.admin-success {
+  color: #256644;
+  background: #eaf7ef;
+}
+.admin-empty {
+  padding: 30px;
+  text-align: center;
+  color: #84768f;
+}
+.admin-login {
+  max-width: 440px;
+  margin: 8vh auto;
+  padding: 28px;
+}
+.admin-lock {
+  display: grid;
+  place-items: center;
+  background: #eee2f7;
+  color: #80529d;
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  margin: 30px 0;
+}
+.admin-login h1 {
+  font-size: 32px;
+}
+.admin-login p {
+  line-height: 1.7;
+}
+.admin-login form {
+  margin: 30px 0 20px;
+}
+.admin-login form button {
+  width: 100%;
+}
+.admin-login small {
+  color: #8b8094;
+}
+.admin-page button:disabled,
+.admin-login button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+@media (max-width: 800px) {
+  .admin-editor {
+    grid-template-columns: 1fr;
+  }
+  .admin-page {
+    padding: 24px 16px 80px;
+  }
+  .admin-header h1 {
+    font-size: 30px;
+  }
+  .admin-header > .button {
+    padding: 10px;
+    font-size: 12px;
+  }
+  .admin-card {
+    padding: 18px;
+  }
+  .admin-pack {
+    padding: 16px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .admin-pack-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 24px;
+  }
+  .admin-pack strong {
+    font-size: 15px;
+  }
+  .admin-pack .admin-badge {
+    font-size: 10px;
+    padding: 6px 8px;
+  }
+  .admin-save {
+    padding: 12px;
+    bottom: 8px;
+  }
+  .admin-toolbar .button {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+}
