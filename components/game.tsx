@@ -7,6 +7,7 @@ import { getAvailableQuestions } from '@/lib/game';
 import { createGroupGameState, drawGroupQuestion, groupFingerprint, type GroupGameState } from '@/lib/group-game';
 import { GROUP_STORAGE_KEY, readSavedGroup } from '@/lib/groups';
 import { GroupEditor } from './group-editor';
+import { AnimatedReveal } from './animated-reveal';
 import type { Pack, PlayGroup, QuestionSet, QuestionType } from '@/lib/types';
 import styles from './game.module.css';
 
@@ -107,12 +108,12 @@ function PackGame({ pack, initialSet, fixedGroup }: GameProps) {
     {editingGroup && !fixedGroup && <div><GroupEditor key={groupFingerprint(group)} initialGroup={group ?? undefined} onSave={saveGroup} onCancel={() => setEditingGroup(false)} /><p className={styles.groupHint}>Lưu thay đổi sẽ bắt đầu ván mới. Lượt chơi thử đã dùng vẫn được giữ.</p>{group && <button className={styles.leaveGroup} onClick={() => saveGroup(null)}>Bỏ chia lượt & bắt đầu ván mới</button>}</div>}
     {offline && <p className={styles.network}><WifiOff size={16} /> Bạn đang chơi offline · thanh toán cần mạng</p>}
     {error ? <div className={styles.error} role="alert"><p>{error}</p><button className="button button-primary" onClick={() => setAttempt(value => value + 1)}>Thử lại</button></div> : <>
-      <div className={`${styles.card} ${current?.type === 'dare' ? styles.dareCard : styles.truthCard}`} aria-live="polite" aria-atomic="true">
+      <AnimatedReveal animationKey={current?.id ?? 'ready'} className={`${styles.card} ${current?.type === 'dare' ? styles.dareCard : styles.truthCard}`} aria-live="polite" aria-atomic="true">
         {group && <span className={styles.actor} data-testid="current-actor"><UserRound size={14} /> {actor ? `Lượt của ${actor.name}` : `Bắt đầu với ${nextActor?.name}`}</span>}
         <span className={styles.cardIndex}>{current ? `CÂU ${truthSeen + dareSeen < 10 ? '0' : ''}${truthSeen + dareSeen}` : 'SẴN SÀNG CHƯA?'}</span>
         <div className={styles.cardContent}><div className={styles.cardEmoji}>{current ? current.type === 'truth' ? '☁️' : '💖' : '✨'}</div><h2>{current ? current.type === 'truth' ? 'Thật' : 'Thách' : 'Một lựa chọn.\nNhiều bất ngờ.'}</h2><p key={current?.id}>{current?.text ?? (set ? 'Chọn Thật để kể một điều chưa ai biết.\nChọn Thách để thử một điều mới.' : 'Đang chuẩn bị cuộc vui…')}</p></div>
         <span className={styles.cardFoot}>CỨ LÀ CHÍNH MÌNH · BỎ QUA NẾU KHÔNG THOẢI MÁI</span>
-      </div>
+      </AnimatedReveal>
       <div className={styles.controls}><p>{group && current ? (fixedGroup ? 'Chọn loại câu để chuyển lượt tiếp theo' : `Lượt tiếp: ${nextActor?.name} · chọn Thật hay Thách`) : `Chọn loại câu ${current ? 'tiếp theo' : 'đầu tiên'}`}</p><div className={styles.choices}>
         <button className={`${styles.choice} ${styles.truth}`} disabled={!set || (unlocked && !truthRemaining)} onClick={() => draw('truth')}><span>☁️</span> Thật <ArrowRight size={17} /></button>
         <button className={`${styles.choice} ${styles.dare}`} disabled={!set || (unlocked && !dareRemaining)} onClick={() => draw('dare')}><span>💖</span> Thách <ArrowRight size={17} /></button>
