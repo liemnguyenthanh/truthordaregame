@@ -8,7 +8,26 @@ export const metadata: Metadata = {
   title: { default: 'Thật hay Thách — Chọn một câu, gần nhau hơn', template: '%s | Thật hay Thách' },
   description: 'Chơi Thật hay Thách cùng bạn bè và người thương. Chọn bộ câu hỏi, chơi ngay không cần tài khoản.',
   applicationName: 'Thật hay Thách', manifest: '/manifest.webmanifest',
-  icons: { icon: '/icon.svg', apple: '/icons/icon-192.png' },
+  icons: {
+    icon: [{ url: '/icon.png', type: 'image/png', sizes: '240x240' }],
+    shortcut: ['/icon.png'],
+    apple: [{ url: '/icon.png', type: 'image/png', sizes: '240x240' }],
+  },
+  openGraph: {
+    title: 'Thật hay Thách — Chọn một câu, gần nhau hơn',
+    description: 'Chơi Thật hay Thách cùng bạn bè và người thương. Chọn bộ câu hỏi, chơi ngay không cần tài khoản.',
+    url: siteUrl,
+    siteName: 'Thật hay Thách',
+    locale: 'vi_VN',
+    type: 'website',
+    images: [{ url: '/thumbnail.png', width: 1672, height: 941, type: 'image/png', alt: 'Thật hay Thách' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Thật hay Thách — Chọn một câu, gần nhau hơn',
+    description: 'Chơi Thật hay Thách cùng bạn bè và người thương.',
+    images: ['/thumbnail.png'],
+  },
   appleWebApp: { capable: true, title: 'Thật hay Thách', statusBarStyle: 'black-translucent' },
   robots: process.env.VERCEL_ENV === 'preview' ? { index: false, follow: false } : undefined,
 };
