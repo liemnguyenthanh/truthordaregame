@@ -1,0 +1,32 @@
+begin;
+set local role service_role;
+do $$
+declare g uuid; other uuid; r jsonb; retry jsonb; first_id uuid; input jsonb := '{"group":{"id":"g","name":"Nhóm","players":[]},"mood":"friendly"}';
+begin
+ insert into guest_sessions(token_hash) values('ai-test-'||gen_random_uuid()) returning id into g;
+ insert into guest_sessions(token_hash) values('ai-test-'||gen_random_uuid()) returning id into other;
+ r:=reserve_generation(g,'generation-key-01','hash1','test-ip',input,'test-model',2,2,20);
+ assert (r->>'created')::boolean,'first request reserves';first_id:=(r->'generation'->>'id')::uuid;
+ retry:=reserve_generation(g,'generation-key-01','hash1','test-ip',input,'test-model',2,2,20);
+ assert not (retry->>'created')::boolean,'retry never reserves another AI call';
+ assert retry->'generation'->>'id'=first_id::text,'same ID for retry';
+ retry:=reserve_generation(g,'generation-key-01','changed','test-ip',input,'test-model',2,2,20);
+ assert retry->>'error'='conflict','key cannot change input';
+ retry:=reserve_generation(g,'generation-key-02','hash2','test-ip',input,'test-model',2,2,20);
+ assert retry->>'error'='active','one active generation per guest';
+ update ai_generations set created_at=now()-interval '100 seconds' where id=first_id;
+ retry:=reserve_generation(g,'generation-key-01','hash1','test-ip',input,'test-model',2,2,20);
+ assert retry->'generation'->>'status'='failed','stale pending becomes failed';
+ r:=reserve_generation(g,'generation-key-02','hash2','test-ip',input,'test-model',2,2,20);
+ assert (r->>'created')::boolean,'explicit new attempt allowed within cap';
+ update ai_generations set status='failed' where guest_id=g;
+ retry:=reserve_generation(g,'generation-key-03','hash3','test-ip',input,'test-model',2,2,20);
+ assert retry->>'error'='quota','failed attempts still count to avoid runaway spend';
+ retry:=reserve_generation(other,'generation-key-04','hash4','test-ip',input,'test-model',2,2,20);
+ assert retry->>'error'='quota','same IP cannot bypass cap with new guest';
+ retry:=reserve_generation(other,'generation-key-05','hash5','new-ip',input,'test-model',2,2,2);
+ assert retry->>'error'='quota','global cap applies across IPs';
+ assert not has_table_privilege('anon','ai_generations','select'),'AI packs private';
+ assert not has_function_privilege('authenticated','public.reserve_generation(uuid,text,text,text,jsonb,text,integer,integer,integer)','execute'),'no direct browser generation reservation';
+end $$;
+rollback;

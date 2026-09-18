@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "contentVersion": "2026-09-17.1",
+  "locale": "vi",
+  "categories": [
+    {
+      "id": "friends",
+      "slug": "ban-be",
+      "name": "Bạn bè",
+      "description": "Phá băng, bật cười và hiểu nhóm bạn hơn qua từng lượt chơi.",
+      "icon": "🎉",
+      "packIds": [
+        "friends-free",
+        "friends-premium"
+      ],
+      "sortOrder": 10
+    },
+    {
+      "id": "couples",
+      "slug": "cap-doi",
+      "name": "Cặp đôi",
+      "description": "Gợi mở những cuộc trò chuyện dễ thương cho hai người.",
+      "icon": "💞",
+      "packIds": [
+        "couples-premium"
+      ],
+      "sortOrder": 20
+    }
+  ]
+}

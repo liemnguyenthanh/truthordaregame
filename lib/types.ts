@@ -1,0 +1,10 @@
+export type QuestionType = 'truth' | 'dare';
+export type Question = { id: string; type: QuestionType; text: string; playerId?: string; partnerId?: string };
+export type QuestionSet = { schemaVersion: number; packId: string; locale: string; contentVersion: string; trialQuestionIds: string[]; questions: Question[] };
+export type Category = { id: string; slug: string; name: string; description: string; icon: string; packIds: string[]; sortOrder: number };
+export type Pack = { id: string; slug: string; title: string; description: string; tier: 'free' | 'premium'; questionFile: string; contentVersion: string; questionCount: number; truthCount: number; dareCount: number; trialCount: number; priceHintVnd: number; productId: string | null; ageLabel: string; playerRange: { min: number; max: number }; published: boolean; icon: string; color: 'purple' | 'pink' | 'orange'; categoryIds: string[] };
+export type Player = { id: string; name: string };
+export type PlayGroup = { id: string; name: string; players: Player[] };
+export type GroupMood = 'friendly' | 'deep' | 'party' | 'flirty';
+export type GenerationInput = { group: PlayGroup; mood: GroupMood; adultsConfirmed: boolean };
+export type GeneratedPack = { id: string; status: 'pending' | 'complete' | 'failed'; group: PlayGroup; mood: GroupMood; createdAt: string; pack?: Pack; questionSet?: QuestionSet; error?: string };

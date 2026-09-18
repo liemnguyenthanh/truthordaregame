@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "contentVersion": "2026-09-17.1",
+  "locale": "vi",
+  "packs": [
+    {
+      "id": "friends-free",
+      "slug": "ban-be-khoi-dong",
+      "title": "Bạn bè khởi động",
+      "description": "Những câu hỏi nhẹ nhàng để phá băng và bắt đầu cuộc vui.",
+      "tier": "free",
+      "questionFile": "/vi/questions/ban-be-khoi-dong.v1.json",
+      "contentVersion": "1",
+      "questionCount": 12,
+      "truthCount": 6,
+      "dareCount": 6,
+      "trialCount": 0,
+      "priceHintVnd": 0,
+      "productId": null,
+      "ageLabel": "16+",
+      "playerRange": {
+        "min": 2,
+        "max": 8
+      },
+      "published": true,
+      "icon": "🎉",
+      "color": "purple",
+      "categoryIds": [
+        "friends"
+      ]
+    },
+    {
+      "id": "friends-premium",
+      "slug": "ban-be-gan-ket",
+      "title": "Bạn bè gắn kết",
+      "description": "Một chút bất ngờ, một chút chân thành để nhóm bạn hiểu nhau hơn.",
+      "tier": "premium",
+      "questionFile": "/vi/questions/ban-be-gan-ket.v1.json",
+      "contentVersion": "1",
+      "questionCount": 12,
+      "truthCount": 6,
+      "dareCount": 6,
+      "trialCount": 8,
+      "priceHintVnd": 30000,
+      "productId": "pack-friends-premium",
+      "ageLabel": "16+",
+      "playerRange": {
+        "min": 2,
+        "max": 8
+      },
+      "published": true,
+      "icon": "💖",
+      "color": "pink",
+      "categoryIds": [
+        "friends"
+      ]
+    },
+    {
+      "id": "couples-premium",
+      "slug": "hen-ho",
+      "title": "Hẹn hò thật vui",
+      "description": "Những gợi ý trò chuyện và thử thách dễ thương cho hai người.",
+      "tier": "premium",
+      "questionFile": "/vi/questions/hen-ho.v1.json",
+      "contentVersion": "1",
+      "questionCount": 12,
+      "truthCount": 6,
+      "dareCount": 6,
+      "trialCount": 8,
+      "priceHintVnd": 30000,
+      "productId": "pack-couples-premium",
+      "ageLabel": "16+",
+      "playerRange": {
+        "min": 2,
+        "max": 2
+      },
+      "published": true,
+      "icon": "✨",
+      "color": "orange",
+      "categoryIds": [
+        "couples"
+      ]
+    }
+  ]
+}

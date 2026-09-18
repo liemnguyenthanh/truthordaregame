@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "packId": "friends-premium",
+  "locale": "vi",
+  "contentVersion": "1",
+  "trialQuestionIds": [
+    "t01",
+    "t02",
+    "t03",
+    "t04",
+    "d01",
+    "d02",
+    "d03",
+    "d04"
+  ],
+  "questions": [
+    {
+      "id": "t01",
+      "type": "truth",
+      "text": "Điều nhỏ bé nào bạn luôn trân trọng ở một người bạn?"
+    },
+    {
+      "id": "t02",
+      "type": "truth",
+      "text": "Lần gần nhất bạn tự hào về bản thân là khi nào?"
+    },
+    {
+      "id": "t03",
+      "type": "truth",
+      "text": "Nếu cả nhóm đi du lịch, bạn muốn đến đâu?"
+    },
+    {
+      "id": "t04",
+      "type": "truth",
+      "text": "Bạn muốn học kỹ năng nào cùng một người bạn?"
+    },
+    {
+      "id": "t05",
+      "type": "truth",
+      "text": "Một lời khuyên nào đã giúp bạn thay đổi?"
+    },
+    {
+      "id": "t06",
+      "type": "truth",
+      "text": "Bạn mong nhóm mình cùng thực hiện điều gì trong năm nay?"
+    },
+    {
+      "id": "d01",
+      "type": "dare",
+      "text": "Gửi một lời cảm ơn trực tiếp đến một người trong nhóm."
+    },
+    {
+      "id": "d02",
+      "type": "dare",
+      "text": "Hãy quảng cáo một đồ vật gần bạn trong 20 giây."
+    },
+    {
+      "id": "d03",
+      "type": "dare",
+      "text": "Diễn lại một cảnh phim bằng biểu cảm để nhóm đoán."
+    },
+    {
+      "id": "d04",
+      "type": "dare",
+      "text": "Tặng mỗi người trong nhóm một biệt danh tích cực."
+    },
+    {
+      "id": "d05",
+      "type": "dare",
+      "text": "Hãy sáng tác hai câu thơ về cuộc gặp hôm nay."
+    },
+    {
+      "id": "d06",
+      "type": "dare",
+      "text": "Mời một người tự nguyện cùng bạn tạo một điệu nhảy 10 giây."
+    }
+  ]
+}

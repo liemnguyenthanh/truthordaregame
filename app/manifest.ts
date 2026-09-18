@@ -1,0 +1,2 @@
+import type { MetadataRoute } from 'next';
+export default function manifest():MetadataRoute.Manifest {return {id:'/vi',name:'Thật hay Thách',short_name:'Thật.Thách',description:'Một câu hỏi, thêm một chút gần nhau.',lang:'vi',start_url:'/vi',scope:'/',display:'standalone',background_color:'#151d2b',theme_color:'#151d2b',icons:[{src:'/icons/icon-192.png',sizes:'192x192',type:'image/png',purpose:'any'},{src:'/icons/icon-512.png',sizes:'512x512',type:'image/png',purpose:'any'},{src:'/icons/maskable-512.png',sizes:'512x512',type:'image/png',purpose:'maskable'}]};}

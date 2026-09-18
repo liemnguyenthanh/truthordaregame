@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "packId": "friends-free",
+  "locale": "vi",
+  "contentVersion": "1",
+  "trialQuestionIds": [],
+  "questions": [
+    {
+      "id": "t01",
+      "type": "truth",
+      "text": "Kỷ niệm vui nhất của bạn với nhóm là gì?"
+    },
+    {
+      "id": "t02",
+      "type": "truth",
+      "text": "Món ăn nào khiến bạn vui ngay lập tức?"
+    },
+    {
+      "id": "t03",
+      "type": "truth",
+      "text": "Bạn từng hiểu nhầm điều gì khiến mình bật cười?"
+    },
+    {
+      "id": "t04",
+      "type": "truth",
+      "text": "Nếu được nghỉ một ngày, bạn muốn làm gì?"
+    },
+    {
+      "id": "t05",
+      "type": "truth",
+      "text": "Tài lẻ nào của bạn ít người biết?"
+    },
+    {
+      "id": "t06",
+      "type": "truth",
+      "text": "Bài hát nào bạn thuộc lòng nhất?"
+    },
+    {
+      "id": "d01",
+      "type": "dare",
+      "text": "Diễn tả một con vật bằng động tác để cả nhóm đoán."
+    },
+    {
+      "id": "d02",
+      "type": "dare",
+      "text": "Hát một câu trong bài hát bạn yêu thích."
+    },
+    {
+      "id": "d03",
+      "type": "dare",
+      "text": "Nói một lời khen chân thành với người bên cạnh."
+    },
+    {
+      "id": "d04",
+      "type": "dare",
+      "text": "Tạo dáng như bìa một album trong 5 giây."
+    },
+    {
+      "id": "d05",
+      "type": "dare",
+      "text": "Kể một chuyện vui chỉ trong ba câu."
+    },
+    {
+      "id": "d06",
+      "type": "dare",
+      "text": "Đọc tên mình bằng giọng người dẫn chương trình."
+    }
+  ]
+}
