@@ -76,12 +76,17 @@ export async function body(req: Request) {
     throw new HttpError(400, 'Dữ liệu không hợp lệ.');
   }
 }
-export async function api(fn: () => Promise<unknown>) {
+export async function api(fn: () => Promise<unknown>, context = 'api') {
   try {
     return NextResponse.json(await fn(), {
       headers: { 'Cache-Control': 'private, no-store', 'X-Robots-Tag': 'noindex' },
     });
   } catch (e) {
+    if (!(e instanceof HttpError)) {
+      // Keep unexpected failures visible in runtime logs, never in the response.
+      // Do not log request bodies, cookies or authorization headers.
+      console.error(`[${context}] Unexpected server error`, e);
+    }
     return NextResponse.json(
       {
         error: e instanceof HttpError ? e.message : 'Dịch vụ tạm thời gián đoạn. Vui lòng thử lại.',

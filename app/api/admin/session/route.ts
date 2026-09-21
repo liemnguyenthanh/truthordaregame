@@ -19,7 +19,7 @@ export async function POST(req: Request) {
       maxAge: 8 * 60 * 60,
     });
     return { ok: true };
-  });
+  }, 'admin/session');
 }
 export async function DELETE(req: Request) {
   return api(async () => {
