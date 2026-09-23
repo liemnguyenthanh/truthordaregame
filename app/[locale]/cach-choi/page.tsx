@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { getPacks } from '@/lib/live-content';
 import { SiteShell } from '@/components/site-shell';
-import { pageMetadata } from '@/lib/seo';
+import { StructuredData } from '@/components/structured-data';
+import { pageMetadata, siteUrl } from '@/lib/seo';
 import { localePath } from '@/lib/i18n';
 import { pageLocale, copy } from '@/lib/i18n/pages';
 type Props = { params: Promise<{ locale: string }> };
@@ -33,14 +34,14 @@ export default async function Guide({ params }: Props) {
     [
       t('Thật hay Thách?', 'Truth or Dare?'),
       t(
-        'Chuyền điện thoại đến người tiếp theo. Chọn “Thật” để trả lời, hoặc “Thách” để thử một điều vui. Mỗi lần bấm sẽ có một câu mới.',
+        'Chuyền điện thoại đến người tiếp theo. Chọn "Thật" để trả lời, hoặc "Thách" để thử một điều vui. Mỗi lần bấm sẽ có một câu mới.',
         'Pass the phone to the next player. Choose Truth to answer a question or Dare to try a challenge. Each tap draws a new prompt.',
       ),
     ],
     [
       t('Thoải mái mới là vui', 'Keep it comfortable'),
       t(
-        'Không ai bắt buộc phải trả lời hoặc làm thử thách. Bấm “Bỏ qua” bất cứ lúc nào. Không gây áp lực và không cần chứng minh mình can đảm.',
+        'Không ai bắt buộc phải trả lời hoặc làm thử thách. Bấm "Bỏ qua" bất cứ lúc nào. Không gây áp lực và không cần chứng minh mình can đảm.',
         'Nobody has to answer a question or do a dare. Tap Skip at any time. Avoid pressure: you never need to prove your courage.',
       ),
     ],
@@ -101,6 +102,23 @@ export default async function Guide({ params }: Props) {
           )}
         </p>
       </main>
+      <StructuredData
+        data={{
+          '@context': 'https://schema.org',
+          '@type': 'HowTo',
+          name: t('Cách chơi Thật hay Thách', 'How to play Truth or Dare'),
+          description: t(
+            'Luật chơi Thật hay Thách đơn giản cho nhóm bạn và cặp đôi: chọn bộ, chọn câu và tôn trọng quyền bỏ qua.',
+            'Simple Truth or Dare rules for friends and couples: choose a pack, take turns, and respect everyone’s right to skip.',
+          ),
+          inLanguage: l,
+          step: steps.map(([name, text]) => ({
+            '@type': 'HowToStep',
+            name,
+            text,
+          })),
+        }}
+      />
     </SiteShell>
   );
 }

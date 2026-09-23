@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { SiteShell } from '@/components/site-shell';
+import { StructuredData } from '@/components/structured-data';
 import { getCategories, getPacks } from '@/lib/live-content';
-import { pageMetadata } from '@/lib/seo';
+import { pageMetadata, siteUrl } from '@/lib/seo';
 import { localePath } from '@/lib/i18n';
 import { pageLocale, copy } from '@/lib/i18n/pages';
 export const dynamic = 'force-dynamic';
@@ -22,13 +23,14 @@ export async function generateMetadata({ params }: Props) {
 export default async function Categories({ params }: Props) {
   const l = await pageLocale(params);
   const packs = await getPacks(l);
+  const categories = getCategories(l);
   return (
     <SiteShell>
       <main id="main" className="page-width content-page">
         <span className="eyebrow">{copy(l, 'TÌM ĐÚNG KHÔNG KHÍ', 'FIND YOUR MOOD')}</span>
         <h1>{copy(l, 'Chơi cùng ai?', 'Who are you playing with?')}</h1>
         <div className="category-grid">
-          {getCategories(l).map((c) => (
+          {categories.map((c) => (
             <Link
               className="category-tile"
               href={localePath(l, `/vi/danh-muc/${c.slug}`)}
@@ -45,6 +47,29 @@ export default async function Categories({ params }: Props) {
           ))}
         </div>
       </main>
+      <StructuredData
+        data={{
+          '@context': 'https://schema.org',
+          '@type': 'CollectionPage',
+          name: copy(l, 'Danh mục câu hỏi', 'Truth or Dare Categories'),
+          description: copy(
+            l,
+            'Chọn câu hỏi Thật hay Thách theo chủ đề bạn bè hoặc cặp đôi.',
+            'Find Truth or Dare question packs for friends or couples.',
+          ),
+          url: siteUrl + localePath(l, '/vi/danh-muc'),
+          inLanguage: l,
+          mainEntity: {
+            '@type': 'ItemList',
+            itemListElement: categories.map((c, i) => ({
+              '@type': 'ListItem',
+              position: i + 1,
+              url: siteUrl + localePath(l, `/vi/danh-muc/${c.slug}`),
+              name: c.name,
+            })),
+          },
+        }}
+      />
     </SiteShell>
   );
 }
