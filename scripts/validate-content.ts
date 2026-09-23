@@ -1,10 +1,11 @@
 import assert from 'node:assert/strict';
 import { pathToFileURL } from 'node:url';
+import type { Locale } from '../lib/i18n';
 import { getCategories, getPacks, getQuestionSet } from '../lib/content';
 
-export function validateContent() {
-  const packs = getPacks();
-  const categories = getCategories();
+export function validateContent(locale: Locale = 'vi') {
+  const packs = getPacks(locale);
+  const categories = getCategories(locale);
   for (const [name, values] of [
     ['pack IDs', packs.map((p) => p.id)],
     ['pack slugs', packs.map((p) => p.slug)],
@@ -22,9 +23,12 @@ export function validateContent() {
     const set = getQuestionSet(pack);
     assert.equal(set.schemaVersion, 1);
     assert.equal(set.packId, pack.id);
-    assert.equal(set.locale, 'vi');
+    assert.equal(set.locale, locale);
     assert.equal(set.contentVersion, pack.contentVersion);
-    assert.match(pack.questionFile, /^\/vi\/questions\/[a-z0-9-]+\.v[\w.-]+\.json$/);
+    assert.match(
+      pack.questionFile,
+      new RegExp(`^/${locale}/questions/[a-z0-9-]+\\.v[\\w.-]+\\.json$`),
+    );
     assert.equal(
       new Set(set.questions.map((q) => q.id)).size,
       set.questions.length,
@@ -78,4 +82,5 @@ export function validateContent() {
   };
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href)
-  console.log('Content valid:', validateContent());
+  for (const locale of ['vi', 'en'] as const)
+    console.log(`Content valid (${locale}):`, validateContent(locale));

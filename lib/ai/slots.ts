@@ -59,6 +59,7 @@ export function assemble(
   createdAt: string,
   output: AIOutput,
 ): GeneratedPack {
+  const locale = input.locale ?? 'vi';
   const expected = slots(input);
   const checked = validateOutput(output, expected);
   const questions: Question[] = expected.map((slot, index) => ({
@@ -71,14 +72,20 @@ export function assemble(
   return {
     id,
     status: 'complete',
+    locale,
     group: input.group,
     mood: input.mood,
     createdAt,
     pack: {
       id: `ai-${id}`,
+      locale,
       slug: id,
-      title: `Bộ riêng của ${input.group.name}`,
-      description: 'Câu hỏi AI dành riêng cho nhóm của bạn. Luôn có thể bỏ qua.',
+      title:
+        locale === 'en' ? `${input.group.name}'s custom pack` : `Bộ riêng của ${input.group.name}`,
+      description:
+        locale === 'en'
+          ? 'AI questions personalized for your group. You can always skip.'
+          : 'Câu hỏi AI dành riêng cho nhóm của bạn. Luôn có thể bỏ qua.',
       tier: 'free',
       questionFile: '',
       contentVersion: '1',
@@ -98,7 +105,7 @@ export function assemble(
     questionSet: {
       schemaVersion: 1,
       packId: `ai-${id}`,
-      locale: 'vi',
+      locale,
       contentVersion: '1',
       trialQuestionIds: [],
       questions,

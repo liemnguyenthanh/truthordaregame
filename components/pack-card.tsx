@@ -1,7 +1,12 @@
+'use client';
+
+import { useI18n } from './locale-provider';
+
 import Link from 'next/link';
 import { ArrowUpRight, Users, Layers, Crown } from 'lucide-react';
 import type { Pack } from '@/lib/types';
 export function PackCard({ pack, index = 0 }: { pack: Pack; index?: number }) {
+  const { t, path } = useI18n();
   return (
     <article
       className={`pack-card ${pack.color}`}
@@ -13,7 +18,7 @@ export function PackCard({ pack, index = 0 }: { pack: Pack; index?: number }) {
         </span>
         <span className={`tier-badge ${pack.tier}`}>
           {pack.tier === 'free' ? (
-            'MIỄN PHÍ'
+            t('MIỄN PHÍ')
           ) : (
             <>
               <Crown size={12} /> PREMIUM
@@ -28,23 +33,25 @@ export function PackCard({ pack, index = 0 }: { pack: Pack; index?: number }) {
         <div className="pack-meta">
           <span>
             <Layers size={14} />
-            {pack.questionCount} câu hỏi
+            {pack.questionCount} {t('câu hỏi')}{' '}
           </span>
           <span>
             <Users size={14} />
-            {pack.playerRange.min}–{pack.playerRange.max} người
+            {pack.playerRange.min}–{pack.playerRange.max} {t('người')}{' '}
           </span>
         </div>
         <h3>
-          <Link href={`/vi/bo-cau-hoi/${pack.slug}`}>{pack.title}</Link>
+          <Link href={path(`/vi/bo-cau-hoi/${pack.slug}`)}>{pack.title}</Link>
         </h3>
         <p>{pack.description}</p>
         <div className="pack-bottom">
-          <a className="pack-play" href={`/vi/choi/${pack.slug}`}>
-            {pack.tier === 'free' ? 'Chơi ngay' : `Thử ${pack.trialCount} câu miễn phí`}
+          <a className="pack-play" href={path(`/vi/choi/${pack.slug}`)}>
+            {pack.tier === 'free'
+              ? t('Chơi ngay')
+              : t('Thử {v0} câu miễn phí', { v0: pack.trialCount })}
             <ArrowUpRight size={18} />
           </a>
-          <span>{pack.tier === 'free' ? 'Không giới hạn lượt' : 'Mở khóa cả bộ'}</span>
+          <span>{pack.tier === 'free' ? t('Không giới hạn lượt') : t('Mở khóa cả bộ')}</span>
         </div>
       </div>
     </article>

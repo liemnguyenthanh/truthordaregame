@@ -2,12 +2,16 @@
 import { useEffect, useState } from 'react';
 import { Download, WifiOff, Check, X } from 'lucide-react';
 import type { Pack } from '@/lib/types';
+import { useI18n } from './locale-provider';
+import { pwaMessages } from '@/lib/i18n/pwa';
 
 type InstallEvent = Event & {
   prompt: () => Promise<void>;
   userChoice: Promise<{ outcome: string }>;
 };
 export function PwaControls() {
+  const { locale } = useI18n();
+  const t = (source: string) => (locale === 'en' ? (pwaMessages[source] ?? source) : source);
   const [install, setInstall] = useState<InstallEvent | null>(null);
   const [ios, setIos] = useState(false);
   const [help, setHelp] = useState(false);
@@ -58,7 +62,7 @@ export function PwaControls() {
       {offline && (
         <div className="pwa-install" role="status">
           <WifiOff size={14} />
-          Bạn đang offline. Các bộ đã lưu vẫn chơi được.
+          {t('Bạn đang offline. Các bộ đã lưu vẫn chơi được.')}
         </div>
       )}
       {(install || ios) && (
@@ -73,16 +77,16 @@ export function PwaControls() {
             }}
           >
             <Download size={15} />
-            Thêm vào màn hình chính
+            {t('Thêm vào màn hình chính')}
           </button>
-          {help && <span>Safari: Chia sẻ → Thêm vào MH chính.</span>}
+          {help && <span>{t('Safari: Chia sẻ → Thêm vào MH chính.')}</span>}
         </div>
       )}
       {waiting && (
         <div className="pwa-toast" role="status">
-          <span>Có phiên bản mới. Cập nhật sau ván này nhé.</span>
-          <button onClick={applyUpdate}>Cập nhật</button>
-          <button aria-label="Để sau" onClick={() => setWaiting(null)}>
+          <span>{t('Có phiên bản mới. Cập nhật sau ván này nhé.')}</span>
+          <button onClick={applyUpdate}>{t('Cập nhật')}</button>
+          <button aria-label={t('Để sau')} onClick={() => setWaiting(null)}>
             <X size={16} />
           </button>
         </div>
@@ -91,6 +95,8 @@ export function PwaControls() {
   );
 }
 export function OfflinePack({ pack }: { pack: Pack }) {
+  const { locale } = useI18n();
+  const t = (source: string) => (locale === 'en' ? (pwaMessages[source] ?? source) : source);
   const [state, setState] = useState<'idle' | 'saving' | 'saved' | 'error' | 'unsupported'>('idle');
   useEffect(() => {
     if (!('serviceWorker' in navigator) || process.env.NODE_ENV !== 'production') {
@@ -101,11 +107,17 @@ export function OfflinePack({ pack }: { pack: Pack }) {
       const saved = JSON.parse(localStorage.getItem('tod:offline:v1') || '[]') as {
         id: string;
         version: string;
+        locale?: string;
       }[];
-      if (saved.some((p) => p.id === pack.id && p.version === pack.contentVersion))
+      if (
+        saved.some(
+          (p) =>
+            p.id === pack.id && p.version === pack.contentVersion && (p.locale || 'vi') === locale,
+        )
+      )
         setState('saved');
     } catch {}
-  }, [pack.id, pack.contentVersion]);
+  }, [pack.id, pack.contentVersion, locale]);
   async function save() {
     setState('saving');
     try {
@@ -130,6 +142,7 @@ export function OfflinePack({ pack }: { pack: Pack }) {
               slug: pack.slug,
               version: pack.contentVersion,
               file: pack.questionFile,
+              locale,
             },
           },
           [channel.port2],
@@ -140,12 +153,13 @@ export function OfflinePack({ pack }: { pack: Pack }) {
         title: string;
         slug: string;
         version: string;
+        locale?: string;
       }[];
       localStorage.setItem(
         'tod:offline:v1',
         JSON.stringify([
-          ...saved.filter((p) => p.id !== pack.id),
-          { id: pack.id, title: pack.title, slug: pack.slug, version: pack.contentVersion },
+          ...saved.filter((p) => p.id !== pack.id || (p.locale || 'vi') !== locale),
+          { id: pack.id, title: pack.title, slug: pack.slug, version: pack.contentVersion, locale },
         ]),
       );
       setState('saved');
@@ -159,18 +173,24 @@ export function OfflinePack({ pack }: { pack: Pack }) {
       <button onClick={save} disabled={state === 'saving'}>
         {state === 'saved' ? <Check size={14} /> : <Download size={14} />}{' '}
         {state === 'saving'
-          ? 'Đang lưu bộ và màn chơi…'
+          ? t('Đang lưu bộ và màn chơi…')
           : state === 'saved'
-            ? 'Đã lưu để chơi offline · Lưu lại'
-            : 'Lưu bộ để chơi offline'}
+            ? t('Đã lưu để chơi offline · Lưu lại')
+            : t('Lưu bộ để chơi offline')}
       </button>
-      {state === 'error' && <p role="status">Chưa lưu được. Kiểm tra kết nối và thử lại nhé.</p>}
-      {state === 'saved' && <p>Bộ premium vẫn cần quyền mua để chơi ngoài 8 câu thử.</p>}
+      {state === 'error' && (
+        <p role="status">{t('Chưa lưu được. Kiểm tra kết nối và thử lại nhé.')}</p>
+      )}
+      {state === 'saved' && pack.tier === 'premium' && (
+        <p>{t('Bộ premium vẫn cần quyền mua để chơi ngoài 8 câu thử.')}</p>
+      )}
     </div>
   );
 }
 
 export function OfflineAiPack() {
+  const { locale } = useI18n();
+  const t = (source: string) => (locale === 'en' ? (pwaMessages[source] ?? source) : source);
   const [state, setState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const [supported, setSupported] = useState(false);
   useEffect(
@@ -193,7 +213,7 @@ export function OfflineAiPack() {
           clearTimeout(timer);
           event.data.success ? resolve() : reject(new Error('save'));
         };
-        reg.active!.postMessage({ type: 'CACHE_AI_SHELL' }, [channel.port2]);
+        reg.active!.postMessage({ type: 'CACHE_AI_SHELL', locale }, [channel.port2]);
       });
       setState('saved');
     } catch {
@@ -205,15 +225,15 @@ export function OfflineAiPack() {
       <button disabled={state === 'saving'} onClick={save}>
         {state === 'saved' ? <Check size={14} /> : <Download size={14} />}{' '}
         {state === 'saving'
-          ? 'Đang lưu màn chơi…'
+          ? t('Đang lưu màn chơi…')
           : state === 'saved'
-            ? 'Đã sẵn sàng chơi bộ này offline'
-            : 'Lưu màn chơi để dùng bộ AI offline'}
+            ? t('Đã sẵn sàng chơi bộ này offline')
+            : t('Lưu màn chơi để dùng bộ AI offline')}
       </button>
       {state === 'error' && (
-        <p role="status">Chưa lưu được màn chơi. Kiểm tra kết nối rồi thử lại.</p>
+        <p role="status">{t('Chưa lưu được màn chơi. Kiểm tra kết nối rồi thử lại.')}</p>
       )}
-      {state === 'saved' && <p>Giữ dữ liệu trình duyệt để mở lại bộ riêng của nhóm.</p>}
+      {state === 'saved' && <p>{t('Giữ dữ liệu trình duyệt để mở lại bộ riêng của nhóm.')}</p>}
     </div>
   );
 }

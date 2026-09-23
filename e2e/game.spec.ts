@@ -1,4 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
+import { getPack, getQuestionSet } from '../lib/content';
+const freeSet = getQuestionSet(getPack('ban-be-khoi-dong')!);
+const freeTruthCount = freeSet.questions.filter((question) => question.type === 'truth').length;
 
 // API interception is deterministic here; dedicated PWA tests exercise the worker.
 test.use({ serviceWorkers: 'block' });
@@ -29,13 +32,16 @@ test('free game draws, persists exactly across refresh, exhausts truth and conti
   await expect
     .poll(async () => (await readProgress(page, 'friends-free'))?.currentId)
     .toBe(first.currentId);
-  await expect(page.getByText('Đã xem 1/12 câu', { exact: true })).toBeVisible();
-  for (let index = 2; index <= 6; index++) await draw(page, 'Thật', index, 'friends-free');
+  await expect(
+    page.getByText(`Đã xem 1/${freeSet.questions.length} câu`, { exact: true }),
+  ).toBeVisible();
+  for (let index = 2; index <= freeTruthCount; index++)
+    await draw(page, 'Thật', index, 'friends-free');
   await expect(page.getByRole('button', { name: /Thật/ })).toBeDisabled();
   await expect(page.getByRole('button', { name: /Thách/ })).toBeEnabled();
-  await draw(page, 'Thách', 7, 'friends-free');
+  await draw(page, 'Thách', freeTruthCount + 1, 'friends-free');
   const progress = await readProgress(page, 'friends-free');
-  expect(new Set(progress.seenIds).size).toBe(7);
+  expect(new Set(progress.seenIds).size).toBe(freeTruthCount + 1);
 });
 
 test('premium fixed 4/4 trial leaves eighth card readable; next request reveals paywall', async ({

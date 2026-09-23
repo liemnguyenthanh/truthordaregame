@@ -136,9 +136,16 @@ test('unconfigured AI reports AI availability honestly and never renders generat
   );
   await page.goto('/vi/tao-bo-ai');
   await expect(page.getByRole('main').getByText(configError, { exact: true })).toBeVisible();
-  await page.getByRole('button', { name: 'Tạo bộ câu hỏi của nhóm', exact: true }).click();
-  await expect(page.getByRole('main').getByRole('alert')).toContainText(configError);
-  await expect(page.getByRole('main').getByRole('alert')).not.toContainText('Thanh toán');
+  await expect(
+    page.getByRole('button', { name: 'Tạo bộ câu hỏi của nhóm', exact: true }),
+  ).toBeDisabled();
+  await page.getByRole('button', { name: 'Kiểm tra lại', exact: true }).click();
+  await expect(page.getByRole('main').getByText(configError, { exact: true })).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'Tạo bộ câu hỏi của nhóm', exact: true }),
+  ).toBeDisabled();
   await expect(page).toHaveURL(/\/vi\/tao-bo-ai$/);
-  expect(await page.evaluate(() => localStorage.getItem('tod:generation-pending:v1'))).toBeNull();
+  expect(
+    await page.evaluate(() => localStorage.getItem('tod:generation-pending:v1:vi')),
+  ).toBeNull();
 });

@@ -1,5 +1,9 @@
 'use client';
 
+import { formatLocale } from '@/lib/i18n';
+import { localizedError } from '@/lib/i18n/messages';
+import { useI18n } from './locale-provider';
+
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
@@ -10,7 +14,6 @@ import { GROUP_STORAGE_KEY, MOODS, validateGroup } from '@/lib/groups';
 import styles from './ai-builder.module.css';
 
 const GROUP_KEY = GROUP_STORAGE_KEY;
-const REQUEST_KEY = 'tod:generation-request:v1';
 const HISTORY_KEY = 'tod:generated-history:v1';
 const choices = MOODS.map((mood) => ({ ...mood, title: mood.name }));
 async function api(url: string, init?: RequestInit) {
@@ -20,7 +23,9 @@ async function api(url: string, init?: RequestInit) {
   return data;
 }
 export function AiBuilder() {
+  const { t, path, locale } = useI18n();
   const router = useRouter();
+  const requestKey = `tod:generation-request:v1:${locale}`;
   const [group, setGroup] = useState<PlayGroup | null>(null);
   const [editing, setEditing] = useState(true);
   const [mood, setMood] = useState<GroupMood>('friendly');
@@ -31,6 +36,8 @@ export function AiBuilder() {
   const [history, setHistory] = useState<GeneratedPack[]>([]);
   const [limit, setLimit] = useState<number | null>(null);
   const [serviceNotice, setServiceNotice] = useState('');
+  const [serviceAvailable, setServiceAvailable] = useState(false);
+  const [configAttempt, setConfigAttempt] = useState(0);
   const [ready, setReady] = useState(false);
   const request = useRef<{ key: string; body: string } | null>(null);
   const inFlight = useRef(false);
@@ -44,7 +51,7 @@ export function AiBuilder() {
       }
       const savedHistory = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
       if (Array.isArray(savedHistory)) setHistory(savedHistory);
-      const savedRequest = JSON.parse(localStorage.getItem(REQUEST_KEY) || 'null');
+      const savedRequest = JSON.parse(localStorage.getItem(requestKey) || 'null');
       if (savedRequest?.key && savedRequest?.body) {
         const pendingInput = JSON.parse(savedRequest.body);
         if (MOODS.some((item) => item.id === pendingInput.mood)) {
@@ -59,16 +66,6 @@ export function AiBuilder() {
       setStorageWarning(true);
     }
     setReady(true);
-    void api('/api/generations/config')
-      .then((data) => {
-        if (cancelled) return;
-        if (Number.isInteger(data.dailyLimit)) setLimit(data.dailyLimit);
-        setServiceNotice('');
-      })
-      .catch((cause) => {
-        if (!cancelled)
-          setServiceNotice(cause instanceof Error ? cause.message : 'Tính năng AI chưa sẵn sàng.');
-      });
     void (async () => {
       try {
         await api('/api/session', { method: 'POST' });
@@ -90,7 +87,31 @@ export function AiBuilder() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [locale, requestKey, t]);
+  useEffect(() => {
+    let cancelled = false;
+    setServiceAvailable(false);
+    void api('/api/generations/config')
+      .then((data) => {
+        if (cancelled) return;
+        if (Number.isInteger(data.dailyLimit)) setLimit(data.dailyLimit);
+        setServiceAvailable(data.available === true);
+        setServiceNotice(
+          data.available === true ? '' : t('Tính năng AI đang tạm ngừng. Vui lòng thử lại sau.'),
+        );
+      })
+      .catch((cause) => {
+        if (!cancelled)
+          setServiceNotice(
+            cause instanceof Error
+              ? localizedError(locale, cause.message)
+              : t('Tính năng AI chưa sẵn sàng.'),
+          );
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [locale, t, configAttempt]);
   function saveGroup(value: PlayGroup) {
     setGroup(value);
     setEditing(false);
@@ -102,22 +123,28 @@ export function AiBuilder() {
     }
   }
   async function generate() {
-    if (!group || inFlight.current || (mood === 'flirty' && !adults)) return;
+    if (!group || !serviceAvailable || inFlight.current || (mood === 'flirty' && !adults)) return;
     inFlight.current = true;
     setBusy(true);
     setError('');
     try {
-      if (!navigator.onLine) throw new Error('Cần kết nối mạng để tạo bộ câu hỏi bằng AI.');
-      const body = JSON.stringify({ group, mood, adultsConfirmed: mood === 'flirty' && adults });
+      if (!navigator.onLine) throw new Error(t('Cần kết nối mạng để tạo bộ câu hỏi bằng AI.'));
+      const body = JSON.stringify({
+        group,
+        mood,
+        locale,
+        adultsConfirmed: mood === 'flirty' && adults,
+      });
       if (!request.current || request.current.body !== body)
         request.current = { key: crypto.randomUUID(), body };
       try {
-        localStorage.setItem(REQUEST_KEY, JSON.stringify(request.current));
+        localStorage.setItem(requestKey, JSON.stringify(request.current));
       } catch {
         setStorageWarning(true);
       }
       const config = await api('/api/generations/config');
-      if (!config.available) throw new Error('Tính năng AI đang tạm ngừng. Vui lòng thử lại sau.');
+      if (!config.available)
+        throw new Error(t('Tính năng AI đang tạm ngừng. Vui lòng thử lại sau.'));
       if (Number.isInteger(config.dailyLimit)) setLimit(config.dailyLimit);
       setServiceNotice('');
       await api('/api/session', { method: 'POST' });
@@ -128,9 +155,9 @@ export function AiBuilder() {
       });
       const generation: GeneratedPack = data.generation;
       if (!generation?.id)
-        throw new Error('Máy chủ chưa trả về bộ câu hỏi. Hãy thử lại cùng yêu cầu.');
+        throw new Error(t('Máy chủ chưa trả về bộ câu hỏi. Hãy thử lại cùng yêu cầu.'));
       try {
-        localStorage.setItem('tod:generation-pending:v1', generation.id);
+        localStorage.setItem(`tod:generation-pending:v1:${locale}`, generation.id);
         const nextHistory = [
           generation,
           ...history.filter((item) => item.id !== generation.id),
@@ -139,17 +166,17 @@ export function AiBuilder() {
         if (generation.status === 'complete')
           localStorage.setItem(`tod:generated:v1:${generation.id}`, JSON.stringify(generation));
         // Once addressable, retries use the saved ID rather than making another request.
-        localStorage.removeItem(REQUEST_KEY);
+        localStorage.removeItem(requestKey);
       } catch {
         setStorageWarning(true);
       }
       request.current = null;
-      router.push(`/vi/bo-ai?id=${encodeURIComponent(generation.id)}`);
+      router.push(path(`/vi/bo-ai?id=${encodeURIComponent(generation.id)}`));
     } catch (cause) {
       setError(
         cause instanceof Error
-          ? cause.message
-          : 'Chưa tạo được bộ câu hỏi. Thử lại sẽ tiếp tục cùng yêu cầu.',
+          ? localizedError(locale, cause.message)
+          : t('Chưa tạo được bộ câu hỏi. Thử lại sẽ tiếp tục cùng yêu cầu.'),
       );
     } finally {
       setBusy(false);
@@ -158,41 +185,41 @@ export function AiBuilder() {
   }
   return (
     <section className={styles.shell}>
-      <Link href="/vi" className={styles.back}>
-        <ArrowLeft size={17} /> Về thư viện
+      <Link href={path('/vi')} className={styles.back}>
+        <ArrowLeft size={17} /> {t('Về thư viện')}{' '}
       </Link>
       <header className={styles.hero}>
         <span className={styles.heroIcon}>
           <Sparkles size={29} />
         </span>
-        <p className="eyebrow">CÂU CHUYỆN CỦA RIÊNG NHÓM BẠN</p>
+        <p className="eyebrow">{t('CÂU CHUYỆN CỦA RIÊNG NHÓM BẠN')}</p>
         <h1>
-          Một nhóm bạn.
-          <br />
-          <em>Một bộ câu hỏi riêng.</em>
+          {t('Một nhóm bạn.')} <br />
+          <em>{t('Một bộ câu hỏi riêng.')}</em>
         </h1>
         <p>
-          Thêm tên, chọn tâm trạng. AI kết nối các thành viên qua những câu Thật và Thách dành riêng
-          cho nhóm.
+          {t(
+            'Thêm tên, chọn tâm trạng. AI kết nối các thành viên qua những câu Thật và Thách dành riêng cho nhóm.',
+          )}{' '}
         </p>
       </header>
       {!ready ? (
         <p role="status" className="notice">
-          Đang chuẩn bị nhóm…
+          {t('Đang chuẩn bị nhóm…')}{' '}
         </p>
       ) : (
         <>
           <section className={styles.panel}>
             <div className={styles.step}>
               <span>01</span>
-              <h2>Hôm nay có những ai?</h2>
+              <h2>{t('Hôm nay có những ai?')}</h2>
             </div>
             {editing ? (
               <GroupEditor
                 initialGroup={group ?? undefined}
                 onSave={saveGroup}
                 onCancel={group ? () => setEditing(false) : undefined}
-                submitLabel="Lưu nhóm và chọn tâm trạng"
+                submitLabel={t('Lưu nhóm và chọn tâm trạng')}
               />
             ) : (
               group && (
@@ -205,7 +232,7 @@ export function AiBuilder() {
                       disabled={busy}
                       onClick={() => setEditing(true)}
                     >
-                      Sửa nhóm
+                      {t('Sửa nhóm')}{' '}
                     </button>
                   </div>
                   <ul>
@@ -220,9 +247,9 @@ export function AiBuilder() {
           <section className={styles.panel}>
             <div className={styles.step}>
               <span>02</span>
-              <h2>Chọn tâm trạng cuộc vui</h2>
+              <h2>{t('Chọn tâm trạng cuộc vui')}</h2>
             </div>
-            <div className={styles.moods} role="radiogroup" aria-label="Tâm trạng của nhóm">
+            <div className={styles.moods} role="radiogroup" aria-label={t('Tâm trạng của nhóm')}>
               {choices.map((choice) => (
                 <label
                   key={choice.id}
@@ -240,8 +267,8 @@ export function AiBuilder() {
                     }}
                   />
                   <span className={styles.moodIcon}>{choice.icon}</span>
-                  <strong>{choice.title}</strong>
-                  <span>{choice.description}</span>
+                  <strong>{t(choice.title)}</strong>
+                  <span>{t(choice.description)}</span>
                   {mood === choice.id && <Check size={16} className={styles.selectedCheck} />}
                 </label>
               ))}
@@ -254,51 +281,65 @@ export function AiBuilder() {
                   disabled={busy}
                   onChange={(event) => setAdults(event.target.checked)}
                 />
-                <span>Tất cả thành viên đều từ 18 tuổi và đồng ý chơi chủ đề thả thính.</span>
+                <span>
+                  {t('Tất cả thành viên đều từ 18 tuổi và đồng ý chơi chủ đề thả thính.')}
+                </span>
               </label>
             )}
           </section>
           <div className={styles.privacy}>
             <ShieldCheck size={20} />
             <p>
-              Tên hoặc biệt danh và tâm trạng của nhóm được gửi đến AI để tạo câu hỏi. Bộ đã tạo
-              được lưu riêng cho thiết bị này qua phiên khách, không đăng vào thư viện công khai.
-              Nên dùng biệt danh và không nhập thông tin nhạy cảm.
+              {t(
+                'Tên hoặc biệt danh và tâm trạng của nhóm được gửi đến AI để tạo câu hỏi. Bộ đã tạo được lưu riêng cho thiết bị này qua phiên khách, không đăng vào thư viện công khai. Nên dùng biệt danh và không nhập thông tin nhạy cảm.',
+              )}{' '}
             </p>
           </div>
           {serviceNotice && !error && (
-            <p className="notice" role="status">
-              {serviceNotice}
-            </p>
+            <div className="notice" role="status">
+              <p>{serviceNotice}</p>
+              <button
+                className={styles.textButton}
+                type="button"
+                onClick={() => setConfigAttempt((value) => value + 1)}
+              >
+                {t('Kiểm tra lại')}
+              </button>
+            </div>
           )}
           {limit !== null && (
             <p className={styles.limit}>
-              Tạo miễn phí · tối đa {limit} bộ mỗi ngày theo cấu hình hiện tại.
+              {t('Tạo miễn phí · tối đa')} {limit} {t('bộ mỗi ngày theo cấu hình hiện tại.')}{' '}
             </p>
           )}
           {error && (
             <div role="alert" className={styles.error}>
               {error}
-              <p>Thử lại sẽ dùng cùng mã yêu cầu để tránh tạo trùng khi mất kết nối.</p>
+              <p>{t('Thử lại sẽ dùng cùng mã yêu cầu để tránh tạo trùng khi mất kết nối.')}</p>
             </div>
           )}
           <button
             className={`button button-primary ${styles.generate}`}
-            disabled={busy || !group || editing || (mood === 'flirty' && !adults)}
+            disabled={
+              busy || !serviceAvailable || !group || editing || (mood === 'flirty' && !adults)
+            }
             onClick={() => void generate()}
           >
             <Sparkles size={19} />
-            {busy ? 'AI đang viết câu hỏi cho nhóm…' : 'Tạo bộ câu hỏi của nhóm'}
+            {busy ? t('AI đang viết câu hỏi cho nhóm…') : t('Tạo bộ câu hỏi của nhóm')}
             {!busy && <ArrowRight size={18} />}
           </button>
           {busy && (
             <p className={styles.waiting} role="status">
-              Có thể mất khoảng một phút. Bạn không cần bấm lại; yêu cầu đang được xử lý.
+              {t(
+                'Có thể mất khoảng một phút. Bạn không cần bấm lại; yêu cầu đang được xử lý.',
+              )}{' '}
             </p>
           )}
           <p className={styles.fine}>
-            Luôn có thể bỏ qua câu hỏi. Nội dung AI có thể chưa phù hợp; cả nhóm quyết định điều gì
-            khiến mình thoải mái.
+            {t(
+              'Luôn có thể bỏ qua câu hỏi. Nội dung AI có thể chưa phù hợp; cả nhóm quyết định điều gì khiến mình thoải mái.',
+            )}{' '}
           </p>
         </>
       )}
@@ -306,20 +347,23 @@ export function AiBuilder() {
         <section className={styles.history}>
           <div className={styles.step}>
             <Clock3 size={19} />
-            <h2>Những bộ của nhóm</h2>
+            <h2>{t('Những bộ của nhóm')}</h2>
           </div>
           {history.map((item) => (
-            <Link href={`/vi/bo-ai?id=${encodeURIComponent(item.id)}`} key={item.id}>
+            <Link href={path(`/vi/bo-ai?id=${encodeURIComponent(item.id)}`)} key={item.id}>
               <span>{item.pack?.icon || '✨'}</span>
               <div>
-                <strong>{item.pack?.title || item.group?.name || 'Bộ câu hỏi AI'}</strong>
+                <strong>{item.pack?.title || item.group?.name || t('Bộ câu hỏi AI')}</strong>
                 <small>
                   {item.status === 'complete'
-                    ? 'Sẵn sàng chơi'
+                    ? t('Sẵn sàng chơi')
                     : item.status === 'failed'
-                      ? 'Chưa tạo thành công'
-                      : 'Đang tạo'}{' '}
-                  · {new Date(item.createdAt).toLocaleDateString('vi-VN')}
+                      ? t('Chưa tạo thành công')
+                      : t('Đang tạo')}{' '}
+                  · {new Date(item.createdAt).toLocaleDateString(formatLocale(locale))} ·{' '}
+                  {(item.questionSet?.locale ?? item.locale ?? 'vi') === 'en'
+                    ? 'English'
+                    : 'Tiếng Việt'}
                 </small>
               </div>
               <ArrowRight size={17} />
@@ -329,7 +373,9 @@ export function AiBuilder() {
       )}
       {storageWarning && (
         <p className="notice">
-          Trình duyệt chưa cho lưu dữ liệu. Bộ đã tạo cần kết nối và phiên khách để mở lại.
+          {t(
+            'Trình duyệt chưa cho lưu dữ liệu. Bộ đã tạo cần kết nối và phiên khách để mở lại.',
+          )}{' '}
         </p>
       )}
     </section>

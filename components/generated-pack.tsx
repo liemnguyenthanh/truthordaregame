@@ -1,5 +1,8 @@
 'use client';
 
+import { localizedError } from '@/lib/i18n/messages';
+import { useI18n } from './locale-provider';
+
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -15,6 +18,7 @@ export function GeneratedPackView() {
   return <GeneratedPackContent key={id} id={id} />;
 }
 function GeneratedPackContent({ id }: { id: string }) {
+  const { t, path, locale } = useI18n();
   const [generation, setGeneration] = useState<GeneratedPack | null>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
@@ -23,7 +27,7 @@ function GeneratedPackContent({ id }: { id: string }) {
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
     if (!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(id)) {
-      setError('Đường dẫn bộ câu hỏi không hợp lệ. Chọn bộ trong lịch sử của nhóm nhé.');
+      setError(t('Đường dẫn bộ câu hỏi không hợp lệ. Chọn bộ trong lịch sử của nhóm nhé.'));
       setLoading(false);
       return;
     }
@@ -53,7 +57,7 @@ function GeneratedPackContent({ id }: { id: string }) {
         return;
       if (!navigator.onLine) {
         setLoading(false);
-        if (!local) setError('Bộ này chưa được lưu trên thiết bị. Kết nối mạng để tải và chơi.');
+        if (!local) setError(t('Bộ này chưa được lưu trên thiết bị. Kết nối mạng để tải và chơi.'));
         return;
       }
       busy = true;
@@ -65,7 +69,7 @@ function GeneratedPackContent({ id }: { id: string }) {
         const data = await response.json();
         if (!response.ok) {
           if ([400, 401, 403, 404].includes(response.status)) finished = true;
-          throw new Error(data.error || 'Chưa tải được bộ câu hỏi. Hãy thử lại.');
+          throw new Error(data.error || t('Chưa tải được bộ câu hỏi. Hãy thử lại.'));
         }
         const next: GeneratedPack = data.generation;
         if (
@@ -73,7 +77,7 @@ function GeneratedPackContent({ id }: { id: string }) {
           !['pending', 'complete', 'failed'].includes(next.status) ||
           (next.status === 'complete' && (!next.pack || !next.questionSet || !next.group))
         )
-          throw new Error('Máy chủ trả về dữ liệu chưa hợp lệ. Hãy thử lại.');
+          throw new Error(t('Máy chủ trả về dữ liệu chưa hợp lệ. Hãy thử lại.'));
         if (controller.signal.aborted) return;
         setGeneration(next);
         setCached(false);
@@ -98,8 +102,9 @@ function GeneratedPackContent({ id }: { id: string }) {
               ].slice(0, 30),
             ),
           );
-          if (next.status !== 'pending' && localStorage.getItem('tod:generation-pending:v1') === id)
-            localStorage.removeItem('tod:generation-pending:v1');
+          const pendingKey = `tod:generation-pending:v1:${next.questionSet?.locale ?? next.locale ?? 'vi'}`;
+          if (next.status !== 'pending' && localStorage.getItem(pendingKey) === id)
+            localStorage.removeItem(pendingKey);
         } catch {
           setStorageWarning(true);
         }
@@ -108,7 +113,12 @@ function GeneratedPackContent({ id }: { id: string }) {
           if (local) {
             setGeneration(local);
             setCached(true);
-          } else setError(cause instanceof Error ? cause.message : 'Chưa thể kiểm tra bộ câu hỏi.');
+          } else
+            setError(
+              cause instanceof Error
+                ? localizedError(locale, cause.message)
+                : t('Chưa thể kiểm tra bộ câu hỏi.'),
+            );
         }
       } finally {
         busy = false;
@@ -128,14 +138,19 @@ function GeneratedPackContent({ id }: { id: string }) {
       window.removeEventListener('focus', resume);
       document.removeEventListener('visibilitychange', resume);
     };
-  }, [id, attempt]);
+  }, [id, attempt, locale, t]);
   if (generation?.status === 'complete' && generation.pack && generation.questionSet)
     return (
       <>
+        <p className={styles.cached}>
+          {locale === 'en' ? 'Question language: ' : 'Ngôn ngữ câu hỏi: '}
+          {generation.questionSet.locale === 'en' ? 'English' : 'Tiếng Việt'}
+        </p>
         {cached && (
           <p className={styles.cached}>
-            Đang dùng bộ đã lưu trên thiết bị. Tên và câu hỏi của nhóm được giữ riêng trong trình
-            duyệt này.
+            {t(
+              'Đang dùng bộ đã lưu trên thiết bị. Tên và câu hỏi của nhóm được giữ riêng trong trình duyệt này.',
+            )}{' '}
           </p>
         )}
         <Game
@@ -145,12 +160,12 @@ function GeneratedPackContent({ id }: { id: string }) {
         />
         {!storageWarning && <OfflineAiPack />}
         <div className={styles.shell}>
-          <Link className={styles.back} href="/vi/tao-bo-ai">
-            <ArrowLeft size={17} /> Những bộ của nhóm
+          <Link className={styles.back} href={path('/vi/tao-bo-ai')}>
+            <ArrowLeft size={17} /> {t('Những bộ của nhóm')}{' '}
           </Link>
           {storageWarning && (
             <p className="notice">
-              Chưa thể lưu bộ để mở lại khi offline. Bạn vẫn có thể chơi ngay.
+              {t('Chưa thể lưu bộ để mở lại khi offline. Bạn vẫn có thể chơi ngay.')}{' '}
             </p>
           )}
         </div>
@@ -158,8 +173,8 @@ function GeneratedPackContent({ id }: { id: string }) {
     );
   return (
     <section className={styles.shell}>
-      <Link className={styles.back} href="/vi/tao-bo-ai">
-        <ArrowLeft size={17} /> Về nhóm của bạn
+      <Link className={styles.back} href={path('/vi/tao-bo-ai')}>
+        <ArrowLeft size={17} /> {t('Về nhóm của bạn')}{' '}
       </Link>
       <div className={`${styles.panel} ${styles.statusPanel}`}>
         <Sparkles
@@ -168,19 +183,23 @@ function GeneratedPackContent({ id }: { id: string }) {
         />
         {generation?.status === 'failed' ? (
           <>
-            <h1>Chưa tạo được bộ lần này</h1>
+            <h1>{t('Chưa tạo được bộ lần này')}</h1>
             <p>
-              {generation.error ||
-                'AI chưa hoàn tất bộ câu hỏi phù hợp. Bạn có thể kiểm tra lại nhóm rồi chủ động tạo yêu cầu mới.'}
+              {(generation.error && localizedError(locale, generation.error)) ||
+                t(
+                  'AI chưa hoàn tất bộ câu hỏi phù hợp. Bạn có thể kiểm tra lại nhóm rồi chủ động tạo yêu cầu mới.',
+                )}
             </p>
-            <Link className="button button-primary" href="/vi/tao-bo-ai">
-              Về nhóm và thử lần mới
+            <Link className="button button-primary" href={path('/vi/tao-bo-ai')}>
+              {t('Về nhóm và thử lần mới')}{' '}
             </Link>
-            <p>Chỉ tạo lại khi bạn bấm nút. Yêu cầu mới có thể tính vào giới hạn trong ngày.</p>
+            <p>
+              {t('Chỉ tạo lại khi bạn bấm nút. Yêu cầu mới có thể tính vào giới hạn trong ngày.')}
+            </p>
           </>
         ) : error ? (
           <>
-            <h1>Chưa mở được bộ câu hỏi</h1>
+            <h1>{t('Chưa mở được bộ câu hỏi')}</h1>
             <p role="alert">{error}</p>
             <button
               className="button button-secondary"
@@ -190,24 +209,27 @@ function GeneratedPackContent({ id }: { id: string }) {
                 setAttempt((value) => value + 1);
               }}
             >
-              <RefreshCw size={17} /> Kiểm tra lại
+              <RefreshCw size={17} /> {t('Kiểm tra lại')}{' '}
             </button>
           </>
         ) : (
           <>
-            <h1>{loading ? 'Đang tìm bộ của nhóm…' : 'AI đang kết nối cả nhóm'}</h1>
+            <h1>{loading ? t('Đang tìm bộ của nhóm…') : t('AI đang kết nối cả nhóm')}</h1>
             <p role="status">
               {loading
-                ? 'Đang kiểm tra bộ câu hỏi trong phiên của bạn.'
-                : 'Câu hỏi đang được viết riêng cho từng thành viên. Trang tự cập nhật khi hoàn tất.'}
+                ? t('Đang kiểm tra bộ câu hỏi trong phiên của bạn.')
+                : t(
+                    'Câu hỏi đang được viết riêng cho từng thành viên. Trang tự cập nhật khi hoàn tất.',
+                  )}
             </p>
-            <p>Bạn có thể quay lại trang này từ lịch sử. Không cần tạo thêm yêu cầu.</p>
+            <p>{t('Bạn có thể quay lại trang này từ lịch sử. Không cần tạo thêm yêu cầu.')}</p>
           </>
         )}
       </div>
       <p className={styles.fine}>
-        Bộ riêng tư gắn với phiên khách và dữ liệu trình duyệt. Link này không cấp quyền truy cập
-        cho thiết bị khác.
+        {t(
+          'Bộ riêng tư gắn với phiên khách và dữ liệu trình duyệt. Link này không cấp quyền truy cập cho thiết bị khác.',
+        )}{' '}
       </p>
     </section>
   );

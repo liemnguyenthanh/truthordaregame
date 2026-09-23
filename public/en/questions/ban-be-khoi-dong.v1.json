@@ -1,0 +1,509 @@
+{
+  "schemaVersion": 1,
+  "packId": "friends-free",
+  "locale": "en",
+  "contentVersion": "1",
+  "trialQuestionIds": [],
+  "questions": [
+    {
+      "id": "t01",
+      "type": "truth",
+      "text": "What is the longest you have ever had a secret crush on someone?"
+    },
+    {
+      "id": "t02",
+      "type": "truth",
+      "text": "What quality in someone makes you fall for them most easily?"
+    },
+    {
+      "id": "t03",
+      "type": "truth",
+      "text": "Have you ever pretended not to like someone you actually really liked?"
+    },
+    {
+      "id": "t04",
+      "type": "truth",
+      "text": "Which romantic memory has stayed with you the longest?"
+    },
+    {
+      "id": "t05",
+      "type": "truth",
+      "text": "Would you rather someone tell you they like you in person or by text?"
+    },
+    {
+      "id": "t06",
+      "type": "truth",
+      "text": "If you could date a celebrity, who would you choose?"
+    },
+    {
+      "id": "t07",
+      "type": "truth",
+      "text": "Have you ever felt jealous but tried to act like you did not care?"
+    },
+    {
+      "id": "t08",
+      "type": "truth",
+      "text": "What is the sweetest thing someone has ever done for you?"
+    },
+    {
+      "id": "t09",
+      "type": "truth",
+      "text": "Do you believe a longtime friendship can turn into love?"
+    },
+    {
+      "id": "t10",
+      "type": "truth",
+      "text": "What kind of message could keep you smiling all day?"
+    },
+    {
+      "id": "t11",
+      "type": "truth",
+      "text": "Have you ever messaged your crush and then pretended it was sent by mistake?"
+    },
+    {
+      "id": "t12",
+      "type": "truth",
+      "text": "If your crush were here, what would you want to say but might not dare to?"
+    },
+    {
+      "id": "t13",
+      "type": "truth",
+      "text": "Would you prefer a romantic date or a fun, playful one?"
+    },
+    {
+      "id": "t14",
+      "type": "truth",
+      "text": "Have you ever reread old messages with someone you liked?"
+    },
+    {
+      "id": "t15",
+      "type": "truth",
+      "text": "What do you think is your most attractive quality?"
+    },
+    {
+      "id": "t16",
+      "type": "truth",
+      "text": "What silly thing have you done to get your crush's attention?"
+    },
+    {
+      "id": "t17",
+      "type": "truth",
+      "text": "Do you prefer someone else to make the first move, or to make it yourself?"
+    },
+    {
+      "id": "t18",
+      "type": "truth",
+      "text": "Is there a compliment you still remember receiving?"
+    },
+    {
+      "id": "t19",
+      "type": "truth",
+      "text": "Have you ever imagined dating a friend?"
+    },
+    {
+      "id": "t20",
+      "type": "truth",
+      "text": "If you had to pick a song to describe your love life, what would it be?"
+    },
+    {
+      "id": "t21",
+      "type": "truth",
+      "text": "Are you more attracted to someone's looks or the way they talk?"
+    },
+    {
+      "id": "t22",
+      "type": "truth",
+      "text": "How far back have you ever scrolled through your crush's profile?"
+    },
+    {
+      "id": "t23",
+      "type": "truth",
+      "text": "If you could revisit one moment with someone you used to like, which would you choose?"
+    },
+    {
+      "id": "t24",
+      "type": "truth",
+      "text": "Could you fall for someone who is completely different from your usual type?"
+    },
+    {
+      "id": "t25",
+      "type": "truth",
+      "text": "What makes you lose interest in someone the fastest?"
+    },
+    {
+      "id": "t26",
+      "type": "truth",
+      "text": "Have you ever posted a story just so one particular person would see it?"
+    },
+    {
+      "id": "t27",
+      "type": "truth",
+      "text": "If an ex texted you \"I miss you,\" what would your first reaction be?"
+    },
+    {
+      "id": "t28",
+      "type": "truth",
+      "text": "Do you prefer holding hands, hugging, or resting your head on someone's shoulder?"
+    },
+    {
+      "id": "t29",
+      "type": "truth",
+      "text": "Have you ever had a late-night conversation you did not want to end?"
+    },
+    {
+      "id": "t30",
+      "type": "truth",
+      "text": "Whose fashion sense in this group matches yours the most?"
+    },
+    {
+      "id": "t31",
+      "type": "truth",
+      "text": "What surprise gift would you like to receive from someone you like?"
+    },
+    {
+      "id": "t32",
+      "type": "truth",
+      "text": "Have you ever liked two people at the same time?"
+    },
+    {
+      "id": "t33",
+      "type": "truth",
+      "text": "Do you fall in love easily, or rarely develop feelings?"
+    },
+    {
+      "id": "t34",
+      "type": "truth",
+      "text": "If you had to choose someone in this group to travel with, who would it be?"
+    },
+    {
+      "id": "t35",
+      "type": "truth",
+      "text": "Have you ever spent ages composing a message and then never sent it?"
+    },
+    {
+      "id": "t36",
+      "type": "truth",
+      "text": "What would your perfect first date look like?"
+    },
+    {
+      "id": "t37",
+      "type": "truth",
+      "text": "What affectionate nickname would you like to be called?"
+    },
+    {
+      "id": "t38",
+      "type": "truth",
+      "text": "Have you ever mistakenly thought someone liked you?"
+    },
+    {
+      "id": "t39",
+      "type": "truth",
+      "text": "Could you handle a long-distance relationship if you really liked someone?"
+    },
+    {
+      "id": "t40",
+      "type": "truth",
+      "text": "What romantic experience would you like to have at least once?"
+    },
+    {
+      "id": "t41",
+      "type": "truth",
+      "text": "Have you ever turned someone down and later regretted it?"
+    },
+    {
+      "id": "t42",
+      "type": "truth",
+      "text": "Do you prefer the excitement of a new crush or the feeling of lasting love?"
+    },
+    {
+      "id": "t43",
+      "type": "truth",
+      "text": "If you had to describe your type in three words, what would they be?"
+    },
+    {
+      "id": "t44",
+      "type": "truth",
+      "text": "Have you ever dreamed about your crush and woken up still feeling happy?"
+    },
+    {
+      "id": "t45",
+      "type": "truth",
+      "text": "What do you think is the hardest thing to say when you like someone?"
+    },
+    {
+      "id": "t46",
+      "type": "truth",
+      "text": "If you could learn that someone in this group once liked you, who would you hope it was?"
+    },
+    {
+      "id": "t47",
+      "type": "truth",
+      "text": "Have you ever saved a photo of your crush on your phone?"
+    },
+    {
+      "id": "t48",
+      "type": "truth",
+      "text": "What would be the ideal setting for a first kiss?"
+    },
+    {
+      "id": "t49",
+      "type": "truth",
+      "text": "If you could choose just one quality in a future partner, what would it be?"
+    },
+    {
+      "id": "t50",
+      "type": "truth",
+      "text": "Is there something romantic you want to try but have not found the courage for yet?"
+    },
+    {
+      "id": "d01",
+      "type": "dare",
+      "text": "Look someone in the group in the eyes and give them a sincere compliment."
+    },
+    {
+      "id": "d02",
+      "type": "dare",
+      "text": "Act out confessing your love to a pillow or a nearby object."
+    },
+    {
+      "id": "d03",
+      "type": "dare",
+      "text": "Sing a part of the love song you remember best."
+    },
+    {
+      "id": "d04",
+      "type": "dare",
+      "text": "Pose as if you were on the cover of a love-song album and hold it for a group photo."
+    },
+    {
+      "id": "d05",
+      "type": "dare",
+      "text": "Choose someone and act out accidentally meeting them in a romantic movie."
+    },
+    {
+      "id": "d06",
+      "type": "dare",
+      "text": "Make up a pickup line for the person opposite you."
+    },
+    {
+      "id": "d07",
+      "type": "dare",
+      "text": "Use three emojis to describe your ideal partner and let the group guess."
+    },
+    {
+      "id": "d08",
+      "type": "dare",
+      "text": "Dance confidently to a song the group chooses."
+    },
+    {
+      "id": "d09",
+      "type": "dare",
+      "text": "Imitate a famous character's voice and say, \"I think I've fallen for you.\""
+    },
+    {
+      "id": "d10",
+      "type": "dare",
+      "text": "Let someone give you a new nickname to use until the end of the game."
+    },
+    {
+      "id": "d11",
+      "type": "dare",
+      "text": "Act out your ideal crush without speaking and let everyone guess."
+    },
+    {
+      "id": "d12",
+      "type": "dare",
+      "text": "Tell an imaginary love story in exactly three sentences."
+    },
+    {
+      "id": "d13",
+      "type": "dare",
+      "text": "Invent a secret handshake with the person next to you."
+    },
+    {
+      "id": "d14",
+      "type": "dare",
+      "text": "Sincerely thank someone in the group for something you appreciate about them."
+    },
+    {
+      "id": "d15",
+      "type": "dare",
+      "text": "Announce your own name like a host introducing the lead in a romantic movie."
+    },
+    {
+      "id": "d16",
+      "type": "dare",
+      "text": "Create an advertising slogan for yourself as the \"ideal partner.\""
+    },
+    {
+      "id": "d17",
+      "type": "dare",
+      "text": "Choose someone and pose together like a coming-of-age movie poster."
+    },
+    {
+      "id": "d18",
+      "type": "dare",
+      "text": "Say a ridiculous pickup line in an extremely serious voice."
+    },
+    {
+      "id": "d19",
+      "type": "dare",
+      "text": "Act out your reaction if your crush suddenly texted, \"I like you too.\""
+    },
+    {
+      "id": "d20",
+      "type": "dare",
+      "text": "Let the group choose an emotion, then act it out like a movie scene."
+    },
+    {
+      "id": "d21",
+      "type": "dare",
+      "text": "Say three positive things about the person sitting nearest to you."
+    },
+    {
+      "id": "d22",
+      "type": "dare",
+      "text": "Make up a love poem that includes the name of someone in the group."
+    },
+    {
+      "id": "d23",
+      "type": "dare",
+      "text": "Pretend to call your crush and ask them on a date."
+    },
+    {
+      "id": "d24",
+      "type": "dare",
+      "text": "Act out having your confession of love rejected in the funniest way you can."
+    },
+    {
+      "id": "d25",
+      "type": "dare",
+      "text": "Choose someone and make a heart shape together with your hands."
+    },
+    {
+      "id": "d26",
+      "type": "dare",
+      "text": "Say something you think would make someone blush."
+    },
+    {
+      "id": "d27",
+      "type": "dare",
+      "text": "Describe a perfect date as if you were a tour guide."
+    },
+    {
+      "id": "d28",
+      "type": "dare",
+      "text": "Play a TV host and introduce the person next to you like a star."
+    },
+    {
+      "id": "d29",
+      "type": "dare",
+      "text": "Flirt with someone using only your eyes and facial expressions, without speaking."
+    },
+    {
+      "id": "d30",
+      "type": "dare",
+      "text": "Do a catwalk as if you were arriving for a first date with your crush."
+    },
+    {
+      "id": "d31",
+      "type": "dare",
+      "text": "Name a song you would dedicate to someone in the group and explain why."
+    },
+    {
+      "id": "d32",
+      "type": "dare",
+      "text": "Act out receiving a message from your crush at midnight."
+    },
+    {
+      "id": "d33",
+      "type": "dare",
+      "text": "Make up a goodnight wish that is both sweet and funny."
+    },
+    {
+      "id": "d34",
+      "type": "dare",
+      "text": "Let the person next to you choose a word and turn it into a pickup line."
+    },
+    {
+      "id": "d35",
+      "type": "dare",
+      "text": "Play the lead in a breakup scene, but make the group laugh."
+    },
+    {
+      "id": "d36",
+      "type": "dare",
+      "text": "Use a nearby object as a prop and propose to it very formally."
+    },
+    {
+      "id": "d37",
+      "type": "dare",
+      "text": "Choose someone and invent a title for a romantic movie starring the two of you."
+    },
+    {
+      "id": "d38",
+      "type": "dare",
+      "text": "Give a compliment to the person you talk to least in the group."
+    },
+    {
+      "id": "d39",
+      "type": "dare",
+      "text": "Show three expressions: seeing your crush, getting a compliment from them, and being left on read."
+    },
+    {
+      "id": "d40",
+      "type": "dare",
+      "text": "Imagine you have won \"Most Adorable Person of the Year\" and give an acceptance speech."
+    },
+    {
+      "id": "d41",
+      "type": "dare",
+      "text": "Choose someone, give them a cute nickname, and explain it."
+    },
+    {
+      "id": "d42",
+      "type": "dare",
+      "text": "Use the names of three foods to create a meaningful declaration of love."
+    },
+    {
+      "id": "d43",
+      "type": "dare",
+      "text": "Act out how you think you would react if someone unexpectedly confessed their feelings for you."
+    },
+    {
+      "id": "d44",
+      "type": "dare",
+      "text": "Choose someone for a staring contest; whoever laughs first loses."
+    },
+    {
+      "id": "d45",
+      "type": "dare",
+      "text": "Strike a photo pose you think would catch your crush's attention."
+    },
+    {
+      "id": "d46",
+      "type": "dare",
+      "text": "Read any sentence on the screen in your most romantic voice."
+    },
+    {
+      "id": "d47",
+      "type": "dare",
+      "text": "Pretend to be a love expert and give the group a funny piece of advice."
+    },
+    {
+      "id": "d48",
+      "type": "dare",
+      "text": "Choose someone and act out a wedding photo shoot without laughing."
+    },
+    {
+      "id": "d49",
+      "type": "dare",
+      "text": "Invent an opening line for meeting a stranger that you would actually dare to use."
+    },
+    {
+      "id": "d50",
+      "type": "dare",
+      "text": "Send a hug through a gesture or words to the person in the group you most want to thank."
+    }
+  ]
+}

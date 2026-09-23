@@ -1,7 +1,9 @@
-const CACHE = 'tod-673b469a9223';
-const OFFLINE = '/offline.html';
+const CACHE = 'tod-e84efbe09c94';
+const OFFLINE = { vi: '/offline.html', en: '/offline-en.html' };
+const validLocale = (value) => value === 'vi' || value === 'en';
+const localeForPath = (path) => (path === '/en' || path.startsWith('/en/') ? 'en' : 'vi');
 self.addEventListener('install', (event) =>
-  event.waitUntil(caches.open(CACHE).then((cache) => cache.add(OFFLINE))),
+  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(Object.values(OFFLINE)))),
 );
 self.addEventListener('activate', (event) =>
   event.waitUntil(
@@ -59,9 +61,11 @@ self.addEventListener('message', (event) => {
       (async () => {
         try {
           const cache = await caches.open(CACHE);
-          await cachePage(cache, '/vi/bo-ai');
-          await cachePage(cache, '/vi/tao-bo-ai');
-          await cachePage(cache, '/vi');
+          const locale = event.data.locale || 'vi';
+          if (!validLocale(locale)) throw new Error('Invalid locale');
+          await cachePage(cache, locale === 'en' ? '/en/ai-pack' : '/vi/bo-ai');
+          await cachePage(cache, locale === 'en' ? '/en/create-ai-pack' : '/vi/tao-bo-ai');
+          await cachePage(cache, `/${locale}`);
           event.ports[0]?.postMessage({ success: true });
         } catch {
           event.ports[0]?.postMessage({ success: false });
@@ -73,15 +77,32 @@ self.addEventListener('message', (event) => {
       (async () => {
         try {
           const pack = event.data.pack;
+          const locale = pack.locale || 'vi';
           if (
-            !/^\/(?:vi\/questions\/[a-zA-Z0-9._-]+\.json|content\/questions\/[a-z0-9-]+\/[a-zA-Z0-9-]+)$/.test(
-              pack.file,
-            ) ||
+            !validLocale(locale) ||
+            typeof pack.file !== 'string' ||
             !/^[a-z0-9-]+$/.test(pack.slug)
           )
             throw new Error('Invalid pack');
+          const file = new URL(pack.file, self.location.origin);
+          const bundled = new RegExp(`^/${locale}/questions/[a-zA-Z0-9._-]+\\.json$`).test(
+            file.pathname,
+          );
+          const versioned = /^\/content\/questions\/[a-z0-9-]+\/[a-zA-Z0-9-]+$/.test(file.pathname);
+          const fileLocale = file.searchParams.get('locale') || 'vi';
+          if (
+            file.origin !== self.location.origin ||
+            file.hash ||
+            (!bundled && !versioned) ||
+            (bundled && file.search) ||
+            (versioned &&
+              (fileLocale !== locale ||
+                [...file.searchParams.keys()].some((key) => key !== 'locale')))
+          )
+            throw new Error('Invalid content URL');
           const cache = await caches.open(CACHE);
-          for (const route of ['/vi', `/vi/choi/${pack.slug}`]) await cachePage(cache, route);
+          const game = locale === 'en' ? `/en/play/${pack.slug}` : `/vi/choi/${pack.slug}`;
+          for (const route of [`/${locale}`, game]) await cachePage(cache, route);
           const data = await fetch(pack.file);
           if (!data.ok) throw new Error('Pack unavailable');
           await cache.put(pack.file, data);
@@ -102,7 +123,11 @@ self.addEventListener('fetch', (event) => {
     url.pathname.startsWith('/admin') ||
     url.pathname === '/sw.js' ||
     url.pathname.startsWith('/vi/thanh-toan') ||
-    url.pathname.startsWith('/vi/khoi-phuc')
+    url.pathname.startsWith('/vi/khoi-phuc') ||
+    url.pathname.startsWith('/en/checkout') ||
+    url.pathname.startsWith('/en/restore') ||
+    url.pathname.startsWith('/en/thanh-toan') ||
+    url.pathname.startsWith('/en/khoi-phuc')
   )
     return;
   if (req.mode === 'navigate') {
@@ -116,7 +141,10 @@ self.addEventListener('fetch', (event) => {
           }
           return response;
         } catch {
-          return (await matchCached(url.pathname)) || (await matchCached(OFFLINE));
+          return (
+            (await matchCached(url.pathname)) ||
+            (await matchCached(OFFLINE[localeForPath(url.pathname)]))
+          );
         }
       })(),
     );
@@ -125,6 +153,7 @@ self.addEventListener('fetch', (event) => {
   if (
     url.pathname.startsWith('/_next/static/') ||
     url.pathname.startsWith('/vi/questions/') ||
+    url.pathname.startsWith('/en/questions/') ||
     url.pathname.startsWith('/content/questions/')
   ) {
     event.respondWith(

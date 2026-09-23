@@ -1,10 +1,12 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import type { Locale } from '@/lib/i18n';
 import { useRouter } from 'next/navigation';
 import type { Pack, Question } from '@/lib/types';
 import type { ContentRecord } from '@/lib/admin/validation';
 import { parseQuestions } from '@/lib/admin/validation';
 import { Plus, LogOut, Upload, Save, ArrowLeft, Trash2, LockKeyhole } from 'lucide-react';
+type AdminRecord = ContentRecord & { source_revision?: string; untranslated?: boolean };
 type Draft = Omit<
   Pack,
   | 'questionFile'
@@ -14,7 +16,7 @@ type Draft = Omit<
   | 'dareCount'
   | 'trialCount'
   | 'productId'
-> & { questions: Question[]; expected: string | null };
+> & { questions: Question[]; expected: string | null; sourceRevision?: string };
 function empty(): Draft {
   return {
     id: '',
@@ -45,11 +47,13 @@ async function request(url: string, method = 'GET', body?: unknown) {
 }
 export function AdminPanel({ authenticated }: { authenticated: boolean }) {
   const router = useRouter();
+  const [locale, setLocale] = useState<Locale>('vi');
+  const refreshId = useRef(0);
   const [password, setPassword] = useState(''),
     [busy, setBusy] = useState(false),
     [message, setMessage] = useState(''),
     [error, setError] = useState('');
-  const [records, setRecords] = useState<ContentRecord[]>([]),
+  const [records, setRecords] = useState<AdminRecord[]>([]),
     [draft, setDraft] = useState<Draft | null>(null),
     [dirty, setDirty] = useState(false),
     [loading, setLoading] = useState(authenticated);
@@ -61,19 +65,46 @@ export function AdminPanel({ authenticated }: { authenticated: boolean }) {
     setMessage('');
   };
   async function refresh() {
+    const requestId = ++refreshId.current;
     setLoading(true);
     try {
-      setRecords((await request('/api/admin/packs')).packs);
+      const translated = (await request(`/api/admin/packs?locale=${locale}`))
+        .packs as AdminRecord[];
+      const source =
+        locale === 'en'
+          ? ((await request('/api/admin/packs?locale=vi')).packs as ContentRecord[])
+          : [];
+      if (requestId !== refreshId.current) return;
+      setRecords(
+        locale === 'vi'
+          ? translated
+          : source.map((record) => {
+              const translation = translated.find(
+                (item) => item.metadata.id === record.metadata.id,
+              );
+              return translation
+                ? { ...translation, source_revision: record.revision }
+                : {
+                    ...record,
+                    metadata: { ...record.metadata, published: false },
+                    source_revision: record.revision,
+                    untranslated: true,
+                  };
+            }),
+      );
       setError('');
     } catch (e) {
-      setError((e as Error).message);
+      if (requestId === refreshId.current) setError((e as Error).message);
     } finally {
-      setLoading(false);
+      if (requestId === refreshId.current) setLoading(false);
     }
   }
   useEffect(() => {
     if (authenticated) void refresh();
-  }, [authenticated]);
+    return () => {
+      refreshId.current += 1;
+    };
+  }, [authenticated, locale]);
   useEffect(() => {
     if (!dirty) return;
     const warn = (e: BeforeUnloadEvent) => {
@@ -83,14 +114,15 @@ export function AdminPanel({ authenticated }: { authenticated: boolean }) {
     window.addEventListener('beforeunload', warn);
     return () => window.removeEventListener('beforeunload', warn);
   }, [dirty]);
-  function open(record?: ContentRecord) {
+  function open(record?: AdminRecord) {
     if (dirty && !confirm('Bỏ các thay đổi chưa lưu?')) return;
     setDraft(
       record
         ? {
             ...record.metadata,
             questions: record.question_set.questions,
-            expected: record.revision,
+            expected: record.untranslated ? null : record.revision,
+            sourceRevision: record.source_revision,
           }
         : empty(),
     );
@@ -106,9 +138,14 @@ export function AdminPanel({ authenticated }: { authenticated: boolean }) {
     setError('');
     setMessage('');
     try {
-      const data = await request('/api/admin/packs', 'POST', draft);
-      const r = data.record as ContentRecord;
-      setDraft({ ...r.metadata, questions: r.question_set.questions, expected: r.revision });
+      const data = await request('/api/admin/packs', 'POST', { ...draft, locale });
+      const r = data.record as AdminRecord;
+      setDraft({
+        ...r.metadata,
+        questions: r.question_set.questions,
+        expected: r.revision,
+        sourceRevision: r.source_revision ?? draft.sourceRevision,
+      });
       setDirty(false);
       setRecords((old) => [r, ...old.filter((x) => x.metadata.id !== r.metadata.id)]);
       setMessage(
@@ -219,6 +256,32 @@ export function AdminPanel({ authenticated }: { authenticated: boolean }) {
           Đăng xuất
         </button>
       </header>
+      <label className="admin-toolbar">
+        Ngôn ngữ nội dung
+        <select
+          aria-label="Ngôn ngữ nội dung"
+          value={locale}
+          disabled={busy}
+          onChange={(event) => {
+            if (dirty && !confirm('Bỏ các thay đổi chưa lưu để đổi ngôn ngữ?')) return;
+            setLocale(event.target.value as Locale);
+            setDraft(null);
+            setDirty(false);
+            setRecords([]);
+            setMessage('');
+            setError('');
+          }}
+        >
+          <option value="vi">Tiếng Việt — bản gốc</option>
+          <option value="en">English — bản dịch</option>
+        </select>
+      </label>
+      {locale === 'en' && (
+        <p className="admin-hint">
+          Chọn một bộ tiếng Việt để tạo bản dịch. Dịch tên, mô tả và nội dung; giữ nguyên mã, loại
+          câu hỏi, thứ tự câu và quyền mua. Chỉ xuất bản sau khi duyệt bản dịch.
+        </p>
+      )}
       {error && (
         <p role="alert" className="admin-error">
           {error}
@@ -236,7 +299,11 @@ export function AdminPanel({ authenticated }: { authenticated: boolean }) {
               {records.length} bộ · {records.filter((r) => r.metadata.published).length} đang xuất
               bản
             </span>
-            <button className="button button-primary" onClick={() => open()}>
+            <button
+              className="button button-primary"
+              disabled={locale === 'en'}
+              onClick={() => open()}
+            >
               <Plus size={18} />
               Tạo bộ mới
             </button>
@@ -258,7 +325,11 @@ export function AdminPanel({ authenticated }: { authenticated: boolean }) {
                     </small>
                   </span>
                   <span className={r.metadata.published ? 'admin-badge live' : 'admin-badge'}>
-                    {r.metadata.published ? 'Đã xuất bản' : 'Bản nháp'}
+                    {r.untranslated
+                      ? 'Chưa dịch — tạo bản dịch'
+                      : r.metadata.published
+                        ? 'Đã xuất bản'
+                        : 'Bản nháp'}
                   </span>
                   <span aria-hidden>→</span>
                 </button>
@@ -317,7 +388,7 @@ export function AdminPanel({ authenticated }: { authenticated: boolean }) {
                       Mã bộ
                       <input
                         required
-                        disabled={!!draft.expected}
+                        disabled={locale === 'en' || !!draft.expected}
                         pattern="[a-z0-9]+(-[a-z0-9]+)*"
                         maxLength={80}
                         value={draft.id}
@@ -334,7 +405,7 @@ export function AdminPanel({ authenticated }: { authenticated: boolean }) {
                       Đường dẫn
                       <input
                         required
-                        disabled={!!draft.expected}
+                        disabled={locale === 'en' || !!draft.expected}
                         pattern="[a-z0-9]+(-[a-z0-9]+)*"
                         maxLength={80}
                         value={draft.slug}
@@ -362,6 +433,7 @@ export function AdminPanel({ authenticated }: { authenticated: boolean }) {
                       <input
                         required
                         maxLength={16}
+                        disabled={locale === 'en'}
                         value={draft.icon}
                         onChange={(e) => patch({ icon: e.target.value })}
                       />
@@ -369,6 +441,7 @@ export function AdminPanel({ authenticated }: { authenticated: boolean }) {
                     <label>
                       Màu sắc
                       <select
+                        disabled={locale === 'en'}
                         value={draft.color}
                         onChange={(e) => patch({ color: e.target.value as Pack['color'] })}
                       >
@@ -382,6 +455,7 @@ export function AdminPanel({ authenticated }: { authenticated: boolean }) {
                     <label>
                       Loại bộ
                       <select
+                        disabled={locale === 'en'}
                         value={draft.tier}
                         onChange={(e) =>
                           patch({
@@ -403,6 +477,7 @@ export function AdminPanel({ authenticated }: { authenticated: boolean }) {
                           max={100000000}
                           step={1}
                           required
+                          disabled={locale === 'en'}
                           value={draft.priceHintVnd}
                           onChange={(e) => patch({ priceHintVnd: Number(e.target.value) })}
                         />
@@ -416,6 +491,7 @@ export function AdminPanel({ authenticated }: { authenticated: boolean }) {
                         type="number"
                         min={2}
                         max={100}
+                        disabled={locale === 'en'}
                         value={draft.playerRange.min}
                         onChange={(e) =>
                           patch({
@@ -430,6 +506,7 @@ export function AdminPanel({ authenticated }: { authenticated: boolean }) {
                         type="number"
                         min={draft.playerRange.min}
                         max={100}
+                        disabled={locale === 'en'}
                         value={draft.playerRange.max}
                         onChange={(e) =>
                           patch({
@@ -442,6 +519,7 @@ export function AdminPanel({ authenticated }: { authenticated: boolean }) {
                   <label>
                     Độ tuổi
                     <select
+                      disabled={locale === 'en'}
                       value={draft.ageLabel}
                       onChange={(e) => patch({ ageLabel: e.target.value })}
                     >
@@ -458,6 +536,7 @@ export function AdminPanel({ authenticated }: { authenticated: boolean }) {
                       <label key={c.id} className="admin-check">
                         <input
                           type="checkbox"
+                          disabled={locale === 'en'}
                           checked={draft.categoryIds.includes(c.id)}
                           onChange={(e) =>
                             patch({
@@ -545,8 +624,9 @@ export function AdminPanel({ authenticated }: { authenticated: boolean }) {
                         />
                       </label>
                       <small>
-                        Nhận file bộ cũ có trường questions hoặc mảng câu hỏi. Nếu chưa có ID, hệ
-                        thống tự tạo.
+                        {locale === 'en'
+                          ? 'Bản dịch phải giữ nguyên ID, loại và thứ tự câu hỏi của bản gốc. JSON chỉ thay nội dung text.'
+                          : 'Nhận file bộ cũ có trường questions hoặc mảng câu hỏi. Nếu chưa có ID, hệ thống tự tạo.'}
                       </small>
                       <button
                         type="button"
@@ -564,6 +644,7 @@ export function AdminPanel({ authenticated }: { authenticated: boolean }) {
                           <span>Câu {i + 1}</span>
                           <select
                             aria-label={`Loại câu ${i + 1}`}
+                            disabled={locale === 'en'}
                             value={q.type}
                             onChange={(e) =>
                               patch({
@@ -579,6 +660,7 @@ export function AdminPanel({ authenticated }: { authenticated: boolean }) {
                           <button
                             type="button"
                             className="admin-delete"
+                            disabled={locale === 'en'}
                             aria-label={`Xóa câu ${i + 1}`}
                             onClick={() =>
                               patch({ questions: draft.questions.filter((_, j) => j !== i) })
@@ -607,6 +689,7 @@ export function AdminPanel({ authenticated }: { authenticated: boolean }) {
                   <button
                     type="button"
                     className="button button-secondary"
+                    disabled={locale === 'en'}
                     onClick={() =>
                       patch({
                         questions: [

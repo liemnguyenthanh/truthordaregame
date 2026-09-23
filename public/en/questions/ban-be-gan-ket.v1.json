@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "packId": "friends-premium",
+  "locale": "en",
+  "contentVersion": "1",
+  "trialQuestionIds": ["t01", "t02", "t03", "t04", "d01", "d02", "d03", "d04"],
+  "questions": [
+    {
+      "id": "t01",
+      "type": "truth",
+      "text": "What small quality do you always appreciate in a friend?"
+    },
+    {
+      "id": "t02",
+      "type": "truth",
+      "text": "When did you last feel proud of yourself?"
+    },
+    {
+      "id": "t03",
+      "type": "truth",
+      "text": "If the whole group went on a trip, where would you want to go?"
+    },
+    {
+      "id": "t04",
+      "type": "truth",
+      "text": "What skill would you like to learn with a friend?"
+    },
+    {
+      "id": "t05",
+      "type": "truth",
+      "text": "What piece of advice helped you change?"
+    },
+    {
+      "id": "t06",
+      "type": "truth",
+      "text": "What would you like the group to do together this year?"
+    },
+    {
+      "id": "d01",
+      "type": "dare",
+      "text": "Thank someone in the group directly."
+    },
+    {
+      "id": "d02",
+      "type": "dare",
+      "text": "Advertise a nearby object for 20 seconds."
+    },
+    {
+      "id": "d03",
+      "type": "dare",
+      "text": "Act out a movie scene using facial expressions and let the group guess."
+    },
+    {
+      "id": "d04",
+      "type": "dare",
+      "text": "Give everyone in the group a positive nickname."
+    },
+    {
+      "id": "d05",
+      "type": "dare",
+      "text": "Write a two-line poem about today's gathering."
+    },
+    {
+      "id": "d06",
+      "type": "dare",
+      "text": "Invite a willing volunteer to create a 10-second dance with you."
+    }
+  ]
+}

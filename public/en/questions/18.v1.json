@@ -1,0 +1,1009 @@
+{
+  "schemaVersion": 1,
+  "packId": "premium-18",
+  "locale": "en",
+  "contentVersion": "1",
+  "trialQuestionIds": ["t01", "t02", "t03", "t04", "d01", "d02", "d03", "d04"],
+  "questions": [
+    {
+      "id": "t01",
+      "type": "truth",
+      "text": "Where do you most enjoy your partner touching you while cuddling?"
+    },
+    {
+      "id": "t02",
+      "type": "truth",
+      "text": "What excites you most about watching your partner undress?"
+    },
+    {
+      "id": "t03",
+      "type": "truth",
+      "text": "What public place have you imagined having sex with your partner in?"
+    },
+    {
+      "id": "t04",
+      "type": "truth",
+      "text": "What kind of kiss do you like best: gentle, deep, or passionate?"
+    },
+    {
+      "id": "t05",
+      "type": "truth",
+      "text": "Is there a part of your partner’s body you immediately want to lick or kiss?"
+    },
+    {
+      "id": "t06",
+      "type": "truth",
+      "text": "What position would you like to try that you have not tried together?"
+    },
+    {
+      "id": "t07",
+      "type": "truth",
+      "text": "Do you enjoy your partner whispering dirty talk in your ear during sex?"
+    },
+    {
+      "id": "t08",
+      "type": "truth",
+      "text": "Have you ever masturbated while thinking about your partner? When was the last time?"
+    },
+    {
+      "id": "t09",
+      "type": "truth",
+      "text": "Do you prefer your partner gently biting you or licking you?"
+    },
+    {
+      "id": "t10",
+      "type": "truth",
+      "text": "What would you like your partner to wear when you play together?"
+    },
+    {
+      "id": "t11",
+      "type": "truth",
+      "text": "Which part of your body do you most enjoy your partner complimenting?"
+    },
+    {
+      "id": "t12",
+      "type": "truth",
+      "text": "Where have you dreamed about having sex with your partner?"
+    },
+    {
+      "id": "t13",
+      "type": "truth",
+      "text": "Do you enjoy being lightly tied up or letting your partner take control while being intimate?"
+    },
+    {
+      "id": "t14",
+      "type": "truth",
+      "text": "Would you like to try sex toys together? Which kind?"
+    },
+    {
+      "id": "t15",
+      "type": "truth",
+      "text": "Do you enjoy watching your partner masturbate in front of you?"
+    },
+    {
+      "id": "t16",
+      "type": "truth",
+      "text": "Do you prefer your partner sucking firmly or gently?"
+    },
+    {
+      "id": "t17",
+      "type": "truth",
+      "text": "What have you imagined your partner doing to you during sex?"
+    },
+    {
+      "id": "t18",
+      "type": "truth",
+      "text": "Would you enjoy a massage with oil before having sex?"
+    },
+    {
+      "id": "t19",
+      "type": "truth",
+      "text": "Would you like to try having sex in the shower or bath?"
+    },
+    {
+      "id": "t20",
+      "type": "truth",
+      "text": "What naughty nickname would you like your partner to call you?"
+    },
+    {
+      "id": "t21",
+      "type": "truth",
+      "text": "Do you prefer your partner caressing you from behind or from the front?"
+    },
+    {
+      "id": "t22",
+      "type": "truth",
+      "text": "Have you ever wanted your partner to reward you with oral sex after a long day?"
+    },
+    {
+      "id": "t23",
+      "type": "truth",
+      "text": "Do you prefer sex that is fast and intense or slow and deep?"
+    },
+    {
+      "id": "t24",
+      "type": "truth",
+      "text": "Would you like to try having sex while watching an erotic film together?"
+    },
+    {
+      "id": "t25",
+      "type": "truth",
+      "text": "Do you enjoy your partner holding your hands or legs firmly during sex?"
+    },
+    {
+      "id": "t26",
+      "type": "truth",
+      "text": "Have you ever imagined your partner wearing sexy underwear and taking it off piece by piece?"
+    },
+    {
+      "id": "t27",
+      "type": "truth",
+      "text": "Do you enjoy your partner whispering naughty words while you play?"
+    },
+    {
+      "id": "t28",
+      "type": "truth",
+      "text": "Would you rather try doggy style or missionary?"
+    },
+    {
+      "id": "t29",
+      "type": "truth",
+      "text": "Do you enjoy your partner licking from your neck downward?"
+    },
+    {
+      "id": "t30",
+      "type": "truth",
+      "text": "Have you ever wanted to have sex with your partner on a table or sofa?"
+    },
+    {
+      "id": "t31",
+      "type": "truth",
+      "text": "Do you prefer your partner using their hands or mouth before intercourse?"
+    },
+    {
+      "id": "t32",
+      "type": "truth",
+      "text": "What roleplay would you like to try with your partner, such as boss and employee or doctor and patient?"
+    },
+    {
+      "id": "t33",
+      "type": "truth",
+      "text": "Do you prefer your partner going down on you slowly or quickly and intensely?"
+    },
+    {
+      "id": "t34",
+      "type": "truth",
+      "text": "Have you ever imagined your partner having sex with you while you were asleep?"
+    },
+    {
+      "id": "t35",
+      "type": "truth",
+      "text": "Do you enjoy your partner gently biting your bottom or thighs?"
+    },
+    {
+      "id": "t36",
+      "type": "truth",
+      "text": "Would you like to try having sex standing up?"
+    },
+    {
+      "id": "t37",
+      "type": "truth",
+      "text": "Do you enjoy your partner watching you intently while you undress?"
+    },
+    {
+      "id": "t38",
+      "type": "truth",
+      "text": "Have you ever wanted your partner to record a short video while you were being intimate?"
+    },
+    {
+      "id": "t39",
+      "type": "truth",
+      "text": "Do you enjoy your partner applying lotion or oil and massaging you?"
+    },
+    {
+      "id": "t40",
+      "type": "truth",
+      "text": "Would you like to try having sex outdoors, somewhere private enough?"
+    },
+    {
+      "id": "t41",
+      "type": "truth",
+      "text": "Do you prefer your partner using their fingers or tongue?"
+    },
+    {
+      "id": "t42",
+      "type": "truth",
+      "text": "Have you ever imagined your partner rewarding you as soon as you got home?"
+    },
+    {
+      "id": "t43",
+      "type": "truth",
+      "text": "Do you enjoy your partner holding or gently pulling your hair during sex?"
+    },
+    {
+      "id": "t44",
+      "type": "truth",
+      "text": "Would you like to try the 69 position with your partner?"
+    },
+    {
+      "id": "t45",
+      "type": "truth",
+      "text": "Do you enjoy your partner saying “good job” or “you taste so good” while you play?"
+    },
+    {
+      "id": "t46",
+      "type": "truth",
+      "text": "Have you ever wanted to have sex with your partner on the floor?"
+    },
+    {
+      "id": "t47",
+      "type": "truth",
+      "text": "Do you enjoy your partner sucking on you while you watch a film?"
+    },
+    {
+      "id": "t48",
+      "type": "truth",
+      "text": "Would you like to try wearing a blindfold while being intimate?"
+    },
+    {
+      "id": "t49",
+      "type": "truth",
+      "text": "Do you enjoy your partner caressing you slowly, then suddenly becoming more intense?"
+    },
+    {
+      "id": "t50",
+      "type": "truth",
+      "text": "Have you ever imagined having sex with your partner in a changing room or public restroom?"
+    },
+    {
+      "id": "d01",
+      "type": "dare",
+      "text": "Kiss your partner’s neck and ears for 20 seconds without using your hands."
+    },
+    {
+      "id": "d02",
+      "type": "dare",
+      "text": "Whisper three naughty things you want to do with your partner into their ear."
+    },
+    {
+      "id": "d03",
+      "type": "dare",
+      "text": "Remove one item of your partner’s clothing with your mouth, if you both agree."
+    },
+    {
+      "id": "d04",
+      "type": "dare",
+      "text": "Sit on your partner’s lap and kiss deeply for 15 seconds."
+    },
+    {
+      "id": "d05",
+      "type": "dare",
+      "text": "Spend one minute describing in detail how you want to go down on your partner tonight."
+    },
+    {
+      "id": "d06",
+      "type": "dare",
+      "text": "Touch your partner’s sensitive spot through their clothes for 10 seconds."
+    },
+    {
+      "id": "d07",
+      "type": "dare",
+      "text": "Lick from your partner’s neck down to their collarbone for 15 seconds."
+    },
+    {
+      "id": "d08",
+      "type": "dare",
+      "text": "Gently bite your partner’s lower lip, then kiss deeply."
+    },
+    {
+      "id": "d09",
+      "type": "dare",
+      "text": "Say five things you want to do with your partner’s body right now."
+    },
+    {
+      "id": "d10",
+      "type": "dare",
+      "text": "Slowly caress your partner’s inner thigh for 20 seconds."
+    },
+    {
+      "id": "d11",
+      "type": "dare",
+      "text": "Kiss your partner from their lips down to their neck, then whisper something dirty."
+    },
+    {
+      "id": "d12",
+      "type": "dare",
+      "text": "Take off your partner’s shirt with one hand while kissing them."
+    },
+    {
+      "id": "d13",
+      "type": "dare",
+      "text": "Sit facing your partner and describe in detail how you want them to go down on you."
+    },
+    {
+      "id": "d14",
+      "type": "dare",
+      "text": "Gently touch your partner’s nipples through their shirt for 10 seconds."
+    },
+    {
+      "id": "d15",
+      "type": "dare",
+      "text": "Kiss the rim of your partner’s ear, then whisper, “I want…”"
+    },
+    {
+      "id": "d16",
+      "type": "dare",
+      "text": "Caress your partner’s bottom through their clothes for 15 seconds."
+    },
+    {
+      "id": "d17",
+      "type": "dare",
+      "text": "Tell your partner the order in which you want them to take off their clothes."
+    },
+    {
+      "id": "d18",
+      "type": "dare",
+      "text": "Kiss your partner deeply while caressing their back."
+    },
+    {
+      "id": "d19",
+      "type": "dare",
+      "text": "Whisper in your partner’s ear which position you want to try tonight."
+    },
+    {
+      "id": "d20",
+      "type": "dare",
+      "text": "Gently bite your partner’s shoulder or neck, then kiss the same spot."
+    },
+    {
+      "id": "d21",
+      "type": "dare",
+      "text": "Have your partner lie down and kiss from their neck down to their chest for 20 seconds."
+    },
+    {
+      "id": "d22",
+      "type": "dare",
+      "text": "Whisper three naughty sentences in a row into your partner’s ear."
+    },
+    {
+      "id": "d23",
+      "type": "dare",
+      "text": "Caress your partner very slowly from their knee up to their inner thigh."
+    },
+    {
+      "id": "d24",
+      "type": "dare",
+      "text": "Kiss your partner’s neck while gently touching a sensitive spot."
+    },
+    {
+      "id": "d25",
+      "type": "dare",
+      "text": "Spend 30 seconds describing in detail how you want your partner to use their mouth on you."
+    },
+    {
+      "id": "d26",
+      "type": "dare",
+      "text": "Undo one button or zipper on your partner’s clothes with your mouth."
+    },
+    {
+      "id": "d27",
+      "type": "dare",
+      "text": "Sit on your partner’s lap and kiss them while gently rocking your hips."
+    },
+    {
+      "id": "d28",
+      "type": "dare",
+      "text": "Whisper “I want to be…” into your partner’s ear and finish the sentence."
+    },
+    {
+      "id": "d29",
+      "type": "dare",
+      "text": "Caress your partner’s back and bottom very slowly for 20 seconds."
+    },
+    {
+      "id": "d30",
+      "type": "dare",
+      "text": "Kiss your partner from their lips down to their collarbone without using your hands."
+    },
+    {
+      "id": "d31",
+      "type": "dare",
+      "text": "Tell your partner what you most enjoy them doing to you when you play."
+    },
+    {
+      "id": "d32",
+      "type": "dare",
+      "text": "Gently touch a sensitive spot on your partner and whisper something dirty."
+    },
+    {
+      "id": "d33",
+      "type": "dare",
+      "text": "Have your partner sit on your lap and kiss them for 15 seconds."
+    },
+    {
+      "id": "d34",
+      "type": "dare",
+      "text": "Describe in detail how you want your partner to tie you up or take control."
+    },
+    {
+      "id": "d35",
+      "type": "dare",
+      "text": "Kiss your partner’s ear, then gently lick its rim."
+    },
+    {
+      "id": "d36",
+      "type": "dare",
+      "text": "Caress your partner’s thigh very slowly from the outside inward."
+    },
+    {
+      "id": "d37",
+      "type": "dare",
+      "text": "Say four things you want to do with your partner’s body right now."
+    },
+    {
+      "id": "d38",
+      "type": "dare",
+      "text": "Gently bite your partner’s lip and tug it lightly."
+    },
+    {
+      "id": "d39",
+      "type": "dare",
+      "text": "Kiss your partner deeply while caressing their neck and hair."
+    },
+    {
+      "id": "d40",
+      "type": "dare",
+      "text": "Whisper whether you want your partner to use their hands or mouth first."
+    },
+    {
+      "id": "d41",
+      "type": "dare",
+      "text": "Have your partner lie down and kiss from their stomach up to their chest for 20 seconds."
+    },
+    {
+      "id": "d42",
+      "type": "dare",
+      "text": "Caress your partner’s bottom and whisper something naughty."
+    },
+    {
+      "id": "d43",
+      "type": "dare",
+      "text": "Tell your partner how you want them to undress."
+    },
+    {
+      "id": "d44",
+      "type": "dare",
+      "text": "Kiss your partner’s neck while gently touching their inner thigh."
+    },
+    {
+      "id": "d45",
+      "type": "dare",
+      "text": "Spend 40 seconds describing in detail how you want to kiss and lick your partner from head to toe."
+    },
+    {
+      "id": "d46",
+      "type": "dare",
+      "text": "Remove one item of your partner’s clothing using both your hands and mouth."
+    },
+    {
+      "id": "d47",
+      "type": "dare",
+      "text": "Sit facing your partner and look into their eyes while describing your desires."
+    },
+    {
+      "id": "d48",
+      "type": "dare",
+      "text": "Whisper in your partner’s ear what roleplay you want to try."
+    },
+    {
+      "id": "d49",
+      "type": "dare",
+      "text": "Caress your partner very slowly from their neck down their back for 25 seconds."
+    },
+    {
+      "id": "d50",
+      "type": "dare",
+      "text": "Kiss your partner deeply, then whisper, “What I want to do with you right now…”"
+    },
+    {
+      "id": "t51",
+      "type": "truth",
+      "text": "Do you enjoy your partner using ice or warmth on your body?"
+    },
+    {
+      "id": "t52",
+      "type": "truth",
+      "text": "Have you ever wanted your partner to reward you on your desk?"
+    },
+    {
+      "id": "t53",
+      "type": "truth",
+      "text": "Do you enjoy your partner holding your wrists firmly during sex?"
+    },
+    {
+      "id": "t54",
+      "type": "truth",
+      "text": "Would you like to try having sex while listening to sensual music?"
+    },
+    {
+      "id": "t55",
+      "type": "truth",
+      "text": "Do you enjoy your partner licking your fingers or toes?"
+    },
+    {
+      "id": "t56",
+      "type": "truth",
+      "text": "Have you ever imagined having sex with your partner in a car?"
+    },
+    {
+      "id": "t57",
+      "type": "truth",
+      "text": "Do you enjoy your partner tracing the curves of your body with their tongue?"
+    },
+    {
+      "id": "t58",
+      "type": "truth",
+      "text": "Would you like to try being blindfolded and letting your partner do whatever they like?"
+    },
+    {
+      "id": "t59",
+      "type": "truth",
+      "text": "Do you enjoy your partner whispering “you taste so good” or “so tight”?"
+    },
+    {
+      "id": "t60",
+      "type": "truth",
+      "text": "Have you ever wanted to have sex with your partner right after a shower?"
+    },
+    {
+      "id": "t61",
+      "type": "truth",
+      "text": "Do you enjoy your partner applying lotion and giving you a full-body massage?"
+    },
+    {
+      "id": "t62",
+      "type": "truth",
+      "text": "Would you like to sit on top of your partner and control the pace yourself?"
+    },
+    {
+      "id": "t63",
+      "type": "truth",
+      "text": "Do you enjoy your partner gently biting your bottom and then kissing the same spot?"
+    },
+    {
+      "id": "t64",
+      "type": "truth",
+      "text": "Have you ever imagined your partner going down on you while you were wearing pajamas?"
+    },
+    {
+      "id": "t65",
+      "type": "truth",
+      "text": "Do you enjoy your partner using their hands and mouth at the same time?"
+    },
+    {
+      "id": "t66",
+      "type": "truth",
+      "text": "Would you like to try having sex standing against a wall?"
+    },
+    {
+      "id": "t67",
+      "type": "truth",
+      "text": "Do you enjoy your partner gently pulling your hair during a deep kiss?"
+    },
+    {
+      "id": "t68",
+      "type": "truth",
+      "text": "Have you ever wanted your partner to film you being intimate in slow motion?"
+    },
+    {
+      "id": "t69",
+      "type": "truth",
+      "text": "Do you enjoy your partner licking from your hips down to your inner thighs?"
+    },
+    {
+      "id": "t70",
+      "type": "truth",
+      "text": "Would you like to roleplay as strangers meeting in a hotel?"
+    },
+    {
+      "id": "t71",
+      "type": "truth",
+      "text": "Do you enjoy your partner holding your hips firmly during intense play?"
+    },
+    {
+      "id": "t72",
+      "type": "truth",
+      "text": "Have you ever imagined having sex with your partner on a balcony or rooftop?"
+    },
+    {
+      "id": "t73",
+      "type": "truth",
+      "text": "Do you enjoy your partner breathing warmly on your sensitive spots?"
+    },
+    {
+      "id": "t74",
+      "type": "truth",
+      "text": "Would you like to try having sex with some of your clothes still on?"
+    },
+    {
+      "id": "t75",
+      "type": "truth",
+      "text": "Do you enjoy your partner saying “you are mine” during sex?"
+    },
+    {
+      "id": "d51",
+      "type": "dare",
+      "text": "Kiss your partner from their neck down to the middle of their chest for 20 seconds."
+    },
+    {
+      "id": "d52",
+      "type": "dare",
+      "text": "Whisper four things you want your partner to do to you into their ear."
+    },
+    {
+      "id": "d53",
+      "type": "dare",
+      "text": "Caress your partner’s inner thigh very slowly with both hands."
+    },
+    {
+      "id": "d54",
+      "type": "dare",
+      "text": "Gently bite your partner’s lower lip and tug it lightly."
+    },
+    {
+      "id": "d55",
+      "type": "dare",
+      "text": "Sit on your partner’s lap and kiss deeply while gently rocking."
+    },
+    {
+      "id": "d56",
+      "type": "dare",
+      "text": "Describe in detail how you want your partner to use their tongue on you."
+    },
+    {
+      "id": "d57",
+      "type": "dare",
+      "text": "Gently touch your partner’s nipples through their shirt, then whisper something dirty."
+    },
+    {
+      "id": "d58",
+      "type": "dare",
+      "text": "Kiss the rim of your partner’s ear, then lick it gently."
+    },
+    {
+      "id": "d59",
+      "type": "dare",
+      "text": "Remove one item of your partner’s clothing using both your mouth and hands."
+    },
+    {
+      "id": "d60",
+      "type": "dare",
+      "text": "Caress your partner’s bottom through their clothes for 20 seconds."
+    },
+    {
+      "id": "d61",
+      "type": "dare",
+      "text": "Whisper “I want to be…” into your partner’s ear and finish the sentence."
+    },
+    {
+      "id": "d62",
+      "type": "dare",
+      "text": "Have your partner lie down and kiss from their stomach up to their chest."
+    },
+    {
+      "id": "d63",
+      "type": "dare",
+      "text": "Say five naughty things you want to do with your partner’s body."
+    },
+    {
+      "id": "d64",
+      "type": "dare",
+      "text": "Kiss your partner deeply while caressing their back and bottom."
+    },
+    {
+      "id": "d65",
+      "type": "dare",
+      "text": "Gently touch a sensitive spot on your partner and look into their eyes."
+    },
+    {
+      "id": "d66",
+      "type": "dare",
+      "text": "Caress very slowly from your partner’s knee up to their inner thigh for 25 seconds."
+    },
+    {
+      "id": "d67",
+      "type": "dare",
+      "text": "Gently bite your partner’s shoulder, then kiss the same spot."
+    },
+    {
+      "id": "d68",
+      "type": "dare",
+      "text": "Spend 30 seconds describing in detail how you want your partner to go down on you."
+    },
+    {
+      "id": "d69",
+      "type": "dare",
+      "text": "Sit facing your partner and whisper which position you want to try."
+    },
+    {
+      "id": "d70",
+      "type": "dare",
+      "text": "Kiss your partner from their lips down to their collarbone without using your hands."
+    },
+    {
+      "id": "d71",
+      "type": "dare",
+      "text": "Caress your partner’s neck and hair while kissing deeply."
+    },
+    {
+      "id": "d72",
+      "type": "dare",
+      "text": "Whisper how you want your partner to tie you up or take control."
+    },
+    {
+      "id": "d73",
+      "type": "dare",
+      "text": "Undo a button or zipper on your partner’s clothes with your mouth."
+    },
+    {
+      "id": "d74",
+      "type": "dare",
+      "text": "Have your partner sit on your lap and kiss them for 20 seconds."
+    },
+    {
+      "id": "d75",
+      "type": "dare",
+      "text": "Tell your partner the order in which you want them to undress right now."
+    },
+    {
+      "id": "t76",
+      "type": "truth",
+      "text": "Do you enjoy your partner caressing your body with a feather or something soft?"
+    },
+    {
+      "id": "t77",
+      "type": "truth",
+      "text": "Have you ever wanted to have sex with your partner as soon as you opened the door on arriving home?"
+    },
+    {
+      "id": "t78",
+      "type": "truth",
+      "text": "Do you enjoy your partner holding your waist firmly during intense play?"
+    },
+    {
+      "id": "t79",
+      "type": "truth",
+      "text": "Would you like to try having sex while watching an adult film together?"
+    },
+    {
+      "id": "t80",
+      "type": "truth",
+      "text": "Do you enjoy your partner licking from your back down to your bottom?"
+    },
+    {
+      "id": "t81",
+      "type": "truth",
+      "text": "Have you ever imagined having sex with your partner in a steam room?"
+    },
+    {
+      "id": "t82",
+      "type": "truth",
+      "text": "Do you enjoy your partner using their fingers slowly and then suddenly speeding up?"
+    },
+    {
+      "id": "t83",
+      "type": "truth",
+      "text": "Would you like to have your hands lightly tied and let your partner take the lead completely?"
+    },
+    {
+      "id": "t84",
+      "type": "truth",
+      "text": "Do you enjoy your partner whispering “you belong to me” as you climax?"
+    },
+    {
+      "id": "t85",
+      "type": "truth",
+      "text": "Have you ever wanted to have sex with your partner on the sofa in the middle of the living room?"
+    },
+    {
+      "id": "t86",
+      "type": "truth",
+      "text": "Do you enjoy your partner giving you a warm-oil massage before sex?"
+    },
+    {
+      "id": "t87",
+      "type": "truth",
+      "text": "Would you like to try a position where your partner lifts you up during sex?"
+    },
+    {
+      "id": "t88",
+      "type": "truth",
+      "text": "Do you enjoy your partner gently biting your inner thigh and then kissing it?"
+    },
+    {
+      "id": "t89",
+      "type": "truth",
+      "text": "Have you ever imagined your partner going down on you while you were wearing a dress or shirt?"
+    },
+    {
+      "id": "t90",
+      "type": "truth",
+      "text": "Do you enjoy your partner using both their mouth and hands on your body at once?"
+    },
+    {
+      "id": "t91",
+      "type": "truth",
+      "text": "Would you like to try having sex standing against a window with the curtains drawn?"
+    },
+    {
+      "id": "t92",
+      "type": "truth",
+      "text": "Do you enjoy your partner pulling your hair a little more firmly while kissing?"
+    },
+    {
+      "id": "t93",
+      "type": "truth",
+      "text": "Have you ever wanted your partner to record a short video just for the two of you to watch?"
+    },
+    {
+      "id": "t94",
+      "type": "truth",
+      "text": "Do you enjoy your partner breathing warmly and then suddenly licking a sensitive spot?"
+    },
+    {
+      "id": "t95",
+      "type": "truth",
+      "text": "Would you like to roleplay as a housekeeper and employer?"
+    },
+    {
+      "id": "t96",
+      "type": "truth",
+      "text": "Do you enjoy your partner holding your bottom firmly while playing from behind?"
+    },
+    {
+      "id": "t97",
+      "type": "truth",
+      "text": "Have you ever imagined having sex with your partner in a store’s changing room?"
+    },
+    {
+      "id": "t98",
+      "type": "truth",
+      "text": "Do you enjoy your partner slowly caressing you from the nape of your neck down your spine?"
+    },
+    {
+      "id": "t99",
+      "type": "truth",
+      "text": "Would you like to try having sex with only some of your clothes removed?"
+    },
+    {
+      "id": "t100",
+      "type": "truth",
+      "text": "Do you enjoy your partner saying “you taste so good” as you climax?"
+    },
+    {
+      "id": "d76",
+      "type": "dare",
+      "text": "Kiss your partner from the middle of their chest down to their stomach for 20 seconds."
+    },
+    {
+      "id": "d77",
+      "type": "dare",
+      "text": "Whisper five things you want your partner to do to you right now into their ear."
+    },
+    {
+      "id": "d78",
+      "type": "dare",
+      "text": "Caress your partner’s inner thigh very slowly with the back of your hand."
+    },
+    {
+      "id": "d79",
+      "type": "dare",
+      "text": "Gently bite your partner’s upper lip, then kiss deeply."
+    },
+    {
+      "id": "d80",
+      "type": "dare",
+      "text": "Sit on your partner’s lap and kiss them while gently tilting your hips."
+    },
+    {
+      "id": "d81",
+      "type": "dare",
+      "text": "Describe in detail how you want your partner to use their fingers on you."
+    },
+    {
+      "id": "d82",
+      "type": "dare",
+      "text": "Gently touch your partner’s nipples through their shirt, then look into their eyes."
+    },
+    {
+      "id": "d83",
+      "type": "dare",
+      "text": "Kiss the nape of your partner’s neck, then gently lick down their spine."
+    },
+    {
+      "id": "d84",
+      "type": "dare",
+      "text": "Remove one item of your partner’s clothing using only your mouth."
+    },
+    {
+      "id": "d85",
+      "type": "dare",
+      "text": "Caress your partner’s bottom through their clothes, then whisper something dirty."
+    },
+    {
+      "id": "d86",
+      "type": "dare",
+      "text": "Whisper “I want to be taken…” into your partner’s ear and finish the sentence."
+    },
+    {
+      "id": "d87",
+      "type": "dare",
+      "text": "Have your partner lie down and kiss from their hips up to their chest."
+    },
+    {
+      "id": "d88",
+      "type": "dare",
+      "text": "Say six naughty things you want to do with your partner’s body."
+    },
+    {
+      "id": "d89",
+      "type": "dare",
+      "text": "Kiss your partner deeply while caressing their inner thigh."
+    },
+    {
+      "id": "d90",
+      "type": "dare",
+      "text": "Gently touch a sensitive spot on your partner and whisper, “Do you want this?”"
+    },
+    {
+      "id": "d91",
+      "type": "dare",
+      "text": "Caress your partner very slowly from their knee up to their hip for 25 seconds."
+    },
+    {
+      "id": "d92",
+      "type": "dare",
+      "text": "Gently bite the rim of your partner’s ear, then kiss it."
+    },
+    {
+      "id": "d93",
+      "type": "dare",
+      "text": "Spend 40 seconds describing in detail how you want your partner to go down on you slowly."
+    },
+    {
+      "id": "d94",
+      "type": "dare",
+      "text": "Sit facing your partner and whisper how you want to be tied up."
+    },
+    {
+      "id": "d95",
+      "type": "dare",
+      "text": "Kiss your partner from their lips down to their neck, then to their collarbone."
+    },
+    {
+      "id": "d96",
+      "type": "dare",
+      "text": "Caress your partner’s neck and hair while kissing deeply and gently pulling their hair."
+    },
+    {
+      "id": "d97",
+      "type": "dare",
+      "text": "Whisper in your partner’s ear how you want them to take control."
+    },
+    {
+      "id": "d98",
+      "type": "dare",
+      "text": "Undo a button or zipper on your partner’s clothes using your mouth and hands."
+    },
+    {
+      "id": "d99",
+      "type": "dare",
+      "text": "Have your partner sit on your lap and kiss them while holding their waist firmly."
+    },
+    {
+      "id": "d100",
+      "type": "dare",
+      "text": "Tell your partner how you want them to undress and what you want them to do to you right now."
+    }
+  ]
+}

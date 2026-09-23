@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "contentVersion": "2026-09-17.1",
+  "locale": "en",
+  "categories": [
+    {
+      "id": "friends",
+      "slug": "ban-be",
+      "name": "Friends",
+      "description": "Break the ice, share a laugh, and get to know your friends with every turn.",
+      "icon": "🎉",
+      "packIds": ["friends-free", "friends-premium"],
+      "sortOrder": 10
+    },
+    {
+      "id": "couples",
+      "slug": "cap-doi",
+      "name": "Couples",
+      "description": "Start thoughtful, playful conversations together.",
+      "icon": "💞",
+      "packIds": ["premium-18"],
+      "sortOrder": 20
+    }
+  ]
+}

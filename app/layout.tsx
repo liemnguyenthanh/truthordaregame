@@ -1,9 +1,11 @@
 import type { Metadata, Viewport } from 'next';
 import { PwaControls } from '@/components/pwa';
 import { siteUrl } from '@/lib/seo';
+import { LocaleProvider } from '@/components/locale-provider';
+import { requestLocale } from '@/lib/request-locale';
 import './globals.css';
 
-export const metadata: Metadata = {
+const vietnameseMetadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
     default: 'Thật hay Thách — Chọn một câu, gần nhau hơn',
@@ -27,28 +29,65 @@ export const metadata: Metadata = {
     locale: 'vi_VN',
     type: 'website',
     images: [
-      { url: '/thumbnail.png', width: 1672, height: 941, type: 'image/png', alt: 'Thật hay Thách' },
+      { url: '/vi/share.png', width: 1200, height: 630, type: 'image/png', alt: 'Thật hay Thách' },
     ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Thật hay Thách — Chọn một câu, gần nhau hơn',
     description: 'Chơi Thật hay Thách cùng bạn bè và người thương.',
-    images: ['/thumbnail.png'],
+    images: ['/vi/share.png'],
   },
   appleWebApp: { capable: true, title: 'Thật hay Thách', statusBarStyle: 'black-translucent' },
   robots: process.env.VERCEL_ENV === 'preview' ? { index: false, follow: false } : undefined,
 };
 export const viewport: Viewport = { themeColor: '#151d2b', width: 'device-width', initialScale: 1 };
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await requestLocale();
+  if (locale === 'vi') return vietnameseMetadata;
+  const title = 'Truth or Dare — One question, a little closer';
+  const description =
+    'Play Truth or Dare with friends and couples. Choose a question pack and play free in your browser. No account required.';
+  return {
+    ...vietnameseMetadata,
+    title: { default: title, template: '%s | Truth or Dare' },
+    description,
+    applicationName: 'Truth or Dare',
+    manifest: '/en/manifest.webmanifest',
+    openGraph: {
+      ...vietnameseMetadata.openGraph,
+      title,
+      description,
+      siteName: 'Truth or Dare',
+      locale: 'en_US',
+      url: `${siteUrl}/en`,
+      images: [
+        {
+          url: '/en/share.png',
+          width: 1200,
+          height: 630,
+          type: 'image/png',
+          alt: 'Truth or Dare',
+        },
+      ],
+    },
+    twitter: { card: 'summary_large_image', title, description, images: ['/en/share.png'] },
+    appleWebApp: { capable: true, title: 'Truth or Dare', statusBarStyle: 'black-translucent' },
+  };
+}
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const locale = await requestLocale();
   return (
-    <html lang="vi">
+    <html lang={locale}>
       <body>
-        <a href="#main" className="skip-link">
-          Đến nội dung
-        </a>
-        {children}
-        <PwaControls />
+        <LocaleProvider locale={locale}>
+          <a href="#main" className="skip-link">
+            {locale === 'en' ? 'Skip to content' : 'Đến nội dung'}
+          </a>
+          {children}
+          <PwaControls />
+        </LocaleProvider>
       </body>
     </html>
   );

@@ -62,7 +62,8 @@
         for (const pack of packs) {
           const a = document.createElement('a');
           a.textContent = pack.title;
-          a.href = '/vi/choi/' + encodeURIComponent(pack.slug);
+          a.href =
+            (pack.locale === 'en' ? '/en/play/' : '/vi/choi/') + encodeURIComponent(pack.slug);
           document.getElementById('packs').appendChild(a);
         }
         const generated = JSON.parse(
@@ -73,7 +74,9 @@
         for (const pack of generated) {
           const a = document.createElement('a');
           a.textContent = pack.pack?.title || 'Bộ AI của nhóm';
-          a.href = '/vi/bo-ai?id=' + encodeURIComponent(pack.id);
+          const locale = pack.questionSet?.locale || pack.locale || 'vi';
+          a.href =
+            (locale === 'en' ? '/en/ai-pack?id=' : '/vi/bo-ai?id=') + encodeURIComponent(pack.id);
           document.getElementById('packs').appendChild(a);
         }
         if (!packs.length && !generated.length)

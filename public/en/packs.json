@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "contentVersion": "2026-09-17.1",
+  "locale": "en",
+  "packs": [
+    {
+      "id": "friends-free",
+      "slug": "ban-be-khoi-dong",
+      "title": "Friends: Icebreakers",
+      "description": "Lighthearted questions to break the ice and get the fun started.",
+      "tier": "free",
+      "questionFile": "/en/questions/ban-be-khoi-dong.v1.json",
+      "contentVersion": "1",
+      "questionCount": 100,
+      "truthCount": 50,
+      "dareCount": 50,
+      "trialCount": 0,
+      "priceHintVnd": 0,
+      "productId": null,
+      "ageLabel": "16+",
+      "playerRange": {
+        "min": 2,
+        "max": 8
+      },
+      "published": true,
+      "icon": "🎉",
+      "color": "purple",
+      "categoryIds": ["friends"],
+      "locale": "en"
+    },
+    {
+      "id": "friends-premium",
+      "slug": "ban-be-gan-ket",
+      "title": "Friends: Grow Closer",
+      "description": "A little surprise and a little honesty to help friends get to know each other better.",
+      "tier": "premium",
+      "questionFile": "/en/questions/ban-be-gan-ket.v1.json",
+      "contentVersion": "1",
+      "questionCount": 12,
+      "truthCount": 6,
+      "dareCount": 6,
+      "trialCount": 8,
+      "priceHintVnd": 30000,
+      "productId": "pack-friends-premium",
+      "ageLabel": "16+",
+      "playerRange": {
+        "min": 2,
+        "max": 8
+      },
+      "published": true,
+      "icon": "💖",
+      "color": "pink",
+      "categoryIds": ["friends"],
+      "locale": "en"
+    },
+    {
+      "id": "premium-18",
+      "slug": "18-plus",
+      "title": "18+",
+      "description": "Questions and dares for adult couples who want to bring more intimacy to their relationship.",
+      "tier": "premium",
+      "questionFile": "/en/questions/18.v1.json",
+      "contentVersion": "1",
+      "questionCount": 200,
+      "truthCount": 100,
+      "dareCount": 100,
+      "trialCount": 8,
+      "priceHintVnd": 30000,
+      "productId": "premium-18",
+      "ageLabel": "18+",
+      "playerRange": {
+        "min": 2,
+        "max": 10
+      },
+      "published": true,
+      "icon": "✨",
+      "color": "orange",
+      "categoryIds": ["couples"],
+      "locale": "en"
+    }
+  ]
+}

@@ -45,7 +45,7 @@ test('saved pack survives a fresh page offline and still draws questions', async
   expect(errors).toEqual([]);
   const fresh = await context.newPage();
   await fresh.goto('/vi');
-  await expect(fresh.getByRole('heading', { name: 'Hôm nay, chơi cùng ai?' })).toBeVisible();
+  await expect(fresh.getByRole('heading', { name: 'Chơi ngay miễn phí' })).toBeVisible();
   await fresh.getByRole('link', { name: 'Chơi ngay miễn phí', exact: true }).click();
   await expect(fresh.getByText('Đã xem 1/100 câu', { exact: true })).toBeVisible();
   await context.setOffline(false);

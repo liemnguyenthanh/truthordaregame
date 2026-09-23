@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#151d2b" />
+    <meta name="robots" content="noindex" />
+    <title>Play offline · Truth or Dare</title>
+    <style>
+      body {
+        background: #151d2b;
+        color: #f7f8fc;
+        font:
+          16px/1.7 system-ui,
+          sans-serif;
+        margin: 0;
+      }
+      .offline-screen {
+        max-width: 540px;
+        margin: 60px auto;
+        padding: 24px;
+      }
+      h1 {
+        font-size: 32px;
+        line-height: 1.3;
+      }
+      p,
+      small {
+        color: #a8b3c7;
+      }
+      a {
+        display: block;
+        padding: 16px;
+        border: 1px solid #ffffff25;
+        border-radius: 12px;
+        margin: 12px 0;
+        color: #e1b4ff;
+        text-decoration: none;
+      }
+      button {
+        background: #9636d4;
+        border: 0;
+        border-radius: 10px;
+        color: white;
+        padding: 12px 18px;
+        font: inherit;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="offline-screen">
+      <p>TRUTH. DARE</p>
+      <h1>No connection?<br />Keep the game going.</h1>
+      <p>Choose a pack saved on this device.</p>
+      <div id="packs"></div>
+      <small id="note"></small>
+      <p><button onclick="location.href = '/en'">Try connecting again</button></p>
+    </main>
+    <script>
+      try {
+        const packs = JSON.parse(localStorage.getItem('tod:offline:v1') || '[]');
+        for (const pack of packs) {
+          const a = document.createElement('a');
+          a.textContent = pack.title;
+          a.href =
+            (pack.locale === 'en' ? '/en/play/' : '/vi/choi/') + encodeURIComponent(pack.slug);
+          document.getElementById('packs').appendChild(a);
+        }
+        const generated = JSON.parse(
+          localStorage.getItem('tod:generated-history:v1') || '[]',
+        ).filter(
+          (p) => p.status === 'complete' && localStorage.getItem('tod:generated:v1:' + p.id),
+        );
+        for (const pack of generated) {
+          const a = document.createElement('a');
+          a.textContent = pack.pack?.title || 'Your group’s AI pack';
+          const locale = pack.questionSet?.locale || pack.locale || 'vi';
+          a.href =
+            (locale === 'en' ? '/en/ai-pack?id=' : '/vi/bo-ai?id=') + encodeURIComponent(pack.id);
+          document.getElementById('packs').appendChild(a);
+        }
+        if (!packs.length && !generated.length)
+          document.getElementById('note').textContent =
+            'No saved packs yet. When you are online, open a pack and choose “Save pack for offline play”.';
+      } catch {
+        document.getElementById('note').textContent = 'No packs saved on this device.';
+      }
+    </script>
+  </body>
+</html>

@@ -1,5 +1,8 @@
 'use client';
 
+import { localizedError } from '@/lib/i18n/messages';
+import { useI18n } from './locale-provider';
+
 import Link from 'next/link';
 import { FormEvent, useEffect, useState } from 'react';
 import { ArrowLeft, ArrowRight, Check, Copy, KeyRound } from 'lucide-react';
@@ -7,6 +10,7 @@ import type { Pack } from '@/lib/types';
 import styles from './commerce.module.css';
 
 export function Restore() {
+  const { t, path, locale } = useI18n();
   const [code, setCode] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -16,7 +20,7 @@ export function Restore() {
   const [copied, setCopied] = useState('');
   useEffect(() => {
     const controller = new AbortController();
-    fetch('/api/catalog', { signal: controller.signal })
+    fetch(`/api/catalog?locale=${locale}`, { signal: controller.signal })
       .then((r) => {
         if (!r.ok) throw new Error('Catalog unavailable');
         return r.json();
@@ -30,7 +34,7 @@ export function Restore() {
       })
       .catch(() => {});
     return () => controller.abort();
-  }, []);
+  }, [locale]);
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (busy) return;
@@ -38,11 +42,11 @@ export function Restore() {
     setError('');
     setSuccess('');
     try {
-      if (!navigator.onLine) throw new Error('Kết nối mạng để khôi phục quyền mua nhé.');
+      if (!navigator.onLine) throw new Error(t('Kết nối mạng để khôi phục quyền mua nhé.'));
       const session = await fetch('/api/session', { method: 'POST', cache: 'no-store' });
       if (!session.ok) {
         const data = await session.json();
-        throw new Error(data.error || 'Khôi phục chưa sẵn sàng.');
+        throw new Error(data.error || t('Khôi phục chưa sẵn sàng.'));
       }
       const response = await fetch('/api/entitlements/restore', {
         method: 'POST',
@@ -52,7 +56,7 @@ export function Restore() {
       });
       const data = await response.json();
       if (!response.ok)
-        throw new Error(data.error || 'Không thể khôi phục bằng mã này. Vui lòng kiểm tra lại.');
+        throw new Error(data.error || t('Không thể khôi phục bằng mã này. Vui lòng kiểm tra lại.'));
       setSuccess(data.packId);
       setPurchases((current) => [
         ...current.filter((purchase) => purchase.packId !== data.packId),
@@ -75,7 +79,11 @@ export function Restore() {
         /* The server retains this grant. */
       }
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Chưa thể kết nối. Vui lòng thử lại.');
+      setError(
+        cause instanceof Error
+          ? localizedError(locale, cause.message)
+          : t('Chưa thể kết nối. Vui lòng thử lại.'),
+      );
     } finally {
       setBusy(false);
     }
@@ -83,37 +91,39 @@ export function Restore() {
   const restored = packs.find((pack) => pack.id === success);
   return (
     <section className={styles.shell}>
-      <Link href="/vi" className={styles.back}>
-        <ArrowLeft size={17} /> Về thư viện
+      <Link href={path('/vi')} className={styles.back}>
+        <ArrowLeft size={17} /> {t('Về thư viện')}{' '}
       </Link>
       <div className={styles.title}>
         <span className={styles.icon}>
           <KeyRound />
         </span>
-        <p className="eyebrow">ĐỔI THIẾT BỊ, GIỮ CUỘC VUI</p>
-        <h1>Khôi phục quyền mua</h1>
-        <p>Không cần tài khoản. Chỉ cần mã khôi phục đã lưu khi thanh toán.</p>
+        <p className="eyebrow">{t('ĐỔI THIẾT BỊ, GIỮ CUỘC VUI')}</p>
+        <h1>{t('Khôi phục quyền mua')}</h1>
+        <p>{t('Không cần tài khoản. Chỉ cần mã khôi phục đã lưu khi thanh toán.')}</p>
       </div>
       <div className={styles.panel}>
         {success ? (
           <div className={styles.success} role="status">
             <Check size={34} />
-            <h2>Đã khôi phục thành công</h2>
-            <p>{restored?.title ?? 'Bộ câu hỏi của bạn'} đã sẵn sàng trên thiết bị này.</p>
+            <h2>{t('Đã khôi phục thành công')}</h2>
+            <p>
+              {restored?.title ?? t('Bộ câu hỏi của bạn')} {t('đã sẵn sàng trên thiết bị này.')}
+            </p>
             <Link
-              href={restored ? `/vi/choi/${restored.slug}` : '/vi/danh-muc'}
+              href={path(restored ? `/vi/choi/${restored.slug}` : '/vi/danh-muc')}
               className="button button-primary"
             >
-              Chơi ngay <ArrowRight size={17} />
+              {t('Chơi ngay')} <ArrowRight size={17} />
             </Link>
             <button className={styles.textButton} onClick={() => setSuccess('')}>
-              Khôi phục bộ khác
+              {t('Khôi phục bộ khác')}{' '}
             </button>
           </div>
         ) : (
           <form onSubmit={submit}>
             <label className={styles.label} htmlFor="recovery-code">
-              Mã khôi phục
+              {t('Mã khôi phục')}{' '}
             </label>
             <input
               className={styles.input}
@@ -122,14 +132,14 @@ export function Restore() {
               onChange={(event) => setCode(event.target.value)}
               required
               maxLength={200}
-              placeholder="Nhập mã bạn đã lưu"
+              placeholder={t('Nhập mã bạn đã lưu')}
               spellCheck={false}
               autoComplete="off"
               autoCapitalize="characters"
               aria-describedby="recovery-help"
             />
             <p className={styles.fine} id="recovery-help">
-              Mỗi bộ đã mua có một mã riêng. Không chia sẻ mã công khai.
+              {t('Mỗi bộ đã mua có một mã riêng. Không chia sẻ mã công khai.')}{' '}
             </p>
             {error && (
               <p className={styles.error} role="alert">
@@ -141,16 +151,16 @@ export function Restore() {
               disabled={busy || !code.trim()}
               type="submit"
             >
-              {busy ? 'Đang khôi phục…' : 'Khôi phục bộ đã mua'} <ArrowRight size={17} />
+              {busy ? t('Đang khôi phục…') : t('Khôi phục bộ đã mua')} <ArrowRight size={17} />
             </button>
           </form>
         )}
       </div>
       {purchases.length > 0 && (
         <div className={styles.panel}>
-          <h2>Các bộ trên thiết bị này</h2>
+          <h2>{t('Các bộ trên thiết bị này')}</h2>
           <p className={styles.muted}>
-            Lưu mã trước khi đổi điện thoại hoặc xóa dữ liệu trình duyệt.
+            {t('Lưu mã trước khi đổi điện thoại hoặc xóa dữ liệu trình duyệt.')}{' '}
           </p>
           {purchases.map((purchase) => (
             <div className={styles.recovery} key={purchase.packId}>
@@ -161,13 +171,13 @@ export function Restore() {
                 onClick={async () => {
                   try {
                     await navigator.clipboard.writeText(purchase.recoveryCode);
-                    setCopied('Đã sao chép mã khôi phục.');
+                    setCopied(t('Đã sao chép mã khôi phục.'));
                   } catch {
-                    setCopied('Hãy chọn và sao chép mã trực tiếp.');
+                    setCopied(t('Hãy chọn và sao chép mã trực tiếp.'));
                   }
                 }}
               >
-                <Copy size={15} /> Sao chép mã
+                <Copy size={15} /> {t('Sao chép mã')}{' '}
               </button>
             </div>
           ))}
@@ -176,9 +186,9 @@ export function Restore() {
       <p className={styles.copied} role="status">
         {copied}
       </p>
-      <p className={styles.footer}>Mất mã? Giữ thông tin giao dịch để được hỗ trợ.</p>
-      <Link className={styles.bottomLink} href="/vi/lien-he">
-        Liên hệ hỗ trợ
+      <p className={styles.footer}>{t('Mất mã? Giữ thông tin giao dịch để được hỗ trợ.')}</p>
+      <Link className={styles.bottomLink} href={path('/vi/lien-he')}>
+        {t('Liên hệ hỗ trợ')}{' '}
       </Link>
     </section>
   );

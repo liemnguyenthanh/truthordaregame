@@ -1,3 +1,4 @@
+import { isLocale } from '../i18n';
 import type { Pack, Question, QuestionSet } from '../types';
 export type ContentRecord = { metadata: Pack; question_set: QuestionSet; revision: string };
 const slug = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -34,6 +35,8 @@ export function validatePack(
 ): { metadata: Pack; questionSet: QuestionSet; expected: string | null } {
   if (!value || typeof value !== 'object') fail('Dữ liệu không hợp lệ.');
   const v = value as Record<string, unknown>;
+  const locale = v.locale ?? 'vi';
+  if (!isLocale(locale)) fail('Unsupported language.');
   const id = text(v.id, 'Mã bộ', 80),
     route = text(v.slug, 'Đường dẫn', 80);
   if (!slug.test(id) || !slug.test(route))
@@ -78,11 +81,12 @@ export function validatePack(
     v.tier === 'premium' ? [...truths.slice(0, 4), ...dares.slice(0, 4)].map((q) => q.id) : [];
   const metadata: Pack = {
     id,
+    locale,
     slug: route,
     title: text(v.title, 'Tên bộ', 120),
     description: text(v.description, 'Mô tả', 1000),
     tier: v.tier,
-    questionFile: `/content/questions/${id}/${version}`,
+    questionFile: `/content/questions/${id}/${version}${locale === 'vi' ? '' : '?locale=' + locale}`,
     contentVersion: version,
     questionCount: questions.length,
     truthCount: truths.length,
@@ -102,7 +106,7 @@ export function validatePack(
     questionSet: {
       schemaVersion: 1,
       packId: id,
-      locale: 'vi',
+      locale,
       contentVersion: version,
       trialQuestionIds,
       questions,

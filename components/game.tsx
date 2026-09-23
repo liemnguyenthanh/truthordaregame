@@ -1,5 +1,7 @@
 'use client';
 
+import { useI18n } from './locale-provider';
+
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import {
@@ -23,11 +25,17 @@ import {
 import { GROUP_STORAGE_KEY, readSavedGroup } from '@/lib/groups';
 import { GroupEditor } from './group-editor';
 import { AnimatedReveal } from './animated-reveal';
+import { LanguageSwitch } from './site-shell';
 import type { Pack, PlayGroup, QuestionSet, QuestionType } from '@/lib/types';
 import styles from './game.module.css';
 
-type Progress = GroupGameState;
-type GameProps = { pack: Pack; initialSet?: QuestionSet; fixedGroup?: PlayGroup };
+type Progress = GroupGameState & { locale?: string };
+type GameProps = {
+  pack: Pack;
+  initialSet?: QuestionSet;
+  fixedGroup?: PlayGroup;
+  alternateHref?: string;
+};
 const ownershipKey = 'tod:owned:v1';
 function readOwned(): string[] {
   try {
@@ -37,17 +45,19 @@ function readOwned(): string[] {
     return [];
   }
 }
-export function Game({ pack, initialSet, fixedGroup }: GameProps) {
+export function Game({ pack, initialSet, fixedGroup, alternateHref }: GameProps) {
   return (
     <PackGame
       key={`${pack.id}:${pack.contentVersion}:${groupFingerprint(fixedGroup)}`}
       pack={pack}
       initialSet={initialSet}
       fixedGroup={fixedGroup}
+      alternateHref={alternateHref}
     />
   );
 }
-function PackGame({ pack, initialSet, fixedGroup }: GameProps) {
+function PackGame({ pack, initialSet, fixedGroup, alternateHref }: GameProps) {
+  const { t, path, locale } = useI18n();
   const [set, setSet] = useState<QuestionSet | null>(null);
   const [group, setGroup] = useState<PlayGroup | null>(fixedGroup ?? null);
   const [editingGroup, setEditingGroup] = useState(false);
@@ -95,17 +105,24 @@ function PackGame({ pack, initialSet, fixedGroup }: GameProps) {
         } catch {
           setStorageWarning(true);
         }
+        const questionIds = new Set(data.questions.map((question) => question.id));
+        const translatedProgress =
+          saved &&
+          (saved.locale ?? 'vi') !== data.locale &&
+          Array.isArray(saved.seenIds) &&
+          saved.seenIds.every((id) => questionIds.has(id)) &&
+          (!saved.currentId || questionIds.has(saved.currentId));
         const valid =
           saved &&
           saved.packId === data.packId &&
-          saved.contentVersion === data.contentVersion &&
+          (saved.contentVersion === data.contentVersion || translatedProgress) &&
           Array.isArray(saved.seenIds) &&
           Array.isArray(saved.trialSeenIds) &&
           (saved.groupFingerprint ?? '') === groupFingerprint(savedGroup) &&
           (!saved.actorId || savedGroup?.players.some((player) => player.id === saved.actorId));
         setProgress(
-          valid
-            ? saved
+          valid && saved
+            ? { ...saved, contentVersion: data.contentVersion, locale: data.locale }
             : createGroupGameState(
                 data,
                 savedGroup,
@@ -116,10 +133,10 @@ function PackGame({ pack, initialSet, fixedGroup }: GameProps) {
       })
       .catch(() => {
         if (!controller.signal.aborted)
-          setError('Chưa tải được bộ câu hỏi. Kết nối mạng rồi thử lại nhé.');
+          setError(t('Chưa tải được bộ câu hỏi. Kết nối mạng rồi thử lại nhé.'));
       });
     return () => controller.abort();
-  }, [pack.questionFile, stateKey, attempt, initialSet, fixedGroup]);
+  }, [pack.questionFile, stateKey, attempt, initialSet, fixedGroup, t]);
   useEffect(() => {
     let active = true;
     const updateNetwork = () => setOffline(!navigator.onLine);
@@ -157,6 +174,7 @@ function PackGame({ pack, initialSet, fixedGroup }: GameProps) {
     };
   }, [pack.id, pack.tier]);
   function persist(next: Progress) {
+    next = { ...next, locale: set?.locale ?? locale };
     setProgress(next);
     try {
       localStorage.setItem(stateKey, JSON.stringify(next));
@@ -177,8 +195,8 @@ function PackGame({ pack, initialSet, fixedGroup }: GameProps) {
     if (set) persist(createGroupGameState(set, next, progress?.trialSeenIds ?? []));
     setNotice(
       next
-        ? `Đã bắt đầu ván mới với nhóm ${next.name}.`
-        : 'Đã bắt đầu ván mới không chia lượt theo tên.',
+        ? t('Đã bắt đầu ván mới với nhóm {v0}.', { v0: next.name })
+        : t('Đã bắt đầu ván mới không chia lượt theo tên.'),
     );
     lastDraw.current = 0;
   }
@@ -188,23 +206,28 @@ function PackGame({ pack, initialSet, fixedGroup }: GameProps) {
     const result = drawGroupQuestion(set, progress, type, unlocked, group, skip);
     if (result.status === 'actor-exhausted') {
       setNotice(
-        'Thành viên này đã hết câu cùng loại. Chọn Thật hoặc Thách để chuyển sang lượt tiếp theo nhé.',
+        t(
+          'Thành viên này đã hết câu cùng loại. Chọn Thật hoặc Thách để chuyển sang lượt tiếp theo nhé.',
+        ),
       );
       return;
     }
     if (result.status === 'trial-exhausted') {
       setPaywall(true);
-      setNotice('Bạn đã xem hết các câu chơi thử.');
+      setNotice(t('Bạn đã xem hết các câu chơi thử.'));
       return;
     }
     if (result.status === 'type-exhausted') {
       setNotice(
-        `Bạn đã xem hết câu ${type === 'truth' ? 'Thật' : 'Thách'}${unlocked ? '' : ' chơi thử'}. Hãy chọn loại còn lại nhé.`,
+        t('Bạn đã xem hết câu {v0}{v1}. Hãy chọn loại còn lại nhé.', {
+          v0: type === 'truth' ? t('Thật') : t('Thách'),
+          v1: String(unlocked ? '' : t(' chơi thử')),
+        }),
       );
       return;
     }
     if (result.status === 'complete') {
-      setNotice('Đã xem hết bộ này. Xáo trộn để bắt đầu ván mới nhé!');
+      setNotice(t('Đã xem hết bộ này. Xáo trộn để bắt đầu ván mới nhé!'));
       return;
     }
     persist(result.state);
@@ -230,19 +253,26 @@ function PackGame({ pack, initialSet, fixedGroup }: GameProps) {
   const dareRemaining =
     set && progress ? getAvailableQuestions(set, progress, 'dare', unlocked).length : 0;
   const complete = Boolean(set && progress && truthRemaining + dareRemaining === 0);
-  const price = new Intl.NumberFormat('vi-VN').format(pack.priceHintVnd);
+  const price = new Intl.NumberFormat(locale === 'en' ? 'en-US' : 'vi-VN').format(
+    pack.priceHintVnd,
+  );
   return (
     <section className={styles.game}>
       <div className={styles.top}>
         <Link
-          href={fixedGroup ? '/vi/tao-bo-ai' : `/vi/bo-cau-hoi/${pack.slug}`}
+          href={path(fixedGroup ? '/vi/tao-bo-ai' : `/vi/bo-cau-hoi/${pack.slug}`)}
           className={styles.back}
         >
           <ArrowLeft size={18} /> {pack.title}
         </Link>
         <div className={styles.topActions}>
+          {!fixedGroup && <LanguageSwitch alternateHref={alternateHref} />}
           <span className={styles.badge}>
-            {pack.tier === 'free' ? 'Miễn phí' : unlocked ? 'Đã mở khóa' : 'Chơi thử 8 câu'}
+            {pack.tier === 'free'
+              ? t('Miễn phí')
+              : unlocked
+                ? t('Đã mở khóa')
+                : t('Chơi thử 8 câu')}
           </span>
           {!group && !fixedGroup && (
             <button
@@ -250,7 +280,7 @@ function PackGame({ pack, initialSet, fixedGroup }: GameProps) {
               disabled={!set}
               onClick={() => setEditingGroup((value) => !value)}
             >
-              <Users size={15} /> Tạo nhóm
+              <Users size={15} /> {t('Tạo nhóm')}{' '}
             </button>
           )}
         </div>
@@ -262,16 +292,16 @@ function PackGame({ pack, initialSet, fixedGroup }: GameProps) {
             <span>
               <strong>{group.name}</strong>
               <small>
-                {group.players.length} thành viên ·{' '}
+                {group.players.length} {t('thành viên ·')}{' '}
                 {group.players.map((player) => player.name).join(', ')}
               </small>
             </span>
           </div>
           {fixedGroup ? (
-            <Link href="/vi/tao-bo-ai">Tạo bộ mới</Link>
+            <Link href={path('/vi/tao-bo-ai')}>{t('Tạo bộ mới')}</Link>
           ) : (
             <button onClick={() => setEditingGroup((value) => !value)}>
-              <Pencil size={14} /> Sửa nhóm
+              <Pencil size={14} /> {t('Sửa nhóm')}{' '}
             </button>
           )}
         </div>
@@ -285,18 +315,18 @@ function PackGame({ pack, initialSet, fixedGroup }: GameProps) {
             onCancel={() => setEditingGroup(false)}
           />
           <p className={styles.groupHint}>
-            Lưu thay đổi sẽ bắt đầu ván mới. Lượt chơi thử đã dùng vẫn được giữ.
+            {t('Lưu thay đổi sẽ bắt đầu ván mới. Lượt chơi thử đã dùng vẫn được giữ.')}{' '}
           </p>
           {group && (
             <button className={styles.leaveGroup} onClick={() => saveGroup(null)}>
-              Bỏ chia lượt & bắt đầu ván mới
+              {t('Bỏ chia lượt & bắt đầu ván mới')}{' '}
             </button>
           )}
         </div>
       )}
       {offline && (
         <p className={styles.network}>
-          <WifiOff size={16} /> Bạn đang chơi offline · thanh toán cần mạng
+          <WifiOff size={16} /> {t('Bạn đang chơi offline · thanh toán cần mạng')}{' '}
         </p>
       )}
       {error ? (
@@ -306,7 +336,7 @@ function PackGame({ pack, initialSet, fixedGroup }: GameProps) {
             className="button button-primary"
             onClick={() => setAttempt((value) => value + 1)}
           >
-            Thử lại
+            {t('Thử lại')}{' '}
           </button>
         </div>
       ) : (
@@ -320,13 +350,18 @@ function PackGame({ pack, initialSet, fixedGroup }: GameProps) {
             {group && (
               <span className={styles.actor} data-testid="current-actor">
                 <UserRound size={14} />{' '}
-                {actor ? `Lượt của ${actor.name}` : `Bắt đầu với ${nextActor?.name}`}
+                {actor
+                  ? t('Lượt của {v0}', { v0: actor.name })
+                  : t('Bắt đầu với {v0}', { v0: nextActor?.name ?? '' })}
               </span>
             )}
             <span className={styles.cardIndex}>
               {current
-                ? `CÂU ${truthSeen + dareSeen < 10 ? '0' : ''}${truthSeen + dareSeen}`
-                : 'SẴN SÀNG CHƯA?'}
+                ? t('CÂU {v0}{v1}', {
+                    v0: truthSeen + dareSeen < 10 ? '0' : '',
+                    v1: String(truthSeen + dareSeen),
+                  })
+                : t('SẴN SÀNG CHƯA?')}
             </span>
             <div className={styles.cardContent}>
               <div className={styles.cardEmoji}>
@@ -335,15 +370,15 @@ function PackGame({ pack, initialSet, fixedGroup }: GameProps) {
               <h2>
                 {current
                   ? current.type === 'truth'
-                    ? 'Thật'
-                    : 'Thách'
-                  : 'Một lựa chọn.\nNhiều bất ngờ.'}
+                    ? t('Thật')
+                    : t('Thách')
+                  : t('Một lựa chọn.\nNhiều bất ngờ.')}
               </h2>
               <p key={current?.id}>
                 {current?.text ??
                   (set
-                    ? 'Chọn Thật để kể một điều chưa ai biết.\nChọn Thách để thử một điều mới.'
-                    : 'Đang chuẩn bị cuộc vui…')}
+                    ? t('Chọn Thật để kể một điều chưa ai biết.\nChọn Thách để thử một điều mới.')
+                    : t('Đang chuẩn bị cuộc vui…'))}
               </p>
             </div>
           </AnimatedReveal>
@@ -351,9 +386,9 @@ function PackGame({ pack, initialSet, fixedGroup }: GameProps) {
             <p>
               {group && current
                 ? fixedGroup
-                  ? 'Chọn loại câu để chuyển lượt tiếp theo'
-                  : `Lượt tiếp: ${nextActor?.name} · chọn Thật hay Thách`
-                : `Chọn loại câu ${current ? 'tiếp theo' : 'đầu tiên'}`}
+                  ? t('Chọn loại câu để chuyển lượt tiếp theo')
+                  : t('Lượt tiếp: {v0} · chọn Thật hay Thách', { v0: nextActor?.name ?? '' })
+                : t('Chọn loại câu {v0}', { v0: current ? t('tiếp theo') : t('đầu tiên') })}
             </p>
             <div className={styles.choices}>
               <button
@@ -361,14 +396,14 @@ function PackGame({ pack, initialSet, fixedGroup }: GameProps) {
                 disabled={!set || (unlocked && !truthRemaining)}
                 onClick={() => draw('truth')}
               >
-                <span>☁️</span> Thật <ArrowRight size={17} />
+                <span>☁️</span> {t('Thật')} <ArrowRight size={17} />
               </button>
               <button
                 className={`${styles.choice} ${styles.dare}`}
                 disabled={!set || (unlocked && !dareRemaining)}
                 onClick={() => draw('dare')}
               >
-                <span>💖</span> Thách <ArrowRight size={17} />
+                <span>💖</span> {t('Thách')} <ArrowRight size={17} />
               </button>
             </div>
             <div className={styles.smallActions}>
@@ -376,7 +411,7 @@ function PackGame({ pack, initialSet, fixedGroup }: GameProps) {
                 disabled={!current || complete}
                 onClick={() => current && draw(current.type, true)}
               >
-                <SkipForward size={15} /> Bỏ qua
+                <SkipForward size={15} /> {t('Bỏ qua')}{' '}
               </button>
               <button
                 disabled={!set}
@@ -384,32 +419,35 @@ function PackGame({ pack, initialSet, fixedGroup }: GameProps) {
                   if (set) {
                     persist(createGroupGameState(set, group, progress?.trialSeenIds ?? []));
                     setPaywall(false);
-                    setNotice('Đã xáo trộn. Cùng bắt đầu ván mới!');
+                    setNotice(t('Đã xáo trộn. Cùng bắt đầu ván mới!'));
                   }
                 }}
               >
-                <RotateCcw size={15} /> Ván mới
+                <RotateCcw size={15} /> {t('Ván mới')}{' '}
               </button>
             </div>
             {group && (
               <p className={styles.skipHint}>
-                Bỏ qua giữ nguyên người chơi · Thật / Thách chuyển lượt.
+                {t('Bỏ qua giữ nguyên người chơi · Thật / Thách chuyển lượt.')}{' '}
               </p>
             )}
           </div>
           <div className={styles.progress}>
             <div>
               <span>
-                ☁️ Thật: <b>{truthSeen}</b>
+                {t('☁️ Thật:')} <b>{truthSeen}</b>
               </span>
               <span>
-                💖 Thách: <b>{dareSeen}</b>
+                {t('💖 Thách:')} <b>{dareSeen}</b>
               </span>
             </div>
             <p>
               {unlocked
-                ? `Đã xem ${truthSeen + dareSeen}/${pack.questionCount} câu`
-                : `Đã thử ${progress?.trialSeenIds.length ?? 0}/8 câu miễn phí`}
+                ? t('Đã xem {v0}/{v1} câu', {
+                    v0: truthSeen + dareSeen,
+                    v1: String(pack.questionCount),
+                  })
+                : t('Đã thử {v0}/8 câu miễn phí', { v0: progress?.trialSeenIds.length ?? 0 })}
             </p>
             <div className={styles.track}>
               <span
@@ -421,46 +459,52 @@ function PackGame({ pack, initialSet, fixedGroup }: GameProps) {
           </div>
           <p className={styles.status} role="status">
             {notice ||
-              (complete && unlocked ? 'Bạn đã khám phá hết bộ này. Bấm Ván mới để chơi lại.' : '')}
+              (complete && unlocked
+                ? t('Bạn đã khám phá hết bộ này. Bấm Ván mới để chơi lại.')
+                : '')}
           </p>
           {!unlocked && pack.tier === 'premium' && (
             <div className={styles.premium}>
               <LockKeyhole size={18} />
               <span>
-                Mở toàn bộ {pack.questionCount} câu · dự kiến {price}đ
+                {t('Mở toàn bộ')} {pack.questionCount} {t('câu · dự kiến')} {price}
+                {t('đ')}{' '}
               </span>
               <button onClick={() => setPaywall(true)}>
-                Xem thêm <ArrowRight size={14} />
+                {t('Xem thêm')} <ArrowRight size={14} />
               </button>
             </div>
           )}
           {paywall && !unlocked && (
-            <aside className={styles.paywall} aria-label="Mở khóa bộ câu hỏi">
+            <aside className={styles.paywall} aria-label={t('Mở khóa bộ câu hỏi')}>
               <button
                 className={styles.dismiss}
                 onClick={() => setPaywall(false)}
-                aria-label="Đóng thông tin mở khóa"
+                aria-label={t('Đóng thông tin mở khóa')}
               >
-                ×
+                {t('×')}{' '}
               </button>
-              <span className="eyebrow">CUỘC VUI VẪN CÒN PHÍA TRƯỚC</span>
+              <span className="eyebrow">{t('CUỘC VUI VẪN CÒN PHÍA TRƯỚC')}</span>
               <h2 ref={paywallHeading} tabIndex={-1}>
-                Mở khóa {pack.title}
+                {t('Mở khóa')} {pack.title}
               </h2>
               <p>
-                Toàn bộ {pack.questionCount} câu. Thanh toán một lần, chơi lại không giới hạn. Giữ
-                mã khôi phục để đổi điện thoại.
+                {t('Toàn bộ')} {pack.questionCount}{' '}
+                {t(
+                  'câu. Thanh toán một lần, chơi lại không giới hạn. Giữ mã khôi phục để đổi điện thoại.',
+                )}{' '}
               </p>
               <Link
                 className="button button-primary"
-                href={`/vi/thanh-toan?pack=${encodeURIComponent(pack.id)}`}
+                href={path(`/vi/thanh-toan?pack=${encodeURIComponent(pack.id)}`)}
               >
-                Mở khóa · dự kiến {price}đ <ArrowRight size={18} />
+                {t('Mở khóa · dự kiến')} {price}
+                {t('đ')} <ArrowRight size={18} />
               </Link>
-              <p className={styles.fine}>Giá chính thức được xác nhận ở bước thanh toán.</p>
+              <p className={styles.fine}>{t('Giá chính thức được xác nhận ở bước thanh toán.')}</p>
               <div className={styles.links}>
-                <Link href="/vi/danh-muc">Chọn bộ khác</Link>
-                <Link href="/vi/khoi-phuc">Đã mua? Khôi phục</Link>
+                <Link href={path('/vi/danh-muc')}>{t('Chọn bộ khác')}</Link>
+                <Link href={path('/vi/khoi-phuc')}>{t('Đã mua? Khôi phục')}</Link>
               </div>
             </aside>
           )}
@@ -468,7 +512,9 @@ function PackGame({ pack, initialSet, fixedGroup }: GameProps) {
       )}
       {storageWarning && (
         <p className="notice">
-          Trình duyệt chưa cho lưu tiến độ. Bạn vẫn chơi được, nhưng có thể mất ván khi đóng trang.
+          {t(
+            'Trình duyệt chưa cho lưu tiến độ. Bạn vẫn chơi được, nhưng có thể mất ván khi đóng trang.',
+          )}{' '}
         </p>
       )}
     </section>

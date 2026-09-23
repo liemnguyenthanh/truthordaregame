@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import type { GeneratedPack, GenerationInput, PlayGroup } from '../lib/types';
+import { assemble, slots } from '../lib/ai/slots';
 
 test.use({ serviceWorkers: 'block' });
 const id = '10000000-0000-4000-8000-000000000001';
@@ -192,5 +193,56 @@ test('MOCK AI: failed result is explicit and never auto-regenerated', async ({ p
   await expect(page.getByRole('heading', { name: 'Chưa tạo được bộ lần này' })).toBeVisible();
   await expect(page.getByText('AI không tạo đủ câu hợp lệ.')).toBeVisible();
   await expect(page.getByRole('link', { name: 'Về nhóm và thử lần mới' })).toBeVisible();
+  expect(calls).toBe(1);
+});
+
+test('MOCK AI: English input and generated language persist through a Vietnamese UI switch', async ({
+  page,
+}) => {
+  await seedGroup(page);
+  let generation: GeneratedPack | undefined;
+  let calls = 0;
+  await page.route('**/api/**', async (route) => {
+    const url = new URL(route.request().url());
+    if (url.pathname === '/api/generations/config')
+      return route.fulfill({ json: { available: true, dailyLimit: 3, billing: 'free' } });
+    if (url.pathname === '/api/session') return route.fulfill({ json: { ok: true } });
+    if (url.pathname === '/api/generations' && route.request().method() === 'GET')
+      return route.fulfill({ json: { generations: [], limitPerDay: 3 } });
+    if (url.pathname === '/api/generations' && route.request().method() === 'POST') {
+      const input = route.request().postDataJSON() as GenerationInput;
+      expect(input.locale).toBe('en');
+      expect(input.group).toEqual(group);
+      calls++;
+      generation = assemble(id, input, '2026-09-23T12:00:00Z', {
+        questions: slots(input).map((slot) => ({
+          id: slot.id,
+          text: `${slot.actor}, share a favorite memory with ${slot.partner}.`,
+        })),
+      });
+      return route.fulfill({ json: { generation } });
+    }
+    if (url.pathname === `/api/generations/${id}`) return route.fulfill({ json: { generation } });
+    return route.fulfill({ status: 404, json: { error: 'Unexpected mock' } });
+  });
+  await page.goto('/en/create-ai-pack');
+  await page.getByRole('button', { name: 'Create our question pack', exact: true }).click();
+  await expect(page).toHaveURL(new RegExp(`/en/ai-pack\\?id=${id}$`));
+  await page.getByRole('button', { name: '☁️ Truth', exact: true }).click();
+  await expect(
+    page.getByText('An, share a favorite memory with Bình.', { exact: true }),
+  ).toBeVisible();
+  await page.getByRole('link', { name: 'Chuyển sang tiếng Việt' }).click();
+  await expect(page).toHaveURL(new RegExp(`/vi/bo-ai\\?id=${id}$`));
+  await expect(page.locator('html')).toHaveAttribute('lang', 'vi');
+  await expect(
+    page.getByText('An, share a favorite memory with Bình.', { exact: true }),
+  ).toBeVisible();
+  const saved = await page.evaluate(
+    (generationId) =>
+      JSON.parse(localStorage.getItem(`tod:generated:v1:${generationId}`) || 'null'),
+    id,
+  );
+  expect(saved.questionSet.locale).toBe('en');
   expect(calls).toBe(1);
 });

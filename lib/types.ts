@@ -1,3 +1,4 @@
+import type { Locale } from './i18n';
 export type QuestionType = 'truth' | 'dare';
 export type Question = {
   id: string;
@@ -24,6 +25,7 @@ export type Category = {
   sortOrder: number;
 };
 export type Pack = {
+  locale?: Locale;
   id: string;
   slug: string;
   title: string;
@@ -47,8 +49,14 @@ export type Pack = {
 export type Player = { id: string; name: string };
 export type PlayGroup = { id: string; name: string; players: Player[] };
 export type GroupMood = 'friendly' | 'deep' | 'party' | 'flirty';
-export type GenerationInput = { group: PlayGroup; mood: GroupMood; adultsConfirmed: boolean };
+export type GenerationInput = {
+  locale?: Locale;
+  group: PlayGroup;
+  mood: GroupMood;
+  adultsConfirmed: boolean;
+};
 export type GeneratedPack = {
+  locale?: Locale;
   id: string;
   status: 'pending' | 'complete' | 'failed';
   group: PlayGroup;

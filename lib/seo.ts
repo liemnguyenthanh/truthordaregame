@@ -1,30 +1,47 @@
 import type { Metadata } from 'next';
+import { localePath, type Locale } from '@/lib/i18n';
 export const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000').replace(
   /\/$/,
   '',
 );
-export function pageMetadata(title: string, description: string, path: string): Metadata {
+export function languageAlternates(path: string, available: readonly Locale[] = ['vi', 'en']) {
+  const languages: Record<string, string> = {};
+  for (const locale of available) languages[locale] = siteUrl + localePath(locale, path);
+  if (available.includes('vi')) languages['x-default'] = siteUrl + localePath('vi', path);
+  return languages;
+}
+export function pageMetadata(
+  title: string,
+  description: string,
+  path: string,
+  locale: Locale = 'vi',
+  available: readonly Locale[] = ['vi', 'en'],
+): Metadata {
+  const url = siteUrl + localePath(locale, path);
   return {
     title,
     description,
-    alternates: { canonical: `${siteUrl}${path}` },
+    alternates: { canonical: url, languages: languageAlternates(path, available) },
     openGraph: {
       title,
       description,
-      url: `${siteUrl}${path}`,
-      locale: 'vi_VN',
+      url,
+      locale: locale === 'en' ? 'en_US' : 'vi_VN',
+      alternateLocale: available
+        .filter((l) => l !== locale)
+        .map((l) => (l === 'en' ? 'en_US' : 'vi_VN')),
       type: 'website',
-      siteName: 'Thật hay Thách',
+      siteName: locale === 'en' ? 'Truth or Dare' : 'Thật hay Thách',
       images: [
         {
-          url: '/thumbnail.png',
-          width: 1672,
-          height: 941,
+          url: `/${locale}/share.png`,
+          width: 1200,
+          height: 630,
           type: 'image/png',
-          alt: 'Thật hay Thách',
+          alt: locale === 'en' ? 'Truth or Dare' : 'Thật hay Thách',
         },
       ],
     },
-    twitter: { card: 'summary_large_image', title, description, images: ['/thumbnail.png'] },
+    twitter: { card: 'summary_large_image', title, description, images: [`/${locale}/share.png`] },
   };
 }
