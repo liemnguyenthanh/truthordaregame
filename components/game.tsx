@@ -66,22 +66,9 @@ function PackGame({ pack, initialSet, fixedGroup, alternateHref }: GameProps) {
   const [error, setError] = useState('');
   const [storageWarning, setStorageWarning] = useState(false);
   const [offline, setOffline] = useState(false);
-  const [paywall, setPaywall] = useState(false);
   const [notice, setNotice] = useState('');
   const [attempt, setAttempt] = useState(0);
   const lastDraw = useRef(0);
-  const paywallHeading = useRef<HTMLHeadingElement>(null);
-  useEffect(() => {
-    if (paywall && !unlocked) {
-      paywallHeading.current?.focus({ preventScroll: true });
-      paywallHeading.current?.scrollIntoView({
-        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
-          ? 'instant'
-          : 'smooth',
-        block: 'center',
-      });
-    }
-  }, [paywall, unlocked]);
   const stateKey = `tod:game:v1:${pack.id}`;
   useEffect(() => {
     const controller = new AbortController();
@@ -185,7 +172,6 @@ function PackGame({ pack, initialSet, fixedGroup, alternateHref }: GameProps) {
   function saveGroup(next: PlayGroup | null) {
     setGroup(next);
     setEditingGroup(false);
-    setPaywall(false);
     try {
       if (next) localStorage.setItem(GROUP_STORAGE_KEY, JSON.stringify(next));
       else localStorage.removeItem(GROUP_STORAGE_KEY);
@@ -213,13 +199,12 @@ function PackGame({ pack, initialSet, fixedGroup, alternateHref }: GameProps) {
       return;
     }
     if (result.status === 'trial-exhausted') {
-      setPaywall(true);
-      setNotice(t('Bạn đã xem hết các câu chơi thử.'));
+      setNotice(t('Bạn đã xem hết các câu chơi thử. Hãy chọn Mua ngay để mở khóa bộ này.'));
       return;
     }
     if (result.status === 'type-exhausted') {
       setNotice(
-        t('Bạn đã xem hết câu {v0}{v1}. Hãy chọn loại còn lại nhé.', {
+        t('Bạn đã xem hết câu {v0}{v1}. H��y chọn loại còn lại nhé.', {
           v0: type === 'truth' ? t('Thật') : t('Thách'),
           v1: String(unlocked ? '' : t(' chơi thử')),
         }),
@@ -232,7 +217,6 @@ function PackGame({ pack, initialSet, fixedGroup, alternateHref }: GameProps) {
     }
     persist(result.state);
     setNotice('');
-    setPaywall(false);
   }
   const current = set?.questions.find((question) => question.id === progress?.currentId);
   const actor = group?.players.find(
@@ -418,7 +402,6 @@ function PackGame({ pack, initialSet, fixedGroup, alternateHref }: GameProps) {
                 onClick={() => {
                   if (set) {
                     persist(createGroupGameState(set, group, progress?.trialSeenIds ?? []));
-                    setPaywall(false);
                     setNotice(t('Đã xáo trộn. Cùng bắt đầu ván mới!'));
                   }
                 }}
@@ -470,43 +453,13 @@ function PackGame({ pack, initialSet, fixedGroup, alternateHref }: GameProps) {
                 {t('Mở toàn bộ')} {pack.questionCount} {t('câu · dự kiến')} {price}
                 {t('đ')}{' '}
               </span>
-              <button onClick={() => setPaywall(true)}>
-                {t('Xem thêm')} <ArrowRight size={14} />
-              </button>
-            </div>
-          )}
-          {paywall && !unlocked && (
-            <aside className={styles.paywall} aria-label={t('Mở khóa bộ câu hỏi')}>
-              <button
-                className={styles.dismiss}
-                onClick={() => setPaywall(false)}
-                aria-label={t('Đóng thông tin mở khóa')}
-              >
-                {t('×')}{' '}
-              </button>
-              <span className="eyebrow">{t('CUỘC VUI VẪN CÒN PHÍA TRƯỚC')}</span>
-              <h2 ref={paywallHeading} tabIndex={-1}>
-                {t('Mở khóa')} {pack.title}
-              </h2>
-              <p>
-                {t('Toàn bộ')} {pack.questionCount}{' '}
-                {t(
-                  'câu. Thanh toán một lần, chơi lại không giới hạn. Giữ mã khôi phục để đổi điện thoại.',
-                )}{' '}
-              </p>
               <Link
-                className="button button-primary"
                 href={path(`/vi/thanh-toan?pack=${encodeURIComponent(pack.id)}`)}
+                className={styles.buyNow}
               >
-                {t('Mở khóa · dự kiến')} {price}
-                {t('đ')} <ArrowRight size={18} />
+                {t('Mua ngay')} <ArrowRight size={14} />
               </Link>
-              <p className={styles.fine}>{t('Giá chính thức được xác nhận ở bước thanh toán.')}</p>
-              <div className={styles.links}>
-                <Link href={path('/vi/danh-muc')}>{t('Chọn bộ khác')}</Link>
-                <Link href={path('/vi/khoi-phuc')}>{t('Đã mua? Khôi phục')}</Link>
-              </div>
-            </aside>
+            </div>
           )}
         </>
       )}
