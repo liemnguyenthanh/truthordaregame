@@ -26,7 +26,7 @@ import {
 import { GROUP_STORAGE_KEY, readSavedGroup } from '@/lib/groups';
 import { GroupEditor } from './group-editor';
 import { AnimatedReveal } from './animated-reveal';
-import { LanguageSwitch } from './site-shell';
+import Image from 'next/image';
 import type { Pack, PlayGroup, QuestionSet, QuestionType } from '@/lib/types';
 import styles from './game.module.css';
 
@@ -60,6 +60,7 @@ function PackGame({ pack, initialSet, fixedGroup, alternateHref }: GameProps) {
   const [offline, setOffline] = useState(false);
   const [notice, setNotice] = useState('');
   const [attempt, setAttempt] = useState(0);
+  const [showDonate, setShowDonate] = useState(false);
   const lastDraw = useRef(0);
   const accessUntil = useRef(0);
   const stateKey = `tod:game:v1:${pack.id}`;
@@ -270,7 +271,11 @@ function PackGame({ pack, initialSet, fixedGroup, alternateHref }: GameProps) {
           <ArrowLeft size={18} /> {pack.title}
         </Link>
         <div className={styles.topActions}>
-          {!fixedGroup && <LanguageSwitch alternateHref={alternateHref} />}
+          {!fixedGroup && (
+            <button className={styles.donateBtn} onClick={() => setShowDonate(true)}>
+              {t('Donate')}
+            </button>
+          )}
           <span className={styles.badge}>
             {pack.tier === 'free'
               ? t('Miễn phí')
@@ -489,6 +494,29 @@ function PackGame({ pack, initialSet, fixedGroup, alternateHref }: GameProps) {
             'Trình duyệt chưa cho lưu tiến độ. Bạn vẫn chơi được, nhưng có thể mất ván khi đóng trang.',
           )}{' '}
         </p>
+      )}
+      {showDonate && (
+        <div className={styles.modalOverlay} onClick={() => setShowDonate(false)}>
+          <div className={styles.donateModal} onClick={(e) => e.stopPropagation()}>
+            <button className={styles.closeModal} onClick={() => setShowDonate(false)}>
+              ✕
+            </button>
+            <h2>{t('Donate')}</h2>
+            <p>{t('Quét mã QR để ủng hộ chúng tôi')}</p>
+            <div className={styles.qrCode}>
+              <Image
+                src="/donate-qr.png"
+                alt={t('Mã QR donate')}
+                width={240}
+                height={240}
+                priority
+              />
+            </div>
+            <p className={styles.donateNote}>
+              {t('Bạn có thể thay ảnh QR ở /public/donate-qr.png')}
+            </p>
+          </div>
+        </div>
       )}
     </section>
   );

@@ -1,0 +1,3 @@
+Place your donate QR code image here.
+Save your QR code image as "donate-qr.png" in the /public folder.
+The image will be displayed in the donate modal when users click the Donate button.

@@ -1,10 +1,33 @@
+# Dependencies
 node_modules/
+
+# Build outputs
+dist/
+build/
 .next/
-.next-*/
-.env*
-!.env.example
-*.tsbuildinfo
-test-results/
-playwright-report/
+
+# Environment variables
+.env
+.env.local
+.env.*
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.swp
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Editor
+.vscode/
+.idea/
+
+# OS
 .DS_Store
-supabase/.temp/
+Thumbs.db
