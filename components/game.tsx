@@ -504,17 +504,8 @@ function PackGame({ pack, initialSet, fixedGroup, alternateHref }: GameProps) {
             <h2>{t('Donate')}</h2>
             <p>{t('Quét mã QR để ủng hộ chúng tôi')}</p>
             <div className={styles.qrCode}>
-              <Image
-                src="/donate-qr.png"
-                alt={t('Mã QR donate')}
-                width={240}
-                height={240}
-                priority
-              />
+              <Image src="/donate.png" alt={t('Mã QR donate')} width={240} height={240} priority />
             </div>
-            <p className={styles.donateNote}>
-              {t('Bạn có thể thay ảnh QR ở /public/donate-qr.png')}
-            </p>
           </div>
         </div>
       )}
