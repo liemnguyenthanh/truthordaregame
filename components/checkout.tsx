@@ -139,8 +139,10 @@ function PackCheckout({ packId }: { packId: string }) {
         if (cancelled) return;
         setPack(selected);
         setProduct(currentProduct);
-        await api('/api/session', { method: 'POST' });
-        const entitlements = await api('/api/entitlements');
+        const [, entitlements] = await Promise.all([
+          api('/api/session', { method: 'POST' }),
+          api('/api/entitlements'),
+        ]);
         if (cancelled) return;
         if (entitlements.packIds.includes(packId)) {
           setOwned(true);
@@ -245,7 +247,7 @@ function PackCheckout({ packId }: { packId: string }) {
   }
   const paid = owned || order?.status === 'paid';
   return (
-    <section className={`${styles.shell} ${styles.checkout}`}>
+    <section className={`${styles.shell} ${styles.checkout} ${styles.flowIn}`}>
       <Link href={path(pack ? `/vi/choi/${pack.slug}` : '/vi/danh-muc')} className={styles.back}>
         <ArrowLeft size={17} /> {t('Quay lại cuộc vui')}{' '}
       </Link>
@@ -505,9 +507,18 @@ function PackCheckout({ packId }: { packId: string }) {
                       {copied}
                     </p>
                   )}
-                  <p className={styles.waiting} role="status">
+                  <p
+                    className={styles.waiting}
+                    role="status"
+                    aria-live="polite"
+                    aria-busy={checking}
+                  >
                     <span />{' '}
-                    {offline ? t('Đang chờ kết nối mạng') : t('Đang chờ ngân hàng xác nhận')}{' '}
+                    {checking
+                      ? t('Đang kiểm tra giao dịch…')
+                      : offline
+                        ? t('Đang chờ kết nối mạng')
+                        : t('Đang chờ ngân hàng xác nhận')}{' '}
                   </p>
                   <p className={styles.fine}>
                     {t('Đơn có hiệu lực đến')}{' '}
@@ -518,7 +529,7 @@ function PackCheckout({ packId }: { packId: string }) {
                     {t('. Trang tự kiểm tra khi bạn quay lại từ ứng dụng ngân hàng.')}{' '}
                   </p>
                   <button
-                    className={styles.textButton}
+                    className={`button button-primary ${styles.checkPayment}`}
                     disabled={checking || offline}
                     onClick={() => void syncOrder(order.id, true)}
                   >
