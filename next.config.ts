@@ -1,28 +1,20 @@
 import type { NextConfig } from 'next';
-import { routeSegments } from './lib/i18n';
 const nextConfig: NextConfig = {
   distDir: process.env.NEXT_DIST_DIR || '.next',
   poweredByHeader: false,
   outputFileTracingIncludes: {
-    '/*/share.png': ['./node_modules/@fontsource/be-vietnam-pro/files/*-700-normal.woff'],
+    '/share.png': ['./node_modules/@fontsource/be-vietnam-pro/files/*-700-normal.woff'],
   },
   async redirects() {
-    return Object.entries(routeSegments).map(([vi, en]) => ({
-      source: `/en/${vi}/:path*`,
-      destination: `/en/${en}/:path*`,
-      permanent: true,
-    }));
-  },
-  async rewrites() {
-    return Object.entries(routeSegments).map(([vi, en]) => ({
-      source: `/en/${en}/:path*`,
-      destination: `/en/${vi}/:path*`,
-    }));
+    return [
+      { source: '/vi/:path*', destination: '/:path*', permanent: true },
+      { source: '/en/:path*', destination: '/:path*', permanent: true },
+    ];
   },
   async headers() {
     return [
       {
-        source: '/:locale(vi|en)/:file(categories|packs).json',
+        source: '/:file(categories|packs).json',
         headers: [
           { key: 'Cache-Control', value: 'public, max-age=0, must-revalidate' },
           {
@@ -33,7 +25,7 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        source: '/:locale(vi|en)/questions/:file*',
+        source: '/questions/:file*',
         headers: [
           { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
           { key: 'X-Robots-Tag', value: 'noindex' },
