@@ -95,8 +95,8 @@ test('320px game and trial paywall have no horizontal overflow', async ({ page }
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
     true,
   );
-  await page.getByRole('button', { name: /Xem thêm/ }).click();
-  await expect(page.getByRole('complementary', { name: 'Mở khóa bộ câu hỏi' })).toBeVisible();
+  await page.getByRole('link', { name: /Mua ngay/ }).click();
+  await expect(page).toHaveURL(/\/vi\/thanh-toan\?pack=friends-premium/);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
     true,
   );
