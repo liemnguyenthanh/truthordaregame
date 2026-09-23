@@ -219,6 +219,8 @@ export const englishMessages: Record<string, string> = {
   'Thử lại kết nối': 'Retry connection',
   'Đã thanh toán thành công': 'Payment successful',
   'Quyền mua đã được lưu trên thiết bị này.': 'Your purchase is saved on this device.',
+  'Mã khôi phục có hiệu lực 7 ngày kể từ khi được cấp sau thanh toán. Quyền chơi đã mở khóa vẫn được giữ nguyên.':
+    'Recovery codes are valid for 7 days after they are issued following payment. Access already unlocked is retained.',
   'Lưu mã khôi phục của bạn': 'Save your recovery code',
   'Dùng mã này để mở bộ đã mua trên thiết bị khác. Hãy giữ mã riêng cho mình.':
     'Use this code to unlock your purchase on another device. Keep it private.',

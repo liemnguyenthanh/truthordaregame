@@ -101,6 +101,11 @@ export function Restore() {
         <p className="eyebrow">{t('ĐỔI THIẾT BỊ, GIỮ CUỘC VUI')}</p>
         <h1>{t('Khôi phục quyền mua')}</h1>
         <p>{t('Không cần tài khoản. Chỉ cần mã khôi phục đã lưu khi thanh toán.')}</p>
+        <p>
+          {t(
+            'Mã khôi phục có hiệu lực 7 ngày kể từ khi được cấp sau thanh toán. Quyền chơi đã mở khóa vẫn được giữ nguyên.',
+          )}
+        </p>
       </div>
       <div className={styles.panel}>
         {success ? (

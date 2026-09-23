@@ -323,6 +323,11 @@ function PackCheckout({ packId }: { packId: string }) {
             <div className={styles.recovery}>
               <h3>{t('Lưu mã khôi phục của bạn')}</h3>
               <p>
+                {t(
+                  'Mã khôi phục có hiệu lực 7 ngày kể từ khi được cấp sau thanh toán. Quyền chơi đã mở khóa vẫn được giữ nguyên.',
+                )}
+              </p>
+              <p>
                 {t('Dùng mã này để mở bộ đã mua trên thiết bị khác. Hãy giữ mã riêng cho mình.')}
               </p>
               <code>{recovery}</code>

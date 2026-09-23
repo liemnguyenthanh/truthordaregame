@@ -89,3 +89,5 @@ node supabase/tests/verify-embedded.mjs
 ```
 
 Không tạo dịch vụ hoặc thay package.json. Database hoàn toàn trong bộ nhớ. PGlite xác minh PL/pgSQL và transaction rollback nhưng không thay thế Supabase PostgREST, multi-connection concurrency, config provider hay giao dịch SePay thật. Kiểm thử chạy nhiều request song song vẫn cần Supabase staging.
+
+Mã khôi phục hết hạn đúng 7 ngày sau `purchases.created_at`, kể cả mã cũ. RPC `restore_purchase` từ chối mã hết hạn; khôi phục không gia hạn mã và không thu hồi quyền đã cấp. Áp dụng migration `20260923074703_recovery_code_expiry.sql` cùng bản cập nhật giao diện.
