@@ -3,6 +3,9 @@ import { routeSegments } from './lib/i18n';
 const nextConfig: NextConfig = {
   distDir: process.env.NEXT_DIST_DIR || '.next',
   poweredByHeader: false,
+  allowedDevOrigins: process.env.BASE44_PUBLIC_HOST_SUFFIX
+    ? ['3000-' + process.env.BASE44_PUBLIC_HOST_SUFFIX]
+    : [],
   outputFileTracingIncludes: {
     '/*/share.png': ['./node_modules/@fontsource/be-vietnam-pro/files/*-700-normal.woff'],
   },
