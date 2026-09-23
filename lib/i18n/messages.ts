@@ -1,5 +1,31 @@
 /** English UI translations; keys retain the original Vietnamese copy. */
 export const englishMessages: Record<string, string> = {
+  'Tự mở khóa sau khi nhận thanh toán.': 'Unlocks automatically once payment arrives.',
+  'Dùng cùng điện thoại?': 'Using the same phone?',
+  'Thanh toán để chơi tiếp': 'Pay to keep playing',
+  'Chuyển đúng số tiền và nội dung. Trang sẽ tự mở khóa.':
+    'Keep the amount and transfer reference unchanged. Your pack unlocks automatically.',
+  'Thanh toán một lần · Không cần tài khoản': 'One payment · No account needed',
+  'Các bước thanh toán': 'Payment steps',
+  'Tạo QR': 'Create QR',
+  'Chuyển khoản': 'Transfer',
+  'Bạn đang offline. Trang sẽ kiểm tra thanh toán khi có mạng trở lại.':
+    'You are offline. We will check your payment when you reconnect.',
+  'Chuyển khoản ngân hàng': 'Bank transfer',
+  'Cách chuyển khoản': 'Transfer method',
+  'Quét mã QR': 'Scan QR code',
+  'Chuyển khoản thủ công': 'Transfer manually',
+  'Dùng cùng điện thoại? Chụp màn hình QR, rồi chọn ảnh trong ứng dụng ngân hàng. Bạn cũng có thể chuyển khoản thủ công.':
+    'On the same phone? Screenshot the QR and select the image in your banking app. You can also transfer manually.',
+  'Sao chép thông tin bên dưới vào ứng dụng ngân hàng.':
+    'Copy the details below into your banking app.',
+  'Sao chép số tiền': 'Copy amount',
+  'Đã sao chép số tiền': 'Amount copied',
+  'Đang chờ kết nối mạng': 'Waiting for a connection',
+  'Đang kiểm tra…': 'Checking…',
+  'Tôi đã chuyển khoản · Kiểm tra': 'I have paid · Check status',
+  'Đã chuyển tiền? Không chuyển lại. Việc xác nhận có thể mất một chút thời gian.':
+    'Already transferred? Please do not pay again. Confirmation may take a moment.',
   'Thật hay Thách — Trang chủ': 'Truth or Dare — Home',
   Thật: 'Truth',
   Thách: 'Dare',

@@ -1,3 +1,4 @@
+import { createRecovery } from '../../supabase/functions/_shared/payment-recovery';
 import 'server-only';
 import { hasSameOrigin } from '@/lib/request-origin';
 import { createHash, randomBytes, createCipheriv, createDecipheriv } from 'node:crypto';
@@ -25,8 +26,7 @@ export function decrypt(value: string) {
   return Buffer.concat([cipher.update(b.subarray(28)), cipher.final()]).toString('utf8');
 }
 export function recovery() {
-  const raw = randomBytes(16).toString('hex').toUpperCase();
-  return { hash: hash(raw), ciphertext: encrypt(raw) };
+  return createRecovery(env('RECOVERY_ENCRYPTION_KEY'));
 }
 export async function guest(create = false) {
   const jar = await cookies();

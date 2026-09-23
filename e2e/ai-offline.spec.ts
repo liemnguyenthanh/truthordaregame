@@ -89,7 +89,7 @@ test('SEEDED MOCK AI: real shell cache supports offline reload and a fresh page 
     localStorage.setItem('tod:generated-history:v1', JSON.stringify([value]));
   }, generation);
   await page.goto(`/vi/bo-ai?id=${id}`);
-  await expect(page.getByRole('heading', { name: 'Bộ riêng offline', exact: true })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Bộ riêng offline', exact: true })).toBeVisible();
   await page
     .getByRole('button', { name: 'Lưu màn chơi để dùng bộ AI offline', exact: true })
     .click();
@@ -101,7 +101,7 @@ test('SEEDED MOCK AI: real shell cache supports offline reload and a fresh page 
     .toBe(true);
   await context.setOffline(true);
   await page.reload();
-  await expect(page.getByRole('heading', { name: 'Bộ riêng offline', exact: true })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Bộ riêng offline', exact: true })).toBeVisible();
   await page.getByRole('button', { name: '☁️ Thật', exact: true }).click();
   await expect(page.getByTestId('current-actor')).toContainText('Lượt của An');
   await expect(

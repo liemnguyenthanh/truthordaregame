@@ -26,3 +26,15 @@ See [content-localization.md](content-localization.md) for migration and publish
 The connected live catalog has edits that differ from the bundled source: one friends pack has a different title, and another has different questions, tier and trial settings. These must be translated from their current Vietnamese source in admin. The loader deliberately withholds incompatible bundled translations, and the language switch falls back to the translated category listing.
 
 Deployment, production migration and Search Console submission have not been performed by this implementation task. Technical SEO/GEO supports discovery and clear source attribution; recommendations and rankings are determined by search/AI providers.
+
+## Verification results — 23 September 2026
+
+- Production build succeeded with both bundled catalogs: 3 packs and 312 questions per language.
+- `npm run typecheck` and `npm run format:check`: passed.
+- Latest `npm test`: 56 passed (includes the concurrent SePay tests present in the workspace).
+- `npm run test:db`: passed against embedded PostgreSQL.
+- Browser regression coverage: 22 scenarios passed across the full run and the two corrected-test reruns. One live admin/database scenario was deliberately skipped; no production writes were needed.
+- English and Vietnamese share endpoints returned 200, PNG 1200×630 and noindex; required font files were present in the production file trace.
+- Browser visual checks covered English desktop and 320/390px mobile layouts, with no horizontal overflow or JavaScript page errors in the verified flows.
+
+The production browser checks used an isolated `.next-i18n` build at `http://127.0.0.1:3100` with Supabase disabled so the complete bundled bilingual catalog could be verified without changing live data. AI/commerce success cases used explicit API mocks; service-worker/offline behavior used real production HTML, scripts and caches. The live source-difference checks were read-only.

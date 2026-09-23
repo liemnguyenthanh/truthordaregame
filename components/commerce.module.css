@@ -298,6 +298,157 @@
 .input::placeholder {
   color: #8995ac;
 }
+.checkout {
+  max-width: 540px;
+}
+.checkout .title {
+  margin: 14px 0 20px;
+}
+.checkout .icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  margin-bottom: 2px;
+}
+.checkout .title h1 {
+  font-size: clamp(24px, 5vw, 30px);
+  margin: 10px 0 8px;
+}
+.steps {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 22px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.steps li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.steps li > span {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid #ffffff20;
+}
+.steps .currentStep {
+  color: #ebceff;
+}
+.currentStep > span {
+  background: #a43bea28;
+  border-color: #b774e8 !important;
+}
+.paymentHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.paymentHeading p {
+  margin: 0 0 5px;
+}
+.paymentHeading h2 {
+  font-size: 28px;
+  margin: 0;
+  letter-spacing: -0.04em;
+}
+.secureLabel {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #a7dec9;
+  font-size: 10px;
+  max-width: 110px;
+  line-height: 1.6;
+}
+.secureLabel svg {
+  flex-shrink: 0;
+}
+.methodSwitch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: #111827;
+  padding: 4px;
+  border-radius: 12px;
+  gap: 4px;
+}
+.methodSwitch button {
+  min-height: 44px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  color: #b1bccd;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.methodSwitch button[aria-pressed='true'] {
+  background: #343047;
+  color: #f1e5ff;
+  border-color: #bc83e347;
+}
+.checkout .qr {
+  max-width: 236px;
+  margin: 18px auto 12px;
+}
+.qrHelp,
+.noRepeat {
+  font-size: 11px;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.7;
+}
+.qrHelp summary {
+  cursor: pointer;
+  padding: 10px 0;
+  color: #dec2f3;
+}
+.checkout .waiting {
+  margin-bottom: 8px;
+}
+.checkout .fine {
+  text-align: center;
+  margin: 8px 0;
+}
+.checkout .transferDetails dd {
+  min-width: 0;
+  display: block;
+}
+.transferDetails button {
+  vertical-align: middle;
+  min-width: 44px;
+  min-height: 44px;
+}
+.networkNotice {
+  padding: 12px 16px;
+  background: #d6a93d14;
+  border: 1px solid #d6a93d35;
+  border-radius: 12px;
+  color: #eacb82;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.copyFeedback {
+  color: #a9e5c8;
+  text-align: center;
+  font-size: 12px;
+}
+.checkout button:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+.checkout button:focus-visible {
+  outline: 2px solid #d3a2f4;
+  outline-offset: 3px;
+}
 @media (max-width: 480px) {
   .shell {
     padding: 16px 16px 45px;

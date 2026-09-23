@@ -6,7 +6,7 @@ Project `spgaczspjwuqfkxbrnai` đã kết nối bằng cấu hình `.env` và ki
 
 Đã chạy thành công `supabase/tests/commerce.sql` và `supabase/tests/ai-generations.sql` trên instance này, rollback dữ liệu thử. Có 10 bảng bật RLS và 5 RPC nghiệp vụ chỉ cho server gọi. Đã thu hồi quyền gọi public của helper `rls_auto_enable`; security advisor chỉ còn thông báo INFO về RLS không có policy, phù hợp thiết kế chỉ truy cập qua server.
 
-Không có Supabase Edge Functions trong kiến trúc hiện tại: các endpoint nằm trong Next.js `app/api` và được triển khai cùng website. Kiểm tra này chưa xác nhận website production, credentials SePay, AI Gateway hay giao dịch ngân hàng thật. `.env` hiện còn thiếu các giá trị cấu hình thanh toán và AI Gateway.
+Webhook SePay đã chuyển sang Supabase Edge Function `sepay-webhook` (2026-09-23). Tạo đơn, polling, khôi phục và đối soát vẫn chạy trong Next.js. Endpoint Next.js cũ giữ tương thích; chỉ cấu hình SePay gửi tới URL Edge Function bên dưới. Chưa nghiệm thu giao dịch ngân hàng thật.
 
 Mã nguồn dùng Next.js runtime API + Supabase Postgres. Không dùng Supabase Auth. Trang nội dung vẫn SSG; không đặt `output: export`.
 
@@ -15,10 +15,25 @@ Mã nguồn dùng Next.js runtime API + Supabase Postgres. Không dùng Supabase
 1. Tạo Supabase, chạy `supabase/migrations/20260918065848_commerce.sql` qua SQL Editor hoặc Supabase CLI. Migration chạy một lần; bảng có RLS, không có policy public. Browser không nhận service-role key.
 2. Sao chép `.env.example` thành `.env.local`. Điền URL/service key. Sinh `RECOVERY_ENCRYPTION_KEY` bằng `openssl rand -hex 32`; giữ ổn định, sao lưu an toàn. Đổi/mất key sẽ làm mất khả năng hiển thị mã đã mã hóa (hash vẫn dùng khôi phục được).
 3. Điền số tài khoản, tên chủ tài khoản và tên gateway ngân hàng chính xác như payload SePay. Kiểm tra URL QR sinh ra đúng ngân hàng trước mở bán.
-4. Tạo webhook SePay trỏ HTTPS `/api/webhooks/sepay`, loại tiền vào, bảo mật **API Key** với cùng `SEPAY_WEBHOOK_API_KEY`. Header là `Authorization: Apikey …`. Cấu hình mã thanh toán tiền tố `TOD`, hậu tố min = max = **10**, loại **Số và chữ** (server sinh 10 ký tự hex A–F/0–9). Server cũng tìm mã đầy đủ trong `content` nếu `code` rỗng. Không bật bộ lọc làm bỏ giao dịch sai mã nếu muốn lưu unmatched.
+4. Tạo webhook SePay trỏ `https://spgaczspjwuqfkxbrnai.supabase.co/functions/v1/sepay-webhook`, loại tiền vào, bảo mật **API Key** với cùng `SEPAY_WEBHOOK_API_KEY`. Header là `Authorization: Apikey …`. Cấu hình mã thanh toán tiền tố `TOD`, hậu tố min = max = **10**, loại **Số và chữ** (server sinh 10 ký tự hex A–F/0–9). Server cũng tìm mã đầy đủ trong `content` nếu `code` rỗng. Không bật bộ lọc làm bỏ giao dịch sai mã nếu muốn lưu unmatched.
 5. Đặt env tương ứng trên Vercel rồi deploy. `NEXT_PUBLIC_SITE_URL` phải là domain thật. Không cấu hình xong thì API trả 503 tiếng Việt; không có chế độ tự xác nhận paid.
 
 Nguồn chính thức: [xác thực](https://developer.sepay.vn/vi/sepay-webhooks/xac-thuc), [payload và retry](https://developer.sepay.vn/vi/sepay-webhooks/tich-hop-webhook), [QR SePay](https://sepay.vn/lap-trinh-cong-thanh-toan.html).
+
+## Supabase Edge Function
+
+URL production: `https://spgaczspjwuqfkxbrnai.supabase.co/functions/v1/sepay-webhook`.
+
+- SePay: POST, JSON, tiền vào, chọn đúng tài khoản ngân hàng.
+- Bảo mật: API Key = giá trị `SEPAY_WEBHOOK_API_KEY` trong `.env`; không kèm tiền tố `Apikey` trong ô nhập key. Header SePay gửi là `Authorization: Apikey <key>`.
+- Tiền tố thanh toán `TOD`, hậu tố 10 ký tự, loại số và chữ.
+- `verify_jwt = false` trong `supabase/config.toml`; handler tự xác thực API Key trước khi đọc payload/gọi DB.
+- Supabase Edge Function Secrets cần `SEPAY_WEBHOOK_API_KEY`, `SEPAY_BANK_NAME`, `SEPAY_ACCOUNT_NUMBER`, `RECOVERY_ENCRYPTION_KEY`. Các giá trị phải khớp website, đặc biệt giữ nguyên khóa khôi phục để đọc được các purchase hiện có. `SUPABASE_URL` và legacy `SUPABASE_SERVICE_ROLE_KEY` do runtime cấp sẵn.
+- Đặt secrets: `npx supabase login`, sau đó `node --env-file=.env scripts/set-sepay-secrets.mjs`. Script chỉ gửi bốn biến cần thiết, dùng file tạm quyền 0600 và xóa sau lệnh; không in secrets.
+- Deploy lại qua Supabase plugin hoặc `npx supabase functions deploy sepay-webhook --project-ref spgaczspjwuqfkxbrnai --no-verify-jwt`.
+- Parser và tạo recovery dùng chung với website trong `supabase/functions/_shared`; RPC `apply_payment` giữ transaction và chống trùng. Không thay đổi schema.
+- Kiểm tra: GET → 405, POST sai API key → 401, đúng key nhưng payload `{}` → 400, DB lỗi → 503 để retry, commit thành công → 200 `{"success":true}`. Thiếu secrets → 503 (fail closed).
+- Tests: `npm test`, `npm run typecheck`, `npx deno check supabase/functions/sepay-webhook/index.ts`.
 
 ## Quy tắc đã cài
 

@@ -104,13 +104,20 @@ test('320px game and trial paywall have no horizontal overflow', async ({ page }
 
 test('MOCK API: checkout QR to verified paid response, recovery code and continue', async ({
   page,
+  request,
 }) => {
   // Browser-only contract simulation; this test does not exercise SePay or move money.
+  // The game page is server-rendered from the current catalog, so use the same pack.
+  const catalog = await (await request.get('/api/catalog?locale=vi')).json();
+  const englishCatalog = await (await request.get('/api/catalog?locale=en')).json();
+  const selected = catalog.packs.find((pack: { tier: string }) => pack.tier === 'premium');
+  const selectedId: string = selected.id;
+  const premiumRoute = `/vi/choi/${selected.slug}`;
   let paid = false;
   const recoveryCode = 'TEST-RECOVERY-CODE';
   const order = {
     id: 'test-order',
-    packId: 'friends-premium',
+    packId: selectedId,
     status: 'pending',
     amountVnd: 30000,
     currency: 'VND',
@@ -125,9 +132,11 @@ test('MOCK API: checkout QR to verified paid response, recovery code and continu
     const url = new URL(route.request().url());
     let body: unknown;
     if (url.pathname === '/api/session') body = { ok: true };
+    else if (url.pathname === '/api/catalog')
+      body = { packs: (url.searchParams.get('locale') === 'en' ? englishCatalog : catalog).packs };
     else if (url.pathname.startsWith('/api/products/'))
       body = {
-        packId: 'friends-premium',
+        packId: selectedId,
         priceVnd: 30000,
         currency: 'VND',
         available: true,
@@ -135,11 +144,11 @@ test('MOCK API: checkout QR to verified paid response, recovery code and continu
       };
     else if (url.pathname === '/api/entitlements')
       body = {
-        packIds: paid ? ['friends-premium'] : [],
-        purchases: paid ? [{ packId: 'friends-premium', recoveryCode }] : [],
+        packIds: paid ? [selectedId] : [],
+        purchases: paid ? [{ packId: selectedId, recoveryCode }] : [],
       };
     else if (url.pathname === '/api/orders') {
-      expect(route.request().postDataJSON()).toEqual({ packId: 'friends-premium' });
+      expect(route.request().postDataJSON()).toEqual({ packId: selectedId });
       expect(route.request().headers()['idempotency-key']).toBeTruthy();
       body = { order };
     } else if (url.pathname === '/api/orders/test-order')
@@ -149,16 +158,26 @@ test('MOCK API: checkout QR to verified paid response, recovery code and continu
     else return route.fulfill({ status: 404, json: { error: 'Unexpected mock request' } });
     await route.fulfill({ status: 200, json: body });
   });
-  await page.goto('/vi/thanh-toan?pack=friends-premium');
+  await page.goto(`/vi/thanh-toan?pack=${selectedId}`);
   await page.getByRole('button', { name: /Tạo mã QR/ }).click();
   await expect(page.getByRole('img', { name: /Mã QR thanh toán/ })).toBeVisible();
+  await page.getByRole('button', { name: 'Chuyển khoản thủ công', exact: true }).click();
   await expect(page.getByText('TODTEST1234', { exact: true })).toBeVisible();
   await expect(page.getByText('Đang chờ ngân hàng xác nhận')).toBeVisible();
   paid = true;
-  await page.getByRole('button', { name: 'Kiểm tra thanh toán', exact: true }).click();
+  await page.getByRole('button', { name: 'Tôi đã chuyển khoản · Kiểm tra', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Bộ câu hỏi đã mở khóa!' })).toBeVisible();
   await expect(page.getByText(recoveryCode, { exact: true })).toBeVisible();
   await page.getByRole('link', { name: 'Chơi tiếp', exact: true }).click();
   await expect(page).toHaveURL(new RegExp(`${premiumRoute}$`));
   await expect(page.getByText('Đã mở khóa', { exact: true })).toBeVisible();
+  await page.getByRole('link', { name: 'Switch to English' }).click();
+  const englishPack = englishCatalog.packs.find((pack: { id: string }) => pack.id === selectedId);
+  if (englishPack) {
+    await expect(page).toHaveURL(new RegExp(`/en/play/${englishPack.slug}$`));
+    await expect(page.getByText('Unlocked', { exact: true })).toBeVisible();
+  } else {
+    // An unpublished translation intentionally returns to the English catalog.
+    await expect(page).toHaveURL(/\/en\/categories$/);
+  }
 });

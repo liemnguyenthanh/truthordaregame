@@ -71,17 +71,30 @@ function PackCheckout({ packId }: { packId: string }) {
   const [owned, setOwned] = useState(false);
   const [recovery, setRecovery] = useState('');
   const [retry, setRetry] = useState(0);
+  const [method, setMethod] = useState<'qr' | 'manual'>('qr');
+  const [offline, setOffline] = useState(false);
+  const [checking, setChecking] = useState(false);
+  const syncInFlight = useRef(false);
   const requestKey = useRef('');
   const inFlight = useRef(false);
   const active = useRef(false);
   useEffect(() => {
     active.current = true;
+    const updateNetwork = () => setOffline(!navigator.onLine);
+    updateNetwork();
+    window.addEventListener('online', updateNetwork);
+    window.addEventListener('offline', updateNetwork);
     return () => {
       active.current = false;
+      window.removeEventListener('online', updateNetwork);
+      window.removeEventListener('offline', updateNetwork);
     };
   }, []);
   const syncOrder = useCallback(
-    async (id: string) => {
+    async (id: string, manual = false) => {
+      if (syncInFlight.current) return;
+      syncInFlight.current = true;
+      if (manual) setChecking(true);
       try {
         const data = await api(`/api/orders/${encodeURIComponent(id)}`);
         if (!active.current || data.order.packId !== packId) return;
@@ -98,6 +111,9 @@ function PackCheckout({ packId }: { packId: string }) {
               ? localizedError(locale, cause.message)
               : t('Chưa thể kiểm tra thanh toán.'),
           );
+      } finally {
+        syncInFlight.current = false;
+        if (active.current) setChecking(false);
       }
     },
     [packId, locale, t],
@@ -159,11 +175,18 @@ function PackCheckout({ packId }: { packId: string }) {
     };
   }, [packId, retry, syncOrder, locale, t]);
   useEffect(() => {
-    if (!order || order.status !== 'pending') return;
+    if (!order || !['pending', 'expired', 'review_required'].includes(order.status)) return;
     const check = () => {
       if (navigator.onLine && document.visibilityState === 'visible') void syncOrder(order.id);
     };
-    const timer = window.setInterval(check, 4000);
+    // QR expires at 15 minutes; valid bank transfers can still arrive for 24 hours.
+    // Keep focus/online checks even after the bounded background polling window.
+    const timer = window.setInterval(
+      () => {
+        if (Date.now() < Date.parse(order.expiresAt) + (24 * 60 - 15) * 60_000) check();
+      },
+      order.status === 'pending' ? 4000 : 15000,
+    );
     window.addEventListener('focus', check);
     window.addEventListener('online', check);
     document.addEventListener('visibilitychange', check);
@@ -173,7 +196,7 @@ function PackCheckout({ packId }: { packId: string }) {
       window.removeEventListener('online', check);
       document.removeEventListener('visibilitychange', check);
     };
-  }, [order?.id, order?.status, syncOrder]);
+  }, [order?.id, order?.status, order?.expiresAt, syncOrder]);
   async function createOrder() {
     if (inFlight.current) return;
     inFlight.current = true;
@@ -222,22 +245,52 @@ function PackCheckout({ packId }: { packId: string }) {
   }
   const paid = owned || order?.status === 'paid';
   return (
-    <section className={styles.shell}>
+    <section className={`${styles.shell} ${styles.checkout}`}>
       <Link href={path(pack ? `/vi/choi/${pack.slug}` : '/vi/danh-muc')} className={styles.back}>
         <ArrowLeft size={17} /> {t('Quay lại cuộc vui')}{' '}
       </Link>
       <div className={styles.title}>
-        <span className={styles.icon}>{paid ? <Check /> : <LockKeyhole />}</span>
-        <p className="eyebrow">
-          {paid ? t('SẴN SÀNG CHƠI TIẾP') : t('THÊM CÂU HỎI. THÊM KẾT NỐI.')}
-        </p>
-        <h1>{paid ? t('Bộ câu hỏi đã mở khóa!') : t('Mở khóa cuộc vui')}</h1>
+        {(!order || paid) && (
+          <span className={styles.icon}>{paid ? <Check /> : <LockKeyhole />}</span>
+        )}
+        <h1 aria-live="polite">
+          {paid ? t('Bộ câu hỏi đã mở khóa!') : order ? t('Thanh toán') : t('Mở khóa cuộc vui')}
+        </h1>
         <p>
           {paid
             ? t('Cảm ơn bạn đã đồng hành. Ván chơi vẫn ở đúng nơi bạn dừng lại.')
-            : t('Một lần thanh toán. Những cuộc vui không giới hạn.')}
+            : order
+              ? t('Tự mở khóa sau khi nhận thanh toán.')
+              : t('Thanh toán một lần · Không cần tài khoản')}
         </p>
       </div>
+      {!paid && (
+        <ol className={styles.steps} aria-label={t('Các bước thanh toán')}>
+          <li
+            className={!order ? styles.currentStep : undefined}
+            aria-current={!order ? 'step' : undefined}
+          >
+            <span>{order ? <Check size={12} /> : '1'}</span>
+            {t('Tạo QR')}
+          </li>
+          <li
+            className={order ? styles.currentStep : undefined}
+            aria-current={order ? 'step' : undefined}
+          >
+            <span>2</span>
+            {t('Chuyển khoản')}
+          </li>
+          <li>
+            <span>3</span>
+            {t('Chơi tiếp')}
+          </li>
+        </ol>
+      )}
+      {offline && !paid && (
+        <p className={styles.networkNotice} role="status">
+          {t('Bạn đang offline. Trang sẽ kiểm tra thanh toán khi có mạng trở lại.')}
+        </p>
+      )}
       {loading && (
         <p className="notice" role="status">
           {t('Đang kiểm tra giá và quyền mua…')}{' '}
@@ -258,6 +311,12 @@ function PackCheckout({ packId }: { packId: string }) {
             <h2>{pack?.title ?? t('Đã thanh toán thành công')}</h2>
             <p>{t('Quyền mua đã được lưu trên thiết bị này.')}</p>
           </div>
+          <Link
+            className={`button button-primary ${styles.full}`}
+            href={path(pack ? `/vi/choi/${pack.slug}` : '/vi/danh-muc')}
+          >
+            {t('Chơi tiếp')} <ArrowRight size={18} />
+          </Link>
           {recovery ? (
             <div className={styles.recovery}>
               <h3>{t('Lưu mã khôi phục của bạn')}</h3>
@@ -277,19 +336,13 @@ function PackCheckout({ packId }: { packId: string }) {
               {t('Mã khôi phục có trong trang Khôi phục quyền mua khi kết nối được máy chủ.')}{' '}
             </p>
           )}
-          <Link
-            className={`button button-primary ${styles.full}`}
-            href={path(pack ? `/vi/choi/${pack.slug}` : '/vi/danh-muc')}
-          >
-            {t('Chơi tiếp')} <ArrowRight size={18} />
-          </Link>
           <Link href={path('/vi/khoi-phuc')} className={styles.bottomLink}>
             {t('Quản lý mã khôi phục')}{' '}
           </Link>
         </div>
       ) : (
         <>
-          {pack && product && (
+          {pack && product && !order && (
             <div className={styles.panel}>
               <div className={styles.summary}>
                 <span className={styles.packIcon}>{pack.icon}</span>
@@ -301,7 +354,7 @@ function PackCheckout({ packId }: { packId: string }) {
                     {pack.dareCount} {t('Thách')}{' '}
                   </p>
                 </div>
-                <strong>{money(order?.amountVnd ?? product.priceVnd)}</strong>
+                <strong>{money(product.priceVnd)}</strong>
               </div>
               <ul className={styles.features}>
                 <li>
@@ -339,66 +392,122 @@ function PackCheckout({ packId }: { packId: string }) {
           )}
           {order && (
             <div className={styles.panel}>
-              <h2>{t('Chuyển khoản để mở khóa')}</h2>
+              <div className={styles.paymentHeading}>
+                <div>
+                  <p className={styles.muted}>{pack?.title}</p>
+                  <h2>{money(order.amountVnd)}</h2>
+                </div>
+                <span className={styles.secureLabel}>
+                  <ShieldCheck size={14} />
+                  {t('Chuyển khoản ngân hàng')}
+                </span>
+              </div>
               {order.status === 'pending' ? (
                 <>
-                  <p className={styles.muted}>
-                    {t(
-                      'Quét QR bằng ứng dụng ngân hàng. Giữ nguyên số tiền và nội dung chuyển khoản.',
-                    )}{' '}
-                  </p>
-                  <div className={styles.qr}>
-                    <img
-                      src={order.qrUrl}
-                      width="260"
-                      height="260"
-                      alt={t('Mã QR thanh toán {v0} cho bộ câu hỏi', {
-                        v0: money(order.amountVnd),
-                      })}
-                    />
+                  <div className={styles.methodSwitch} aria-label={t('Cách chuyển khoản')}>
+                    <button
+                      type="button"
+                      aria-pressed={method === 'qr'}
+                      onClick={() => setMethod('qr')}
+                    >
+                      {t('Quét mã QR')}
+                    </button>
+                    <button
+                      type="button"
+                      aria-pressed={method === 'manual'}
+                      onClick={() => setMethod('manual')}
+                    >
+                      {t('Chuyển khoản thủ công')}
+                    </button>
                   </div>
-                  <dl className={styles.details}>
-                    <div>
-                      <dt>{t('Ngân hàng')}</dt>
-                      <dd>{order.bankName}</dd>
-                    </div>
-                    <div>
-                      <dt>{t('Chủ tài khoản')}</dt>
-                      <dd>{order.accountName}</dd>
-                    </div>
-                    <div>
-                      <dt>{t('Số tài khoản')}</dt>
-                      <dd>
-                        {order.accountNumber}
-                        <button
-                          aria-label={t('Sao chép số tài khoản')}
-                          onClick={() => copy(order.accountNumber, t('Đã sao chép số tài khoản'))}
-                        >
-                          <Copy size={15} />
-                        </button>
-                      </dd>
-                    </div>
-                    <div>
-                      <dt>{t('Số tiền')}</dt>
-                      <dd>{money(order.amountVnd)}</dd>
-                    </div>
-                    <div>
-                      <dt>{t('Nội dung')}</dt>
-                      <dd>
-                        {order.paymentCode}
-                        <button
-                          aria-label={t('Sao chép nội dung chuyển khoản')}
-                          onClick={() =>
-                            copy(order.paymentCode, t('Đã sao chép nội dung chuyển khoản'))
-                          }
-                        >
-                          <Copy size={15} />
-                        </button>
-                      </dd>
-                    </div>
-                  </dl>
+                  {method === 'qr' ? (
+                    <>
+                      <div className={styles.qr}>
+                        <img
+                          src={order.qrUrl}
+                          width="260"
+                          height="260"
+                          alt={t('Mã QR thanh toán {v0} cho bộ câu hỏi', {
+                            v0: money(order.amountVnd),
+                          })}
+                        />
+                      </div>
+                      <details className={styles.qrHelp}>
+                        <summary>{t('Dùng cùng điện thoại?')}</summary>
+                        <p>
+                          {t(
+                            'Dùng cùng điện thoại? Chụp màn hình QR, rồi chọn ảnh trong ứng dụng ngân hàng. Bạn cũng có thể chuyển khoản thủ công.',
+                          )}
+                        </p>
+                      </details>
+                    </>
+                  ) : (
+                    <>
+                      <p className={styles.muted}>
+                        {t('Sao chép thông tin bên dưới vào ứng dụng ngân hàng.')}
+                      </p>
+                      <dl className={`${styles.details} ${styles.transferDetails}`}>
+                        <div>
+                          <dt>{t('Ngân hàng')}</dt>
+                          <dd>{order.bankName}</dd>
+                        </div>
+                        <div>
+                          <dt>{t('Chủ tài khoản')}</dt>
+                          <dd>{order.accountName}</dd>
+                        </div>
+                        <div>
+                          <dt>{t('Số tài khoản')}</dt>
+                          <dd>
+                            {order.accountNumber}
+                            <button
+                              aria-label={t('Sao chép số tài khoản')}
+                              onClick={() =>
+                                copy(order.accountNumber, t('Đã sao chép số tài khoản'))
+                              }
+                            >
+                              <Copy size={15} />
+                            </button>
+                          </dd>
+                        </div>
+                        <div>
+                          <dt>{t('Số tiền')}</dt>
+                          <dd>
+                            {money(order.amountVnd)}
+                            <button
+                              aria-label={t('Sao chép số tiền')}
+                              onClick={() =>
+                                copy(String(order.amountVnd), t('Đã sao chép số tiền'))
+                              }
+                            >
+                              <Copy size={15} />
+                            </button>
+                          </dd>
+                        </div>
+                        <div>
+                          <dt>{t('Nội dung')}</dt>
+                          <dd>
+                            {order.paymentCode}
+                            <button
+                              aria-label={t('Sao chép nội dung chuyển khoản')}
+                              onClick={() =>
+                                copy(order.paymentCode, t('Đã sao chép nội dung chuyển khoản'))
+                              }
+                            >
+                              <Copy size={15} />
+                            </button>
+                          </dd>
+                        </div>
+                      </dl>
+                    </>
+                  )}
+                  {copied && (
+                    <p className={styles.copyFeedback} role="status">
+                      {copied}
+                    </p>
+                  )}
                   <p className={styles.waiting} role="status">
-                    <span /> {t('Đang chờ ngân hàng xác nhận')}{' '}
+                    <span />{' '}
+                    {offline ? t('Đang chờ kết nối mạng') : t('Đang chờ ngân hàng xác nhận')}{' '}
                   </p>
                   <p className={styles.fine}>
                     {t('Đơn có hiệu lực đến')}{' '}
@@ -408,9 +517,19 @@ function PackCheckout({ packId }: { packId: string }) {
                     })}
                     {t('. Trang tự kiểm tra khi bạn quay lại từ ứng dụng ngân hàng.')}{' '}
                   </p>
-                  <button className={styles.textButton} onClick={() => void syncOrder(order.id)}>
-                    <RefreshCw size={15} /> {t('Kiểm tra thanh toán')}{' '}
+                  <button
+                    className={styles.textButton}
+                    disabled={checking || offline}
+                    onClick={() => void syncOrder(order.id, true)}
+                  >
+                    <RefreshCw size={15} />{' '}
+                    {checking ? t('Đang kiểm tra…') : t('Tôi đã chuyển khoản · Kiểm tra')}{' '}
                   </button>
+                  <p className={styles.noRepeat}>
+                    {t(
+                      'Đã chuyển tiền? Không chuyển lại. Việc xác nhận có thể mất một chút thời gian.',
+                    )}
+                  </p>
                 </>
               ) : (
                 <>
@@ -431,9 +550,10 @@ function PackCheckout({ packId }: { packId: string }) {
                   <div className={styles.actions}>
                     <button
                       className="button button-secondary"
-                      onClick={() => void syncOrder(order.id)}
+                      disabled={checking || offline}
+                      onClick={() => void syncOrder(order.id, true)}
                     >
-                      {t('Kiểm tra lại')}{' '}
+                      {checking ? t('Đang kiểm tra…') : t('Kiểm tra lại')}{' '}
                     </button>
                     <Link className="button button-secondary" href={path('/vi/lien-he')}>
                       {t('Liên hệ hỗ trợ')}{' '}
@@ -459,9 +579,11 @@ function PackCheckout({ packId }: { packId: string }) {
           )}
         </>
       )}
-      <p className={styles.copied} role="status">
-        {copied}
-      </p>
+      {order?.status !== 'pending' && (
+        <p className={styles.copied} role="status">
+          {copied}
+        </p>
+      )}
       <p className={styles.footer}>
         <ShieldCheck size={15} /> {t('Chỉ mở khóa sau khi ngân hàng xác nhận.')}{' '}
       </p>

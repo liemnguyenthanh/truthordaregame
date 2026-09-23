@@ -79,7 +79,7 @@ Nếu có Chrome sẵn, đặt `CHROME_BIN` trỏ executable để bỏ bước 
 
 Import repository, chọn framework Next.js, build command `npm run build`, giữ output mặc định. **Không dùng `output: 'export'`** vì cần Route Handlers nhận webhook. Thêm các env từ `.env.example`; `NEXT_PUBLIC_*` cần redeploy khi đổi. Supabase service role và SePay secret chỉ là server env.
 
-Đặt `NEXT_PUBLIC_SITE_URL=https://domain-cua-ban` trước build để canonical/sitemap đúng. Kiểm tra response headers production; preview có noindex. Cấu hình SePay webhook về `/api/webhooks/sepay`, đối soát bảo vệ bằng secret. App chưa được triển khai cloud trong lần xây dựng này.
+Đặt `NEXT_PUBLIC_SITE_URL=https://domain-cua-ban` trước build để canonical/sitemap đúng. Kiểm tra response headers production; preview có noindex. Cấu hình SePay webhook về Supabase Edge Function `https://spgaczspjwuqfkxbrnai.supabase.co/functions/v1/sepay-webhook` (xem `docs/payment-setup.md` để đặt secrets), đối soát bảo vệ bằng secret. App chưa được triển khai cloud trong lần xây dựng này.
 
 ## Tài liệu
 
