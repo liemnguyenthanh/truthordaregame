@@ -1,6 +1,7 @@
 'use client';
 
 import { formatLocale } from '@/lib/i18n';
+import { saveOwnership } from '@/lib/ownership';
 import { localizedError } from '@/lib/i18n/messages';
 import { useI18n } from './locale-provider';
 
@@ -31,6 +32,7 @@ type Order = {
   accountNumber: string;
   accountName: string;
   recoveryCode?: string;
+  accessExpiresAt?: string;
 };
 type Product = { packId: string; priceVnd: number; available: boolean };
 
@@ -39,17 +41,6 @@ async function api(url: string, init?: RequestInit) {
   const data = await response.json();
   if (!response.ok) throw new Error(data.error || 'Chưa thể kết nối. Vui lòng thử lại.');
   return data;
-}
-function saveOwnership(packId: string) {
-  try {
-    const stored = JSON.parse(localStorage.getItem('tod:owned:v1') || '[]');
-    localStorage.setItem(
-      'tod:owned:v1',
-      JSON.stringify([...new Set([...(Array.isArray(stored) ? stored : []), packId])]),
-    );
-  } catch {
-    /* Purchase remains on server. */
-  }
 }
 export function Checkout() {
   const params = useSearchParams();
@@ -69,6 +60,7 @@ function PackCheckout({ packId }: { packId: string }) {
   const [error, setError] = useState('');
   const [copied, setCopied] = useState('');
   const [owned, setOwned] = useState(false);
+  const [accessExpiresAt, setAccessExpiresAt] = useState<string>();
   const [recovery, setRecovery] = useState('');
   const [retry, setRetry] = useState(0);
   const [method, setMethod] = useState<'qr' | 'manual'>('qr');
@@ -98,9 +90,23 @@ function PackCheckout({ packId }: { packId: string }) {
       try {
         const data = await api(`/api/orders/${encodeURIComponent(id)}`);
         if (!active.current || data.order.packId !== packId) return;
+        if (
+          data.order.status === 'paid' &&
+          (!data.order.accessExpiresAt || Date.parse(data.order.accessExpiresAt) <= Date.now())
+        ) {
+          setOrder(null);
+          localStorage.removeItem(`tod:order:v1:${packId}`);
+          requestKey.current = '';
+          return;
+        }
         setOrder(data.order);
         if (data.order.status === 'paid') {
-          saveOwnership(data.order.packId);
+          setAccessExpiresAt(data.order.accessExpiresAt);
+          try {
+            saveOwnership((await api('/api/entitlements')).purchases);
+          } catch {
+            /* Verified again when opening the game. */
+          }
           setRecovery(data.order.recoveryCode || '');
         }
         setError('');
@@ -146,7 +152,15 @@ function PackCheckout({ packId }: { packId: string }) {
         if (cancelled) return;
         if (entitlements.packIds.includes(packId)) {
           setOwned(true);
-          saveOwnership(packId);
+          setAccessExpiresAt(
+            entitlements.purchases.find((item: { packId: string }) => item.packId === packId)
+              ?.expiresAt,
+          );
+          try {
+            saveOwnership(entitlements.purchases);
+          } catch {
+            /* Server retains access. */
+          }
           setRecovery(
             entitlements.purchases.find(
               (item: { packId: string; recoveryCode: string }) => item.packId === packId,
@@ -216,7 +230,15 @@ function PackCheckout({ packId }: { packId: string }) {
       if (!active.current) return;
       if (data.alreadyOwned) {
         setOwned(true);
-        saveOwnership(packId);
+        try {
+          const grants = (await api('/api/entitlements')).purchases;
+          saveOwnership(grants);
+          setAccessExpiresAt(
+            grants.find((item: { packId: string }) => item.packId === packId)?.expiresAt,
+          );
+        } catch {
+          /* Server retains access. */
+        }
       } else {
         setOrder(data.order);
         try {
@@ -245,6 +267,24 @@ function PackCheckout({ packId }: { packId: string }) {
       setCopied(t('Không thể sao chép tự động. Hãy chọn và sao chép nội dung bên dưới.'));
     }
   }
+  useEffect(() => {
+    if (!accessExpiresAt) return;
+    const timer = setTimeout(
+      () => {
+        setOwned(false);
+        setOrder(null);
+        setRecovery('');
+        requestKey.current = '';
+        try {
+          localStorage.removeItem(`tod:order:v1:${packId}`);
+        } catch {
+          /* Optional cache. */
+        }
+      },
+      Math.max(0, Date.parse(accessExpiresAt) - Date.now()),
+    );
+    return () => clearTimeout(timer);
+  }, [accessExpiresAt, packId]);
   const paid = owned || order?.status === 'paid';
   return (
     <section className={`${styles.shell} ${styles.checkout} ${styles.flowIn}`}>
@@ -263,7 +303,7 @@ function PackCheckout({ packId }: { packId: string }) {
             ? t('Cảm ơn bạn đã đồng hành. Ván chơi vẫn ở đúng nơi bạn dừng lại.')
             : order
               ? t('Tự mở khóa sau khi nhận thanh toán.')
-              : t('Thanh toán một lần · Không cần tài khoản')}
+              : t('Mở khóa 7 ngày · Không cần tài khoản')}
         </p>
       </div>
       {!paid && (
@@ -324,7 +364,7 @@ function PackCheckout({ packId }: { packId: string }) {
               <h3>{t('Lưu mã khôi phục của bạn')}</h3>
               <p>
                 {t(
-                  'Mã khôi phục có hiệu lực 7 ngày kể từ khi được cấp sau thanh toán. Quyền chơi đã mở khóa vẫn được giữ nguyên.',
+                  'Quyền chơi và mã khôi phục có hiệu lực 7 ngày sau thanh toán. Hết hạn, hãy mua lại để tiếp tục chơi.',
                 )}
               </p>
               <p>
@@ -368,7 +408,7 @@ function PackCheckout({ packId }: { packId: string }) {
                   <Check size={16} /> {t('Mở toàn bộ câu hỏi của bộ này')}{' '}
                 </li>
                 <li>
-                  <Check size={16} /> {t('Chơi lại không giới hạn, không cần tài khoản')}{' '}
+                  <Check size={16} /> {t('Chơi trong 7 ngày, không cần tài khoản')}{' '}
                 </li>
                 <li>
                   <Check size={16} /> {t('Đổi thiết bị bằng mã khôi phục')}{' '}

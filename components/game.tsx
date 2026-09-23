@@ -15,6 +15,7 @@ import {
   Pencil,
   UserRound,
 } from 'lucide-react';
+import { readOwnership, saveOwnership, activeOwnership } from '@/lib/ownership';
 import { getAvailableQuestions } from '@/lib/game';
 import {
   createGroupGameState,
@@ -36,15 +37,6 @@ type GameProps = {
   fixedGroup?: PlayGroup;
   alternateHref?: string;
 };
-const ownershipKey = 'tod:owned:v1';
-function readOwned(): string[] {
-  try {
-    const value = JSON.parse(localStorage.getItem(ownershipKey) || '[]');
-    return Array.isArray(value) ? value : [];
-  } catch {
-    return [];
-  }
-}
 export function Game({ pack, initialSet, fixedGroup, alternateHref }: GameProps) {
   return (
     <PackGame
@@ -69,6 +61,7 @@ function PackGame({ pack, initialSet, fixedGroup, alternateHref }: GameProps) {
   const [notice, setNotice] = useState('');
   const [attempt, setAttempt] = useState(0);
   const lastDraw = useRef(0);
+  const accessUntil = useRef(0);
   const stateKey = `tod:game:v1:${pack.id}`;
   useEffect(() => {
     const controller = new AbortController();
@@ -126,22 +119,42 @@ function PackGame({ pack, initialSet, fixedGroup, alternateHref }: GameProps) {
   }, [pack.questionFile, stateKey, attempt, initialSet, fixedGroup, t]);
   useEffect(() => {
     let active = true;
+    let expiryTimer: ReturnType<typeof setTimeout> | undefined;
+    const applyOwnership = (value: unknown) => {
+      clearTimeout(expiryTimer);
+      accessUntil.current = Math.max(
+        0,
+        ...activeOwnership(value)
+          .filter((item) => item.packId === pack.id)
+          .map((item) => Date.parse(item.expiresAt)),
+      );
+      setUnlocked(accessUntil.current > Date.now());
+      if (accessUntil.current > Date.now())
+        expiryTimer = setTimeout(() => {
+          accessUntil.current = 0;
+          setUnlocked(false);
+        }, accessUntil.current - Date.now());
+    };
     const updateNetwork = () => setOffline(!navigator.onLine);
     const sync = async () => {
       updateNetwork();
       if (pack.tier === 'free') return;
-      setUnlocked(readOwned().includes(pack.id));
+      applyOwnership(readOwnership());
       if (!navigator.onLine) return;
       try {
         const response = await fetch('/api/entitlements', { cache: 'no-store' });
-        if (!response.ok) return;
+        if (!response.ok) {
+          if (response.status === 401 && active) {
+            applyOwnership([]);
+            saveOwnership([]);
+          }
+          return;
+        }
         const data = await response.json();
         if (!active) return;
-        const owned: string[] =
-          data.packIds ?? data.entitlements?.map((item: { packId: string }) => item.packId) ?? [];
-        setUnlocked(owned.includes(pack.id));
+        applyOwnership(data.purchases);
         try {
-          localStorage.setItem(ownershipKey, JSON.stringify(owned));
+          saveOwnership(data.purchases);
         } catch {
           setStorageWarning(true);
         }
@@ -155,6 +168,7 @@ function PackGame({ pack, initialSet, fixedGroup, alternateHref }: GameProps) {
     window.addEventListener('focus', sync);
     return () => {
       active = false;
+      clearTimeout(expiryTimer);
       window.removeEventListener('online', sync);
       window.removeEventListener('offline', updateNetwork);
       window.removeEventListener('focus', sync);
@@ -189,7 +203,9 @@ function PackGame({ pack, initialSet, fixedGroup, alternateHref }: GameProps) {
   function draw(type: QuestionType, skip = false) {
     if (!set || !progress || Date.now() - lastDraw.current < 260) return;
     lastDraw.current = Date.now();
-    const result = drawGroupQuestion(set, progress, type, unlocked, group, skip);
+    const canPlay = pack.tier === 'free' || accessUntil.current > Date.now();
+    if (!canPlay) setUnlocked(false);
+    const result = drawGroupQuestion(set, progress, type, canPlay, group, skip);
     if (result.status === 'actor-exhausted') {
       setNotice(
         t(
@@ -218,7 +234,11 @@ function PackGame({ pack, initialSet, fixedGroup, alternateHref }: GameProps) {
     persist(result.state);
     setNotice('');
   }
-  const current = set?.questions.find((question) => question.id === progress?.currentId);
+  const current = set?.questions.find(
+    (question) =>
+      question.id === progress?.currentId &&
+      (unlocked || set.trialQuestionIds.includes(question.id)),
+  );
   const actor = group?.players.find(
     (player) => player.id === (current?.playerId ?? progress?.actorId),
   );

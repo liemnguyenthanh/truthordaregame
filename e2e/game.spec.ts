@@ -116,6 +116,7 @@ test('MOCK API: checkout QR to verified paid response, recovery code and continu
   let paid = false;
   const recoveryCode = 'TEST-RECOVERY-CODE';
   const order = {
+    accessExpiresAt: new Date(Date.now() + 7 * 86400000).toISOString(),
     id: 'test-order',
     packId: selectedId,
     status: 'pending',
@@ -145,7 +146,9 @@ test('MOCK API: checkout QR to verified paid response, recovery code and continu
     else if (url.pathname === '/api/entitlements')
       body = {
         packIds: paid ? [selectedId] : [],
-        purchases: paid ? [{ packId: selectedId, recoveryCode }] : [],
+        purchases: paid
+          ? [{ packId: selectedId, recoveryCode, expiresAt: order.accessExpiresAt }]
+          : [],
       };
     else if (url.pathname === '/api/orders') {
       expect(route.request().postDataJSON()).toEqual({ packId: selectedId });

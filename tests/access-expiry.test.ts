@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { PGlite } from '@electric-sql/pglite';
 
-test('recovery expires at seven days without revoking existing access or extending on restore', async () => {
+test('seven-day purchases reject expired recovery and allow repurchase without extending old grants', async () => {
   const db = new PGlite();
   try {
     await db.exec(
@@ -22,7 +22,7 @@ test('recovery expires at seven days without revoking existing access or extendi
         select '00000000-0000-0000-0000-000000000001',id,pack_id from purchases;
     `);
     await db.exec(
-      await readFile('supabase/migrations/20260923090131_recovery_code_expiry.sql', 'utf8'),
+      await readFile('supabase/migrations/20260923090727_purchase_access_expiry.sql', 'utf8'),
     );
     await db.exec('begin');
     for (const [age, valid] of [
@@ -33,7 +33,10 @@ test('recovery expires at seven days without revoking existing access or extendi
       await db.exec(
         `delete from entitlements where guest_id='00000000-0000-0000-0000-000000000002';`,
       );
-      await db.query('update purchases set created_at=now()-$1::interval', [age]);
+      await db.query(
+        "update purchases set created_at=now()-$1::interval, expires_at=now()-$1::interval+interval '7 days'",
+        [age],
+      );
       const { rows } = await db.query<{ pack: string | null }>(
         "select restore_purchase('00000000-0000-0000-0000-000000000002','secret') as pack",
       );
@@ -48,6 +51,34 @@ test('recovery expires at seven days without revoking existing access or extendi
       );
       assert.equal(unchanged[0].unchanged, true);
     }
+    await db.exec("update orders set status='paid'");
+    const guest = '00000000-0000-0000-0000-000000000001';
+    const { rows: packs } = await db.query<{ pack_id: string }>('select pack_id from purchases');
+    const pack = packs[0].pack_id;
+    const { rows: orders } = await db.query<{ result: { id: string; alreadyOwned?: boolean } }>(
+      "select create_order($1,$2,'renewal-request','TODRENEWAL') as result",
+      [guest, pack],
+    );
+    assert.ok(orders[0].result.id);
+    const { rows: paid } = await db.query<{ result: string }>(
+      "select apply_payment('renewal-event','TODRENEWAL',amount_vnd,now(),'in',true,'renewal-secret','encrypted') as result from orders where id=$1",
+      [orders[0].result.id],
+    );
+    assert.equal(paid[0].result, 'paid');
+    const { rows: active } = await db.query<{ count: number }>(
+      "select count(*)::int as count from entitlements e join purchases p on p.id=e.purchase_id where e.guest_id=$1 and p.expires_at>now() and p.status='active' and e.revoked_at is null",
+      [guest],
+    );
+    assert.equal(active[0].count, 1);
+    const { rows: lifetime } = await db.query<{ valid: boolean }>(
+      "select expires_at=created_at+interval '7 days' as valid from purchases where recovery_hash='renewal-secret'",
+    );
+    assert.equal(lifetime[0].valid, true);
+    const { rows: duplicate } = await db.query<{ result: { alreadyOwned: boolean } }>(
+      "select create_order($1,$2,'another-request','TODANOTHER') as result",
+      [guest, pack],
+    );
+    assert.equal(duplicate[0].result.alreadyOwned, true);
     await db.exec('rollback');
     const { rows } = await db.query<{ allowed: boolean }>(
       "select has_function_privilege('anon','public.restore_purchase(uuid,text)','EXECUTE') as allowed",

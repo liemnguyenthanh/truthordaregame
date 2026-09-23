@@ -1,4 +1,4 @@
-const CACHE = 'tod-e84efbe09c94';
+const CACHE = 'tod-d22056227252';
 const OFFLINE = { vi: '/offline.html', en: '/offline-en.html' };
 const validLocale = (value) => value === 'vi' || value === 'en';
 const localeForPath = (path) => (path === '/en' || path.startsWith('/en/') ? 'en' : 'vi');

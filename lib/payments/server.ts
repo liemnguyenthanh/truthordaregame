@@ -118,15 +118,20 @@ export async function orderView(row: Record<string, unknown>) {
     des: String(row.payment_code),
   });
   let recoveryCode: string | undefined;
+  let accessExpiresAt: string | undefined;
   if (status === 'paid') {
     const { data, error } = await db()
       .from('purchases')
-      .select('recovery_ciphertext')
+      .select('recovery_ciphertext,expires_at')
       .eq('order_id', row.id)
       .eq('status', 'active')
       .maybeSingle();
     check(error);
-    if (data) recoveryCode = decrypt(data.recovery_ciphertext);
+    if (data) {
+      accessExpiresAt = data.expires_at;
+      if (Date.parse(data.expires_at) > Date.now())
+        recoveryCode = decrypt(data.recovery_ciphertext);
+    }
   }
   return {
     id: row.id,
@@ -139,5 +144,6 @@ export async function orderView(row: Record<string, unknown>) {
     qrUrl: `https://qr.sepay.vn/img?${query}`,
     ...b,
     recoveryCode,
+    accessExpiresAt,
   };
 }

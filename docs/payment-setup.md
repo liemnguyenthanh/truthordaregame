@@ -90,4 +90,8 @@ node supabase/tests/verify-embedded.mjs
 
 Không tạo dịch vụ hoặc thay package.json. Database hoàn toàn trong bộ nhớ. PGlite xác minh PL/pgSQL và transaction rollback nhưng không thay thế Supabase PostgREST, multi-connection concurrency, config provider hay giao dịch SePay thật. Kiểm thử chạy nhiều request song song vẫn cần Supabase staging.
 
-Mã khôi phục hết hạn đúng 7 ngày sau `purchases.created_at`, kể cả mã cũ. RPC `restore_purchase` từ chối mã hết hạn; khôi phục không gia hạn mã và không thu hồi quyền đã cấp. Áp dụng migration `20260923074703_recovery_code_expiry.sql` cùng bản cập nhật giao diện.
+Mã khôi phục hết hạn đúng 7 ngày sau `purchases.created_at`, kể cả mã cũ. RPC `restore_purchase` từ chối mã hết hạn; khôi phục không gia hạn thời gian. Quyền chơi cũng hết hạn sau 7 ngày theo migration `20260923090727_purchase_access_expiry.sql`. Áp dụng migration `20260923090131_recovery_code_expiry.sql` cùng bản cập nhật giao diện.
+
+Migration hết hạn mã đã áp dụng lên Supabase ngày 2026-09-23. Kiểm thử SQL trực tiếp trước/đúng/sau mốc 7 ngày và bảo toàn quyền đã cấp đều pass; dữ liệu kiểm thử được rollback.
+
+Quyền chơi 7 ngày: `purchases.expires_at` được tính từ lúc cấp quyền sau xác nhận thanh toán. Mã cũ/quyền cũ giữ mốc `created_at + 7 ngày`. API chỉ trả quyền chưa hết hạn; cache thiết bị v2 lưu hạn sử dụng và bỏ cache v1 không có hạn. Khi hết hạn trở về chơi thử; mua lại cấp một purchase mới 7 ngày. Migration đã áp dụng và kiểm thử SQL trực tiếp (rollback fixture), gồm khôi phục hết hạn, quyền hết hạn, mua lại và chống mua trùng. Cần bản frontend/API mới để áp dụng trong ứng dụng; bản đã tải offline từ trước chỉ cập nhật khi kết nối lại.

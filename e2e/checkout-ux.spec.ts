@@ -13,6 +13,7 @@ for (const locale of ['vi', 'en'] as const) {
     const packs = getPacks(locale);
     const pack = packs.find((p) => p.tier === 'premium')!;
     const order = {
+      accessExpiresAt: new Date(Date.now() + 7 * 86400000).toISOString(),
       id: 'ux-order',
       packId: pack.id,
       status: 'pending',

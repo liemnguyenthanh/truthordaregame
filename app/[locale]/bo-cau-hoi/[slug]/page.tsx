@@ -86,8 +86,8 @@ export default async function PackPage({
                     'Play at your own pace. No account needed.',
                   )
                 : t(
-                    'Mua một lần để mở bộ này. Giá được xác nhận tại thanh toán.',
-                    'One purchase unlocks this pack. The price is confirmed at checkout.',
+                    'Mua để mở bộ này trong 7 ngày. Giá được xác nhận tại thanh toán.',
+                    'One purchase unlocks this pack for 7 days. The price is confirmed at checkout.',
                   )}
             </p>
           </div>

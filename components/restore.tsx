@@ -1,4 +1,5 @@
 'use client';
+import { saveOwnership } from '@/lib/ownership';
 
 import { localizedError } from '@/lib/i18n/messages';
 import { useI18n } from './locale-provider';
@@ -66,18 +67,16 @@ export function Restore() {
       void fetch('/api/entitlements', { cache: 'no-store' })
         .then((response) => (response.ok ? response.json() : null))
         .then((current) => {
-          if (current) setPurchases(current.purchases ?? []);
+          if (current) {
+            setPurchases(current.purchases ?? []);
+            try {
+              saveOwnership(current.purchases);
+            } catch {
+              /* Server retains access. */
+            }
+          }
         })
         .catch(() => {});
-      try {
-        const old = JSON.parse(localStorage.getItem('tod:owned:v1') || '[]');
-        localStorage.setItem(
-          'tod:owned:v1',
-          JSON.stringify([...new Set([...(Array.isArray(old) ? old : []), data.packId])]),
-        );
-      } catch {
-        /* The server retains this grant. */
-      }
     } catch (cause) {
       setError(
         cause instanceof Error
@@ -103,7 +102,7 @@ export function Restore() {
         <p>{t('Không cần tài khoản. Chỉ cần mã khôi phục đã lưu khi thanh toán.')}</p>
         <p>
           {t(
-            'Mã khôi phục có hiệu lực 7 ngày kể từ khi được cấp sau thanh toán. Quyền chơi đã mở khóa vẫn được giữ nguyên.',
+            'Quyền chơi và mã khôi phục có hiệu lực 7 ngày sau thanh toán. Hết hạn, hãy mua lại để tiếp tục chơi.',
           )}
         </p>
       </div>

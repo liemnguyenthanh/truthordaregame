@@ -29,7 +29,7 @@ const pages: Record<string, { title: string; sections: { heading: string; text: 
     sections: [
       {
         heading: 'Mua một bộ, chơi nhiều lần',
-        text: 'Mỗi lần mua mở khóa một bộ premium và các cập nhật của cùng bộ. Quyền chơi không có ngày hết hạn trong thời gian dịch vụ hoạt động. Bộ mới khác không tự được bao gồm. Giá được hiển thị và xác nhận trước khi tạo đơn.',
+        text: 'Mỗi lần mua mở khóa một bộ premium và các cập nhật của cùng bộ. Quyền chơi có hiệu lực 7 ngày từ khi thanh toán được xác nhận; hết hạn cần mua lại. Bộ mới khác không tự được bao gồm. Giá được hiển thị và xác nhận trước khi tạo đơn.',
       },
       {
         heading: 'Xác nhận chuyển khoản',
@@ -97,7 +97,7 @@ const english: typeof pages = {
     sections: [
       {
         heading: 'Buy a pack and play again',
-        text: 'Each purchase unlocks one premium pack and updates to that same pack. Access has no expiry while the service operates. Other new packs are not included automatically. The price is displayed and confirmed before an order is created.',
+        text: 'Each purchase unlocks one premium pack and updates to that same pack. Access lasts 7 days from payment confirmation; purchase again after expiry. Other new packs are not included automatically. The price is displayed and confirmed before an order is created.',
       },
       {
         heading: 'Bank transfer confirmation',

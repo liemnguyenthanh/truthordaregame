@@ -15,7 +15,7 @@ Xây dựng trò chơi Thật hay Thách trên điện thoại: mở website →
 | Nội dung              | JSON trong `public/vi/`; mỗi bộ có đúng một file chứa cả câu Thật và Thách                              |
 | Free / premium        | Phân loại theo bộ; tải toàn bộ JSON của bộ đang chọn; frontend quyết định câu nào được hiển thị         |
 | Trial — đề xuất       | 8 câu độc nhất mỗi bộ premium, gồm 4 Thật + 4 Thách được biên tập trước                                 |
-| Giá — đề xuất         | 30.000 VND/bộ, trả một lần, quyền chơi không hết hạn trong thời gian dịch vụ hoạt động                  |
+| Giá — đề xuất         | 30.000 VND/bộ, trả một lần, quyền chơi có hạn 7 ngày từ lúc xác nhận thanh toán                         |
 | Phạm vi mua — đề xuất | Mở khóa bộ đã mua và cập nhật của cùng bộ; không tự bao gồm bộ mới khác                                 |
 | Backend tối thiểu     | Next.js Route Handlers trên Vercel + Supabase Postgres                                                  |
 | Thanh toán            | Chuyển khoản VietQR qua hệ thống SePay và xác nhận bằng webhook                                         |
@@ -96,7 +96,7 @@ Tên người chơi là tùy chọn giai đoạn sau; MVP không cần nhập t�
 
 ### Định nghĩa sản phẩm mua
 
-MVP bán **một pack**, giá mặc định **30.000đ**, không phải 30.000đ cho một lần chơi hoặc toàn thư viện. Quyền mua không có ngày hết hạn; áp dụng cùng `packId` khi cập nhật. Tránh dùng chữ “trọn đời” nếu chưa có chính sách duy trì dịch vụ tương ứng.
+MVP bán **một pack**, giá mặc định **30.000đ**, không phải 30.000đ cho một lần chơi hoặc toàn thư viện. Quyền mua có hạn 7 ngày; cập nhật cùng `packId` không gia hạn. Hết hạn cần mua lại. Tránh dùng chữ “trọn đời” nếu chưa có chính sách duy trì dịch vụ tương ứng.
 
 Giá lưu trong bảng `products`, số nguyên VND. Frontend lấy báo giá hiện tại trước checkout. Đơn lưu snapshot giá, tên bộ và phiên bản giá lúc tạo; đổi giá không làm thay đổi đơn đã tạo trong thời gian còn hiệu lực. Giá hiển thị trên trang SSG chỉ là thông tin tại lần build; khi chưa xác nhận giá hiện tại phải ghi “Đang kiểm tra giá”, không tạo đơn theo giá cũ một cách âm thầm.
 
@@ -347,7 +347,7 @@ Không màn đăng nhập, email hoặc mật khẩu; không dùng Supabase Auth
 
 ### Mã khôi phục
 
-Mỗi đơn paid có mã ngẫu nhiên tối thiểu 128-bit, hiển thị ở màn thành công và “Bộ đã mua”. Người dùng có thể copy hoặc lưu tệp. Mã này cho quyền khôi phục chính pack đã mua, không phải số đơn dễ đoán hoặc nội dung chuyển khoản.
+Quyền chơi và mã khôi phục hết hạn sau 7 ngày từ lúc cấp quyền sau xác nhận thanh toán. Mua lại sau hết hạn tạo quyền mới 7 ngày; khôi phục không gia hạn. Mỗi đơn paid có mã ngẫu nhiên tối thiểu 128-bit, hiển thị ở màn thành công và “Bộ đã mua”. Người dùng có thể copy hoặc lưu tệp. Mã này cho quyền khôi phục chính pack đã mua, không phải số đơn dễ đoán hoặc nội dung chuyển khoản.
 
 Đề xuất lưu hash để tra cứu và bản mã hóa ở server để khách sở hữu đơn có thể xem/lưu lại mã. Khóa mã hóa ở env backend; không gửi token vào analytics, URL query hoặc logs. Thiết bị mới nhập mã → backend kiểm tra → thêm entitlement cho guest mới. Không làm mất quyền ở thiết bị cũ; chấp nhận người dùng chia sẻ mã, cùng triết lý bảo vệ nội dung nhẹ của dự án.
 
@@ -551,7 +551,7 @@ Test trên Safari iOS, Chrome Android, Chrome/Safari desktop và chế độ PWA
 4. **PWA + SEO/GEO:** offline thật, update flow, metadata, sitemap, nội dung HTML, checklist đi kèm.
 5. **Nghiệm thu:** E2E trên mobile, đối soát, production headers, đo hiệu năng, analytics và launch.
 
-Trước launch cần có: brand/domain; danh sách pack và số câu thật; xác nhận chính sách 30.000đ/bộ và quyền không hết hạn; tài khoản ngân hàng/SePay hoạt động; secret webhook; Supabase/Vercel env; kênh hỗ trợ thật; chính sách thanh toán/hoàn tiền hiển thị; người phụ trách xử lý giao dịch không khớp. Đây là đầu vào triển khai, không chặn việc dùng spec hiện tại để thiết kế và chia task.
+Trước launch cần có: brand/domain; danh sách pack và số câu thật; xác nhận chính sách 30.000đ/bộ và quyền có hạn 7 ngày; tài khoản ngân hàng/SePay hoạt động; secret webhook; Supabase/Vercel env; kênh hỗ trợ thật; chính sách thanh toán/hoàn tiền hiển thị; người phụ trách xử lý giao dịch không khớp. Đây là đầu vào triển khai, không chặn việc dùng spec hiện tại để thiết kế và chia task.
 
 Vận hành: sửa nội dung bằng PR → schema/content review → build → preview → deploy; đổi giá qua quyền admin và rebuild thông tin SSG nếu cần. Theo dõi webhook lỗi, paid chưa cấp quyền, unmatched và đối soát; giữ audit khi thao tác hỗ trợ. Không lưu raw thông tin ngân hàng lâu hơn nhu cầu đối soát đã xác định.
 
@@ -559,7 +559,7 @@ Vận hành: sửa nội dung bằng PR → schema/content review → build → 
 
 | Mục                     | Mặc định đề xuất trong spec                                    |
 | ----------------------- | -------------------------------------------------------------- |
-| Phạm vi 30.000đ         | Một bộ premium, không hết hạn                                  |
+| Phạm vi 30.000đ         | Một bộ premium, có hạn 7 ngày                                  |
 | Trial                   | 8 câu cố định/bộ, chia 4/4                                     |
 | Chuyển thiết bị         | Mã khôi phục, không giới hạn số thiết bị ở MVP                 |
 | Nội dung sau mua        | Cập nhật cùng pack được bao gồm; pack mới bán riêng            |

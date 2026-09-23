@@ -5,7 +5,7 @@ export const englishMessages: Record<string, string> = {
   'Thanh toán để chơi tiếp': 'Pay to keep playing',
   'Chuyển đúng số tiền và nội dung. Trang sẽ tự mở khóa.':
     'Keep the amount and transfer reference unchanged. Your pack unlocks automatically.',
-  'Thanh toán một lần · Không cần tài khoản': 'One payment · No account needed',
+  'Mở khóa 7 ngày · Không cần tài khoản': '7-day access · No account needed',
   'Các bước thanh toán': 'Payment steps',
   'Tạo QR': 'Create QR',
   'Chuyển khoản': 'Transfer',
@@ -219,8 +219,8 @@ export const englishMessages: Record<string, string> = {
   'Thử lại kết nối': 'Retry connection',
   'Đã thanh toán thành công': 'Payment successful',
   'Quyền mua đã được lưu trên thiết bị này.': 'Your purchase is saved on this device.',
-  'Mã khôi phục có hiệu lực 7 ngày kể từ khi được cấp sau thanh toán. Quyền chơi đã mở khóa vẫn được giữ nguyên.':
-    'Recovery codes are valid for 7 days after they are issued following payment. Access already unlocked is retained.',
+  'Quyền chơi và mã khôi phục có hiệu lực 7 ngày sau thanh toán. Hết hạn, hãy mua lại để tiếp tục chơi.':
+    'Access and recovery codes are valid for 7 days after payment. Purchase again to keep playing after expiry.',
   'Lưu mã khôi phục của bạn': 'Save your recovery code',
   'Dùng mã này để mở bộ đã mua trên thiết bị khác. Hãy giữ mã riêng cho mình.':
     'Use this code to unlock your purchase on another device. Keep it private.',
@@ -234,7 +234,7 @@ export const englishMessages: Record<string, string> = {
   'câu ·': 'questions ·',
   'Thật +': 'Truth +',
   'Mở toàn bộ câu hỏi của bộ này': 'Unlock every question in this pack',
-  'Chơi lại không giới hạn, không cần tài khoản': 'Unlimited replays, no account required',
+  'Chơi trong 7 ngày, không cần tài khoản': 'Play for 7 days, no account required',
   'Đổi thiết bị bằng mã khôi phục': 'Switch devices with your recovery code',
   'Đang tạo mã thanh toán…': 'Creating payment code…',
   'Tạo mã QR · {v0}': 'Create QR code · {v0}',
