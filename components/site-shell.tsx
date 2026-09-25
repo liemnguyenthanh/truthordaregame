@@ -49,9 +49,9 @@ export function SiteHeader({ alternateHref }: { alternateHref?: string } = {}) {
         </span>
       </Link>
       <nav aria-label={t('Điều hướng chính')}>
-        <Link href={path('/vi/tao-bo-ai')} className="nav-ai">
+        <Link href={path('/vi/nhap-bo')} className="nav-ai">
           <Sparkles size={15} />
-          <span>{t('Tạo bộ AI')}</span>
+          <span>{t('Nhập bộ câu hỏi')}</span>
         </Link>
         <Link href={path('/vi/cach-choi')} className="nav-guide">
           {t('Cách chơi')}{' '}
