@@ -1,7 +1,7 @@
 .reveal {
   perspective: 1200px;
   transform-origin: center;
-  animation: card-flip-in 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: card-flip-in 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @keyframes card-flip-in {

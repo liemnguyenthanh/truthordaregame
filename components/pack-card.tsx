@@ -45,12 +45,12 @@ export function PackCard({ pack, index = 0 }: { pack: Pack; index?: number }) {
         </h3>
         <p>{pack.description}</p>
         <div className="pack-bottom">
-          <a className="pack-play" href={path(`/vi/choi/${pack.slug}`)}>
+          <Link className="pack-play" href={path(`/vi/choi/${pack.slug}`)}>
             {pack.tier === 'free'
               ? t('Chơi ngay')
               : t('Thử {v0} câu miễn phí', { v0: pack.trialCount })}
             <ArrowUpRight size={18} />
-          </a>
+          </Link>
           <span>{pack.tier === 'free' ? t('Không giới hạn lượt') : t('Mở khóa cả bộ')}</span>
         </div>
       </div>

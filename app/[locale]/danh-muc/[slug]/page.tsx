@@ -2,12 +2,16 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { SiteShell } from '@/components/site-shell';
 import { PackCard } from '@/components/pack-card';
-import { getCategory, getPacks } from '@/lib/live-content';
+import { getCategory, getCategories, getPacks } from '@/lib/live-content';
 import { pageMetadata, siteUrl } from '@/lib/seo';
 import { StructuredData } from '@/components/structured-data';
 import { localePath } from '@/lib/i18n';
 import { pageLocale, copy } from '@/lib/i18n/pages';
-export const dynamic = 'force-dynamic';
+export const revalidate = 300;
+export async function generateStaticParams({ params }: { params: { locale: string } }) {
+  const locale = await pageLocale(Promise.resolve(params));
+  return getCategories(locale).map((category) => ({ slug: category.slug }));
+}
 
 export async function generateMetadata({
   params,

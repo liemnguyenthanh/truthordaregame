@@ -1,3 +1,5 @@
+import { revalidatePath, revalidateTag } from 'next/cache';
+import { CONTENT_CACHE_TAG } from '@/lib/live-content';
 import { isLocale } from '@/lib/i18n';
 import { randomUUID } from 'node:crypto';
 import { api, sameOrigin, db, check, HttpError } from '@/lib/payments/server';
@@ -55,6 +57,9 @@ export async function POST(req: Request) {
         409,
         'Bộ đã được chỉnh sửa ở phiên khác hoặc đường dẫn bị thay đổi. Hãy tải lại trước khi sửa.',
       );
+    // Expire both locales together: source edits can invalidate a translation.
+    revalidateTag(CONTENT_CACHE_TAG, { expire: 0 });
+    revalidatePath('/[locale]', 'layout');
     return {
       record: {
         metadata: data?.metadata ?? input.metadata,

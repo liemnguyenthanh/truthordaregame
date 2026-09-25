@@ -7,7 +7,10 @@ import { getPack, getQuestionSet } from '@/lib/live-content';
 import { pageMetadata, siteUrl } from '@/lib/seo';
 import { localePath, type Locale } from '@/lib/i18n';
 import { pageLocale, copy } from '@/lib/i18n/pages';
-export const dynamic = 'force-dynamic';
+export const revalidate = 300;
+export function generateStaticParams() {
+  return [];
+}
 
 export async function generateMetadata({
   params,
@@ -73,12 +76,12 @@ export default async function PackPage({
                 {p.playerRange.min}–{p.playerRange.max} {t('người', 'players')} · {p.ageLabel}
               </span>
             </div>
-            <a href={localePath(locale, `/vi/choi/${p.slug}`)} className="button button-primary">
+            <Link href={localePath(locale, `/vi/choi/${p.slug}`)} className="button button-primary">
               {p.tier === 'free'
                 ? t('Bắt đầu chơi', 'Start playing')
                 : t('Chơi thử ngay', 'Try it now')}
               <ArrowRight size={18} />
-            </a>
+            </Link>
             <p className="small-note">
               {p.tier === 'free'
                 ? t(

@@ -2,9 +2,13 @@ import { notFound } from 'next/navigation';
 import { localePath } from '@/lib/i18n';
 import { Game } from '@/components/game';
 import { OfflinePack } from '@/components/pwa';
-import { getPack } from '@/lib/live-content';
+import { getPack, getPacks, getQuestionSet } from '@/lib/live-content';
 import { pageLocale, copy } from '@/lib/i18n/pages';
-export const dynamic = 'force-dynamic';
+export const revalidate = 300;
+export async function generateStaticParams({ params }: { params: { locale: string } }) {
+  const locale = await pageLocale(Promise.resolve(params));
+  return (await getPacks(locale)).map((pack) => ({ packSlug: pack.slug }));
+}
 
 export async function generateMetadata({
   params,
@@ -31,10 +35,11 @@ export default async function GamePage({
     getPack(packSlug, otherLocale),
   ]);
   if (!p) notFound();
+  const initialSet = await getQuestionSet(p);
   const alternateHref = alternatePack ? undefined : localePath(otherLocale, '/vi/danh-muc');
   return (
     <main id="main">
-      <Game pack={p} alternateHref={alternateHref} />
+      <Game pack={p} initialSet={initialSet} alternateHref={alternateHref} />
       <OfflinePack pack={p} />
     </main>
   );

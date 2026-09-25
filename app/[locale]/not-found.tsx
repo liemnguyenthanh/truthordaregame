@@ -1,8 +1,9 @@
+'use client';
 import Link from 'next/link';
 import { SiteShell } from '@/components/site-shell';
-import { requestLocale } from '@/lib/request-locale';
-export default async function NotFound() {
-  const locale = await requestLocale();
+import { useI18n } from '@/components/locale-provider';
+export default function NotFound() {
+  const { locale } = useI18n();
   const english = locale === 'en';
   return (
     <SiteShell>

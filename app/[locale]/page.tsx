@@ -8,7 +8,7 @@ import { getPacks } from '@/lib/live-content';
 import { pageMetadata, siteUrl } from '@/lib/seo';
 import { localePath } from '@/lib/i18n';
 import { pageLocale, copy, homeFaq } from '@/lib/i18n/pages';
-export const dynamic = 'force-dynamic';
+export const revalidate = 300;
 type Props = { params: Promise<{ locale: string }> };
 export async function generateMetadata({ params }: Props) {
   const l = await pageLocale(params);
@@ -60,7 +60,7 @@ export default async function Home({ params }: Props) {
               )}
             </p>
             <div className="intro-actions">
-              <a
+              <Link
                 className="button button-primary"
                 href={path(starter ? `/vi/choi/${starter.slug}` : '/vi/cach-choi')}
               >
@@ -68,20 +68,20 @@ export default async function Home({ params }: Props) {
                   ? t('Chơi ngay miễn phí', 'Play for free')
                   : t('Xem cách chơi', 'How to play')}
                 <ArrowRight size={19} />
-              </a>
-              <a
+              </Link>
+              <Link
                 className="group-start"
                 href={path(starter ? `/vi/choi/${starter.slug}?group=1` : '/vi/danh-muc')}
               >
                 {starter
                   ? t('Tạo nhóm & chơi →', 'Create a group & play →')
                   : t('Khám phá danh mục →', 'Browse categories →')}
-              </a>
+              </Link>
               {AI_PACK_CREATION_ENABLED && (
-                <a className="button button-secondary ai-start" href={path('/vi/tao-bo-ai')}>
+                <Link className="button button-secondary ai-start" href={path('/vi/tao-bo-ai')}>
                   {t('Tạo bộ câu hỏi bằng AI', 'Create an AI question pack')}
                   <ArrowRight size={17} />
-                </a>
+                </Link>
               )}
             </div>
             <div className="intro-notes">

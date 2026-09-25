@@ -4,7 +4,7 @@ import { getCategories, getPacks } from '@/lib/live-content';
 import { pageMetadata } from '@/lib/seo';
 import { localePath } from '@/lib/i18n';
 import { pageLocale, copy } from '@/lib/i18n/pages';
-export const dynamic = 'force-dynamic';
+export const revalidate = 300;
 type Props = { params: Promise<{ locale: string }> };
 export async function generateMetadata({ params }: Props) {
   const l = await pageLocale(params);

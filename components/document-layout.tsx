@@ -3,8 +3,8 @@ import Script from 'next/script';
 import { PwaControls } from '@/components/pwa';
 import { siteUrl } from '@/lib/seo';
 import { LocaleProvider } from '@/components/locale-provider';
-import { requestLocale } from '@/lib/request-locale';
-import './globals.css';
+import type { Locale } from '@/lib/i18n';
+import '@/app/globals.css';
 
 const vietnameseMetadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -43,8 +43,7 @@ const vietnameseMetadata: Metadata = {
   robots: process.env.VERCEL_ENV === 'preview' ? { index: false, follow: false } : undefined,
 };
 export const viewport: Viewport = { themeColor: '#151d2b', width: 'device-width', initialScale: 1 };
-export async function generateMetadata(): Promise<Metadata> {
-  const locale = await requestLocale();
+export function documentMetadata(locale: Locale): Metadata {
   if (locale === 'vi') return vietnameseMetadata;
   const title = 'Truth or Dare — One question, a little closer';
   const description =
@@ -77,12 +76,17 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const locale = await requestLocale();
+export function DocumentLayout({
+  children,
+  locale,
+}: {
+  children: React.ReactNode;
+  locale: Locale;
+}) {
   return (
     <html lang={locale}>
       <body>
-        <Script id="google-tag-manager" strategy="beforeInteractive">
+        <Script id="google-tag-manager" strategy="afterInteractive">
           {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-5FP2P39P');`}
         </Script>
         <noscript>
