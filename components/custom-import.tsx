@@ -1,7 +1,17 @@
 'use client';
 
 import { useState } from 'react';
-import { ArrowLeft, FileJson, Link2, Play, Upload } from 'lucide-react';
+import {
+  ArrowLeft,
+  Check,
+  Copy,
+  FileJson,
+  Link2,
+  Play,
+  Upload,
+  WandSparkles,
+  X,
+} from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useI18n } from './locale-provider';
@@ -15,8 +25,30 @@ import styles from './ai-builder.module.css';
 
 type Source = 'paste' | 'url';
 
+const PROMPT_EXAMPLE = `Bạn là người thiết kế bộ câu hỏi cho game Truth or Dare.
+Hãy tạo một bộ câu hỏi bằng JSON hợp lệ theo đúng schema sau:
+
+{
+  "title": "Tên bộ câu hỏi",
+  "description": "Mô tả ngắn",
+  "questions": [
+    { "type": "truth", "text": "Một câu hỏi thật lòng" },
+    { "type": "dare", "text": "Một thử thách vui" }
+  ]
+}
+
+Yêu cầu:
+- Chủ đề: [điền chủ đề của bạn]
+- Đối tượng: [ví dụ: bạn thân, cặp đôi, gia đình]
+- Tạo 10 câu truth và 10 câu dare.
+- type chỉ được là "truth" hoặc "dare".
+- Mỗi text là một chuỗi câu hỏi/thử thách bằng tiếng Việt.
+- Chỉ trả về JSON, không thêm markdown hay lời giải thích.`;
+
 export function CustomImport() {
   const { path, t } = useI18n();
+  const [showPrompt, setShowPrompt] = useState(false);
+  const [copied, setCopied] = useState(false);
   const router = useRouter();
   const [source, setSource] = useState<Source>('paste');
   const [value, setValue] = useState('');
@@ -49,6 +81,12 @@ export function CustomImport() {
     } finally {
       setBusy(false);
     }
+  }
+
+  async function copyPrompt() {
+    await navigator.clipboard.writeText(PROMPT_EXAMPLE);
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1800);
   }
 
   function play() {
@@ -126,6 +164,13 @@ export function CustomImport() {
             />
           </label>
         )}
+        {source === 'paste' && (
+          <div className={styles.promptActions}>
+            <button type="button" className={styles.textButton} onClick={() => setShowPrompt(true)}>
+              <WandSparkles size={14} /> Dùng prompt mẫu với AI
+            </button>
+          </div>
+        )}
         <button
           type="button"
           className="button button-secondary"
@@ -166,6 +211,58 @@ export function CustomImport() {
             <Play size={17} /> Chơi ngay
           </button>
         </section>
+      )}
+      {showPrompt && (
+        <div
+          className={styles.promptModal}
+          role="presentation"
+          onMouseDown={() => setShowPrompt(false)}
+        >
+          <section
+            className={styles.promptDialog}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="prompt-title"
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <div className={styles.promptHeader}>
+              <div>
+                <h2 id="prompt-title">Prompt tạo bộ câu hỏi</h2>
+                <p>
+                  Dán prompt này vào ChatGPT, Claude hoặc AI bạn đang dùng, rồi copy JSON trả về vào
+                  ô nhập.
+                </p>
+              </div>
+              <button
+                type="button"
+                className={styles.closeButton}
+                onClick={() => setShowPrompt(false)}
+                aria-label="Đóng"
+              >
+                <X size={17} />
+              </button>
+            </div>
+            <textarea
+              className={styles.promptCode}
+              value={PROMPT_EXAMPLE}
+              readOnly
+              aria-label="Prompt mẫu"
+            />
+            <div className={styles.promptFooter}>
+              <button
+                type="button"
+                className="button button-secondary"
+                onClick={() => setShowPrompt(false)}
+              >
+                Đóng
+              </button>
+              <button type="button" className="button button-primary" onClick={copyPrompt}>
+                {copied ? <Check size={16} /> : <Copy size={16} />}
+                {copied ? 'Đã copy' : 'Copy prompt'}
+              </button>
+            </div>
+          </section>
+        </div>
       )}
     </main>
   );

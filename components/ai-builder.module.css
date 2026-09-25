@@ -213,6 +213,80 @@
 .limit {
   color: #c9a6e6;
 }
+.promptActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+.promptModal {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: #080b12b8;
+  backdrop-filter: blur(8px);
+}
+.promptDialog {
+  width: min(620px, 100%);
+  max-height: min(680px, 90vh);
+  overflow: auto;
+  padding: 25px;
+  border: 1px solid #ffffff1a;
+  border-radius: 22px;
+  background: #182131;
+  box-shadow: 0 24px 80px #0008;
+}
+.promptHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.promptHeader > div:first-child {
+  flex: 1;
+}
+.promptHeader h2 {
+  margin: 0 0 7px;
+  font-size: 18px;
+}
+.promptHeader p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+.closeButton {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #ffffff16;
+  border-radius: 10px;
+  color: var(--muted);
+  background: #ffffff08;
+  cursor: pointer;
+}
+.promptCode {
+  width: 100%;
+  min-height: 310px;
+  padding: 16px;
+  border: 1px solid #ffffff14;
+  border-radius: 13px;
+  resize: vertical;
+  color: #e1d9ed;
+  background: #0d131e;
+  font-family: monospace;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.promptFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 14px;
+}
 .error {
   color: #ffc3ce;
   background: #e2476212;
