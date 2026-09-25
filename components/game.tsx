@@ -1,5 +1,7 @@
 'use client';
 
+import { AI_PACK_CREATION_ENABLED } from '@/lib/features';
+
 import { useI18n } from './locale-provider';
 
 import Link from 'next/link';
@@ -265,7 +267,13 @@ function PackGame({ pack, initialSet, fixedGroup, alternateHref }: GameProps) {
     <section className={styles.game}>
       <div className={styles.top}>
         <Link
-          href={path(fixedGroup ? '/vi/tao-bo-ai' : `/vi/bo-cau-hoi/${pack.slug}`)}
+          href={path(
+            fixedGroup
+              ? AI_PACK_CREATION_ENABLED
+                ? '/vi/tao-bo-ai'
+                : '/vi'
+              : `/vi/bo-cau-hoi/${pack.slug}`,
+          )}
           className={styles.back}
         >
           <ArrowLeft size={18} /> {pack.title}
@@ -307,7 +315,7 @@ function PackGame({ pack, initialSet, fixedGroup, alternateHref }: GameProps) {
             </span>
           </div>
           {fixedGroup ? (
-            <Link href={path('/vi/tao-bo-ai')}>{t('Tạo bộ mới')}</Link>
+            AI_PACK_CREATION_ENABLED && <Link href={path('/vi/tao-bo-ai')}>{t('Tạo bộ mới')}</Link>
           ) : (
             <button onClick={() => setEditingGroup((value) => !value)}>
               <Pencil size={14} /> {t('Sửa nhóm')}{' '}

@@ -1,11 +1,14 @@
 'use client';
 
+import { AI_PACK_CREATION_ENABLED } from '@/lib/features';
+
 import { useI18n } from './locale-provider';
 
 import Link from 'next/link';
 import { ArrowUpRight, Sparkles } from 'lucide-react';
 export function AiInvitation() {
   const { t, path } = useI18n();
+  if (!AI_PACK_CREATION_ENABLED) return null;
   return (
     <section className="ai-invitation" aria-labelledby="ai-invitation-title">
       <div className="ai-invitation-icon">

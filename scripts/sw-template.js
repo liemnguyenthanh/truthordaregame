@@ -64,7 +64,6 @@ self.addEventListener('message', (event) => {
           const locale = event.data.locale || 'vi';
           if (!validLocale(locale)) throw new Error('Invalid locale');
           await cachePage(cache, locale === 'en' ? '/en/ai-pack' : '/vi/bo-ai');
-          await cachePage(cache, locale === 'en' ? '/en/create-ai-pack' : '/vi/tao-bo-ai');
           await cachePage(cache, `/${locale}`);
           event.ports[0]?.postMessage({ success: true });
         } catch {

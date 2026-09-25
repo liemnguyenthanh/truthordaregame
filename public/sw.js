@@ -1,4 +1,4 @@
-const CACHE = 'tod-d22056227252';
+const CACHE = 'tod-3133aac7fbad';
 const OFFLINE = { vi: '/offline.html', en: '/offline-en.html' };
 const validLocale = (value) => value === 'vi' || value === 'en';
 const localeForPath = (path) => (path === '/en' || path.startsWith('/en/') ? 'en' : 'vi');
@@ -64,7 +64,6 @@ self.addEventListener('message', (event) => {
           const locale = event.data.locale || 'vi';
           if (!validLocale(locale)) throw new Error('Invalid locale');
           await cachePage(cache, locale === 'en' ? '/en/ai-pack' : '/vi/bo-ai');
-          await cachePage(cache, locale === 'en' ? '/en/create-ai-pack' : '/vi/tao-bo-ai');
           await cachePage(cache, `/${locale}`);
           event.ports[0]?.postMessage({ success: true });
         } catch {

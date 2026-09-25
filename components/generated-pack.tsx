@@ -1,5 +1,7 @@
 'use client';
 
+import { AI_PACK_CREATION_ENABLED } from '@/lib/features';
+
 import { localizedError } from '@/lib/i18n/messages';
 import { useI18n } from './locale-provider';
 
@@ -160,9 +162,11 @@ function GeneratedPackContent({ id }: { id: string }) {
         />
         {!storageWarning && <OfflineAiPack />}
         <div className={styles.shell}>
-          <Link className={styles.back} href={path('/vi/tao-bo-ai')}>
-            <ArrowLeft size={17} /> {t('Những bộ của nhóm')}{' '}
-          </Link>
+          {AI_PACK_CREATION_ENABLED && (
+            <Link className={styles.back} href={path('/vi/tao-bo-ai')}>
+              <ArrowLeft size={17} /> {t('Những bộ của nhóm')}{' '}
+            </Link>
+          )}
           {storageWarning && (
             <p className="notice">
               {t('Chưa thể lưu bộ để mở lại khi offline. Bạn vẫn có thể chơi ngay.')}{' '}
@@ -173,9 +177,11 @@ function GeneratedPackContent({ id }: { id: string }) {
     );
   return (
     <section className={styles.shell}>
-      <Link className={styles.back} href={path('/vi/tao-bo-ai')}>
-        <ArrowLeft size={17} /> {t('Về nhóm của bạn')}{' '}
-      </Link>
+      {AI_PACK_CREATION_ENABLED && (
+        <Link className={styles.back} href={path('/vi/tao-bo-ai')}>
+          <ArrowLeft size={17} /> {t('Về nhóm của bạn')}{' '}
+        </Link>
+      )}
       <div className={`${styles.panel} ${styles.statusPanel}`}>
         <Sparkles
           size={40}
@@ -190,9 +196,11 @@ function GeneratedPackContent({ id }: { id: string }) {
                   'AI chưa hoàn tất bộ câu hỏi phù hợp. Bạn có thể kiểm tra lại nhóm rồi chủ động tạo yêu cầu mới.',
                 )}
             </p>
-            <Link className="button button-primary" href={path('/vi/tao-bo-ai')}>
-              {t('Về nhóm và thử lần mới')}{' '}
-            </Link>
+            {AI_PACK_CREATION_ENABLED && (
+              <Link className="button button-primary" href={path('/vi/tao-bo-ai')}>
+                {t('Về nhóm và thử lần mới')}{' '}
+              </Link>
+            )}
             <p>
               {t('Chỉ tạo lại khi bạn bấm nút. Yêu cầu mới có thể tính vào giới hạn trong ngày.')}
             </p>

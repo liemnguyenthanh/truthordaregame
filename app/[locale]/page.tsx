@@ -1,3 +1,4 @@
+import { AI_PACK_CREATION_ENABLED } from '@/lib/features';
 import Link from 'next/link';
 import { ArrowRight, Zap, Download, Heart } from 'lucide-react';
 import { SiteShell } from '@/components/site-shell';
@@ -76,10 +77,12 @@ export default async function Home({ params }: Props) {
                   ? t('Tạo nhóm & chơi →', 'Create a group & play →')
                   : t('Khám phá danh mục →', 'Browse categories →')}
               </a>
-              <a className="button button-secondary ai-start" href={path('/vi/tao-bo-ai')}>
-                {t('Tạo bộ câu hỏi bằng AI', 'Create an AI question pack')}
-                <ArrowRight size={17} />
-              </a>
+              {AI_PACK_CREATION_ENABLED && (
+                <a className="button button-secondary ai-start" href={path('/vi/tao-bo-ai')}>
+                  {t('Tạo bộ câu hỏi bằng AI', 'Create an AI question pack')}
+                  <ArrowRight size={17} />
+                </a>
+              )}
             </div>
             <div className="intro-notes">
               <span>
