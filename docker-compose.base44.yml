@@ -1,0 +1,30 @@
+services:
+  setup:
+    image: node:22
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: npm ci --ignore-scripts
+
+  web:
+    image: node:22
+    working_dir: /app
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+    volumes:
+      - .:/app
+    ports:
+      - "3000:3000"
+    environment:
+      - BASE44_PUBLIC_HOST_SUFFIX
+      - NEXT_PUBLIC_SITE_URL=https://3000-${BASE44_PUBLIC_HOST_SUFFIX}
+    env_file:
+      - /run/base44/app.env
+    command: npx next dev -H 0.0.0.0 -p 3000
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/vi').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 40s

@@ -5,7 +5,7 @@ import { db, check } from './db/server';
 import { getPacks as localPacks, getQuestionSet as localSet, resolveTranslation } from './content';
 import type { Locale } from './i18n';
 import type { Pack, QuestionSet } from './types';
-export { getCategories, getCategory } from './content';
+export { catalogVersion, getCategories, getCategory } from './content';
 const configured = () => !!process.env.SUPABASE_URL && !!process.env.SUPABASE_SERVICE_ROLE_KEY;
 export const CONTENT_CACHE_TAG = 'published-content';
 const cacheOptions = { revalidate: 300, tags: [CONTENT_CACHE_TAG] };
