@@ -5,9 +5,11 @@ import { OfflinePack } from '@/components/pwa';
 import { getPack, getPacks, getQuestionSet } from '@/lib/live-content';
 import { pageLocale, copy } from '@/lib/i18n/pages';
 export const revalidate = 300;
-export async function generateStaticParams({ params }: { params: { locale: string } }) {
-  const locale = await pageLocale(Promise.resolve(params));
-  return (await getPacks(locale)).map((pack) => ({ packSlug: pack.slug }));
+export async function generateStaticParams() {
+  // Both locales share source slugs. Prebuild unavailable translations as 404s;
+  // publishing invalidates them. Returning [] for an empty locale prevents Next
+  // from prebuilding even the populated locale when params come from a parent.
+  return (await getPacks('vi')).map((pack) => ({ packSlug: pack.slug }));
 }
 
 export async function generateMetadata({

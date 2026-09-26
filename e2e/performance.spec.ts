@@ -10,7 +10,9 @@ test('public pages cache HTML, preserve locales, and leave private APIs uncached
     expect(response.status(), path).toBe(200);
     const headers = response.headers();
     expect(headers['cache-control'], path).not.toMatch(/private|no-store/);
-    expect(headers['x-vercel-cache'] ?? headers['x-nextjs-cache'], path).toMatch(/HIT|MISS|STALE/);
+    expect(headers['x-vercel-cache'] ?? headers['x-nextjs-cache'], path).toMatch(
+      /HIT|MISS|STALE|PRERENDER/,
+    );
     expect(await response.text()).toContain(`<html lang="${path.startsWith('/en') ? 'en' : 'vi'}"`);
   }
   const privateResponse = await request.get('/api/entitlements');
