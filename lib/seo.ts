@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { localePath, type Locale } from '@/lib/i18n';
-export const siteUrl = 'http://truthordaregame.xyz';
+export const siteUrl = 'https://truthordaregame.xyz';
 export function languageAlternates(path: string, available: readonly Locale[] = ['vi', 'en']) {
   const languages: Record<string, string> = {};
   for (const locale of available) languages[locale] = siteUrl + localePath(locale, path);
