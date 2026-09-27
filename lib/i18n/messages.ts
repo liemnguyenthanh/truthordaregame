@@ -1,5 +1,6 @@
 /** English UI translations; keys retain the original Vietnamese copy. */
 export const englishMessages: Record<string, string> = {
+  'Đánh giá': 'Reviews',
   'Tự mở khóa sau khi nhận thanh toán.': 'Unlocks automatically once payment arrives.',
   'Dùng cùng điện thoại?': 'Using the same phone?',
   'Thanh toán để chơi tiếp': 'Pay to keep playing',

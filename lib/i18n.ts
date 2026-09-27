@@ -12,6 +12,7 @@ export function formatLocale(locale: Locale) {
 
 export const routeSegments = {
   choi: 'play',
+  'danh-gia': 'reviews',
   'bo-cau-hoi': 'packs',
   'danh-muc': 'categories',
   'cach-choi': 'how-to-play',

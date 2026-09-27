@@ -1,0 +1,285 @@
+.header {
+  max-width: 650px;
+  margin: 65px auto 40px;
+  text-align: center;
+}
+.header h1 {
+  font-size: clamp(30px, 5vw, 46px);
+  margin: 18px 0;
+}
+.header button {
+  margin-top: 12px;
+  gap: 9px;
+}
+.list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.card {
+  padding: 25px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: linear-gradient(135deg, #263148, #1c2637);
+  animation: enter 0.3s ease both;
+}
+.cardTop {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.cardTop > div:last-child {
+  min-width: 0;
+}
+.avatar {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  color: #edc6ff;
+  background: #a43bea25;
+  font-weight: 700;
+}
+.card h2 {
+  margin: 0 0 5px;
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+.card time {
+  font-size: 11px;
+  color: var(--muted);
+}
+.rating {
+  display: flex;
+  gap: 4px;
+  color: #ffc96a;
+  margin: 19px 0 12px;
+}
+.card p {
+  margin: 0;
+  color: #d3dbea;
+  font-size: 14px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.more {
+  text-align: center;
+  margin: 30px 0 65px;
+}
+.empty {
+  padding: 30px;
+}
+.empty svg {
+  color: #c589f1;
+  margin-bottom: 18px;
+}
+.empty h2 {
+  font-size: 21px;
+}
+.modal {
+  position: fixed;
+  width: min(440px, calc(100% - 32px));
+  max-height: calc(100dvh - 32px);
+  padding: 32px;
+  border: 1px solid #cba2f02b;
+  border-radius: 28px;
+  color: var(--text);
+  background: radial-gradient(ellipse at top, #66356d44, transparent 65%), #202b3d;
+  box-shadow: 0 30px 100px #0008;
+  animation: enter 0.24s ease both;
+}
+.modal::backdrop {
+  background: #080e1dc4;
+  backdrop-filter: blur(8px);
+  animation: fade 0.24s ease both;
+}
+.modal[data-closing] {
+  animation: leave 0.18s ease both;
+}
+.modal[data-closing]::backdrop {
+  animation: fade 0.18s ease reverse both;
+}
+.close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  color: var(--muted);
+  background: #ffffff09;
+}
+.emblem {
+  margin: 0 auto 18px;
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 20px;
+  color: #ffc96a;
+  background: linear-gradient(135deg, #a43bea35, #e7298630);
+}
+.modal h2 {
+  font-size: 23px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+.modal > p {
+  font-size: 13px;
+  text-align: center;
+  margin-bottom: 22px;
+}
+.stars {
+  border: 0;
+  padding: 0;
+  margin: 0 0 20px;
+  text-align: center;
+}
+.stars legend {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0 auto 8px;
+}
+.stars > div {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
+.stars label {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 47px;
+  height: 47px;
+  color: #6d7890;
+  cursor: pointer;
+}
+.stars input {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  cursor: pointer;
+}
+.stars svg {
+  pointer-events: none;
+  transition:
+    transform 0.16s ease,
+    color 0.16s ease;
+}
+.stars .selected {
+  color: #ffc96a;
+}
+.selected svg {
+  fill: currentColor;
+}
+.stars label:hover svg {
+  transform: translateY(-3px) scale(1.08);
+}
+.stars label:has(input:focus-visible) {
+  outline: 2px solid #dba6ff;
+  border-radius: 10px;
+}
+.field {
+  display: grid;
+  gap: 7px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.field input,
+.field textarea {
+  width: 100%;
+  border: 1px solid #ffffff16;
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: #111b2b80;
+  color: var(--text);
+  font: inherit;
+  font-size: 16px;
+}
+.field textarea {
+  resize: vertical;
+  min-height: 95px;
+}
+.field input:focus,
+.field textarea:focus {
+  outline: 2px solid #c589f1;
+  outline-offset: 2px;
+}
+.modal form > button,
+.success > a {
+  width: 100%;
+}
+.skip {
+  display: block;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 13px;
+  padding: 13px;
+  margin: 5px auto 0;
+}
+.error {
+  color: #ffadc2;
+  font-size: 13px;
+}
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes leave {
+  to {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (max-width: 850px) {
+  .list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 560px) {
+  .list {
+    grid-template-columns: 1fr;
+  }
+  .header {
+    margin-top: 40px;
+  }
+  .modal {
+    padding: 28px 22px 18px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .modal,
+  .modal::backdrop,
+  .modal[data-closing],
+  .modal[data-closing]::backdrop,
+  .card {
+    animation-duration: 0.01ms;
+  }
+  .stars svg {
+    transition: none;
+  }
+}

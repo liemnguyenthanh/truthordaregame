@@ -8,20 +8,18 @@ import {
   FileJson,
   Link2,
   Play,
-  Upload,
+  ArrowRight,
   WandSparkles,
-  X,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useI18n } from './locale-provider';
 import {
-  customPackFromSet,
   CUSTOM_PACK_STORAGE_KEY,
   validateCustomQuestionSet,
   type CustomQuestionSet,
 } from '@/lib/custom-pack';
-import styles from './ai-builder.module.css';
+import styles from './custom-import.module.css';
 
 type Source = 'paste' | 'url';
 
@@ -47,11 +45,21 @@ Yêu cầu:
 
 export function CustomImport() {
   const { path, t } = useI18n();
-  const [showPrompt, setShowPrompt] = useState(false);
   const [copied, setCopied] = useState(false);
   const router = useRouter();
   const [source, setSource] = useState<Source>('paste');
-  const [value, setValue] = useState('');
+  const [values, setValues] = useState({ paste: '', url: '' });
+  const value = values[source];
+  function updateValue(next: string) {
+    setValues((current) => ({ ...current, [source]: next }));
+    setSet(null);
+    setError('');
+  }
+  function changeSource(next: Source) {
+    setSource(next);
+    setSet(null);
+    setError('');
+  }
   const [set, setSet] = useState<CustomQuestionSet | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -64,7 +72,10 @@ export function CustomImport() {
       let input: unknown;
       if (source === 'url') {
         if (!value.trim()) throw new Error('Hãy nhập link JSON.');
-        const response = await fetch(value.trim(), { cache: 'no-store' });
+        const response = await fetch(value.trim(), {
+          cache: 'no-store',
+          signal: AbortSignal.timeout(15000),
+        });
         if (!response.ok) throw new Error('Không thể tải link JSON này.');
         input = await response.json();
       } else {
@@ -72,7 +83,9 @@ export function CustomImport() {
         try {
           input = JSON.parse(value);
         } catch {
-          throw new Error('Nội dung chưa phải JSON hợp lệ.');
+          throw new Error(
+            'Chưa đọc được nội dung. Hãy dán đầy đủ JSON, từ dấu { đầu tiên đến dấu } cuối cùng, hoặc thử bộ mẫu bên dưới.',
+          );
         }
       }
       setSet(validateCustomQuestionSet(input));
@@ -84,15 +97,23 @@ export function CustomImport() {
   }
 
   async function copyPrompt() {
-    await navigator.clipboard.writeText(PROMPT_EXAMPLE);
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1800);
+    try {
+      await navigator.clipboard.writeText(PROMPT_EXAMPLE);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1800);
+    } catch {
+      setError('Không thể sao chép tự động. Bạn có thể chọn và sao chép hướng dẫn bên dưới.');
+    }
   }
 
   function play() {
     if (!set) return;
-    localStorage.setItem(CUSTOM_PACK_STORAGE_KEY, JSON.stringify(set));
-    router.push(path('/vi/choi/tuy-chinh'));
+    try {
+      localStorage.setItem(CUSTOM_PACK_STORAGE_KEY, JSON.stringify(set));
+      router.push(path('/vi/choi/tuy-chinh'));
+    } catch {
+      setError('Trình duyệt chưa cho phép lưu bộ câu hỏi. Hãy bật lưu trữ và thử lại.');
+    }
   }
 
   const truth = set?.questions.filter((question) => question.type === 'truth').length ?? 0;
@@ -104,166 +125,184 @@ export function CustomImport() {
       </Link>
       <header className={styles.hero}>
         <span className={styles.heroIcon}>
-          <FileJson size={29} />
+          <FileJson size={25} />
         </span>
-        <p className="eyebrow">BỘ CÂU HỎI CỦA BẠN</p>
-        <h1>
-          {t('Dán vào,')} <em>{t('chơi ngay.')}</em>
-        </h1>
-        <p>
-          {t(
-            'Dùng JSON mẫu hoặc link JSON của bạn. App sẽ kiểm tra dữ liệu trước khi bắt đầu ván chơi.',
-          )}
-        </p>
+        <h1>Chơi với bộ câu hỏi của bạn</h1>
+        <p>Nhập bộ câu hỏi bạn đã có hoặc tạo bằng AI để chơi Thật hay Thách cùng mọi người.</p>
       </header>
-      <section className={styles.panel}>
-        <div className={styles.step}>
-          <span>01</span>
-          <h2>{t('Nhập bộ câu hỏi')}</h2>
-        </div>
-        <div className={styles.moods} role="tablist" aria-label="Nguồn dữ liệu">
+      <ol className={styles.steps} aria-label="Các bước nhập bộ câu hỏi">
+        <li aria-current={set ? undefined : 'step'}>
+          <span>1</span> Nhập câu hỏi
+        </li>
+        <li aria-current={set ? 'step' : undefined}>
+          <span>2</span> Xem trước
+        </li>
+        <li>
+          <span>3</span> Bắt đầu chơi
+        </li>
+      </ol>
+      <section className={styles.panel} aria-labelledby="import-title">
+        <h2 id="import-title">Nhập bộ câu hỏi</h2>
+        <p className={styles.intro}>
+          Dán nội dung theo định dạng JSON — định dạng giúp ứng dụng đọc được câu hỏi của bạn.
+        </p>
+        <div className={styles.sources} role="group" aria-label="Cách nhập bộ câu hỏi">
           <button
             type="button"
-            className={`${styles.mood} ${source === 'paste' ? styles.selected : ''}`}
-            onClick={() => setSource('paste')}
+            aria-pressed={source === 'paste'}
+            disabled={busy}
+            onClick={() => changeSource('paste')}
           >
-            <FileJson size={22} />
-            <strong>Dán JSON</strong>
-            <span>Dán trực tiếp nội dung bộ câu hỏi</span>
+            <FileJson size={17} /> Dán nội dung
           </button>
           <button
             type="button"
-            className={`${styles.mood} ${source === 'url' ? styles.selected : ''}`}
-            onClick={() => setSource('url')}
+            aria-pressed={source === 'url'}
+            disabled={busy}
+            onClick={() => changeSource('url')}
           >
-            <Link2 size={22} />
-            <strong>Link JSON</strong>
-            <span>Fetch một URL trả về JSON</span>
+            <Link2 size={17} /> Nhập bằng link
           </button>
         </div>
+        <label className={styles.label} htmlFor="question-input">
+          {source === 'paste' ? 'Nội dung bộ câu hỏi' : 'Link bộ câu hỏi'}
+        </label>
         {source === 'paste' ? (
           <textarea
-            aria-label="JSON bộ câu hỏi"
+            id="question-input"
             value={value}
-            onChange={(event) => setValue(event.target.value)}
+            disabled={busy}
+            onChange={(event) => updateValue(event.target.value)}
             placeholder={
-              '{\n  "title": "Nhóm bạn thân",\n  "questions": [\n    { "type": "truth", "text": "..." },\n    { "type": "dare", "text": "..." }\n  ]\n}'
+              'Dán JSON bộ câu hỏi vào đây…\n\n{\n  "title": "Nhóm bạn thân",\n  "questions": [\n    { "type": "truth", "text": "Kỷ niệm vui nhất của bạn?" }\n  ]\n}'
             }
-            rows={12}
-            style={{ width: '100%', marginTop: 18, fontFamily: 'monospace', fontSize: 12 }}
+            rows={8}
+            className={styles.input}
+            aria-describedby="input-help"
+            aria-invalid={!!error}
           />
         ) : (
-          <label style={{ display: 'block', marginTop: 18 }}>
-            URL JSON
-            <input
-              aria-label="Link JSON"
-              value={value}
-              onChange={(event) => setValue(event.target.value)}
-              placeholder="https://example.com/questions.json"
-              style={{ width: '100%', marginTop: 8 }}
-            />
-          </label>
+          <input
+            id="question-input"
+            type="url"
+            value={value}
+            disabled={busy}
+            onChange={(event) => updateValue(event.target.value)}
+            placeholder="https://example.com/questions.json"
+            className={styles.input}
+            aria-describedby="input-help"
+            aria-invalid={!!error}
+          />
         )}
-        {source === 'paste' && (
-          <div className={styles.promptActions}>
-            <button type="button" className={styles.textButton} onClick={() => setShowPrompt(true)}>
-              <WandSparkles size={14} /> Dùng prompt mẫu với AI
+        <div className={styles.inputHelp} id="input-help">
+          <span>
+            {source === 'paste'
+              ? 'Có tên bộ, câu hỏi Thật và thử thách là đủ.'
+              : 'Dùng link công khai chứa JSON, không phải link cuộc trò chuyện AI.'}
+          </span>
+          {source === 'paste' && (
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() =>
+                updateValue(
+                  JSON.stringify(
+                    {
+                      title: 'Nhóm bạn thân',
+                      description: 'Một vài câu hỏi để cả nhóm khởi động.',
+                      questions: [
+                        { type: 'truth', text: 'Kỷ niệm nào với nhóm bạn khiến bạn nhớ nhất?' },
+                        { type: 'dare', text: 'Hát một đoạn bài hát yêu thích của bạn.' },
+                        { type: 'truth', text: 'Điều nhỏ bé nào luôn khiến bạn vui?' },
+                        { type: 'dare', text: 'Tạo dáng hài hước để cả nhóm chụp một tấm ảnh.' },
+                      ],
+                    },
+                    null,
+                    2,
+                  ),
+                )
+              }
+            >
+              Thử bộ mẫu
             </button>
-          </div>
-        )}
-        <button
-          type="button"
-          className="button button-secondary"
-          onClick={inspect}
-          disabled={busy}
-          style={{ width: '100%', justifyContent: 'center', marginTop: 16 }}
-        >
-          <Upload size={17} /> {busy ? 'Đang kiểm tra…' : 'Kiểm tra bộ câu hỏi'}
-        </button>
+          )}
+        </div>
         {error && (
           <div className={styles.error} role="alert">
             {error}
           </div>
         )}
+        <button
+          type="button"
+          className={`button button-primary ${styles.primary}`}
+          onClick={inspect}
+          disabled={busy || !value.trim()}
+        >
+          {busy ? 'Đang đọc bộ câu hỏi…' : 'Xem trước bộ câu hỏi'} <ArrowRight size={17} />
+        </button>
+        <p className={styles.note}>Bạn sẽ được xem và kiểm tra câu hỏi trước khi chơi.</p>
       </section>
       {set && (
-        <section className={styles.panel}>
-          <div className={styles.step}>
-            <span>02</span>
-            <h2>{set.title}</h2>
+        <section
+          className={`${styles.panel} ${styles.preview}`}
+          aria-labelledby="preview-title"
+          aria-live="polite"
+        >
+          <div className={styles.success}>
+            <Check size={17} /> Bộ câu hỏi đã sẵn sàng
           </div>
-          <p>{set.description}</p>
-          <p className={styles.fine}>
-            {set.questions.length} câu · {truth} Thật · {dare} Thách
-          </p>
-          <ul>
+          <h2 id="preview-title">{set.title}</h2>
+          <p className={styles.intro}>{set.description}</p>
+          <div className={styles.counts}>
+            <span>{set.questions.length} câu hỏi</span>
+            <span>{truth} Thật</span>
+            <span>{dare} Thách</span>
+          </div>
+          <p className={styles.label}>Xem trước {Math.min(3, set.questions.length)} câu đầu tiên</p>
+          <ul className={styles.questions}>
             {set.questions.slice(0, 3).map((question) => (
               <li key={question.id}>
-                {question.type === 'truth' ? 'Thật' : 'Thách'}: {question.text}
+                <span data-type={question.type}>
+                  {question.type === 'truth' ? 'Thật' : 'Thách'}
+                </span>
+                <p>{question.text}</p>
               </li>
             ))}
           </ul>
           <button
             type="button"
-            className={`button button-primary ${styles.generate}`}
+            className={`button button-primary ${styles.primary}`}
             onClick={play}
           >
-            <Play size={17} /> Chơi ngay
+            <Play size={17} /> Chơi bộ câu hỏi này
           </button>
+          <p className={styles.note}>
+            Bộ câu hỏi được lưu trên trình duyệt này khi bạn bắt đầu chơi.
+          </p>
         </section>
       )}
-      {showPrompt && (
-        <div
-          className={styles.promptModal}
-          role="presentation"
-          onMouseDown={() => setShowPrompt(false)}
-        >
-          <section
-            className={styles.promptDialog}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="prompt-title"
-            onMouseDown={(event) => event.stopPropagation()}
-          >
-            <div className={styles.promptHeader}>
-              <div>
-                <h2 id="prompt-title">Prompt tạo bộ câu hỏi</h2>
-                <p>
-                  Dán prompt này vào ChatGPT, Claude hoặc AI bạn đang dùng, rồi copy JSON trả về vào
-                  ô nhập.
-                </p>
-              </div>
-              <button
-                type="button"
-                className={styles.closeButton}
-                onClick={() => setShowPrompt(false)}
-                aria-label="Đóng"
-              >
-                <X size={17} />
-              </button>
-            </div>
-            <textarea
-              className={styles.promptCode}
-              value={PROMPT_EXAMPLE}
-              readOnly
-              aria-label="Prompt mẫu"
-            />
-            <div className={styles.promptFooter}>
-              <button
-                type="button"
-                className="button button-secondary"
-                onClick={() => setShowPrompt(false)}
-              >
-                Đóng
-              </button>
-              <button type="button" className="button button-primary" onClick={copyPrompt}>
-                {copied ? <Check size={16} /> : <Copy size={16} />}
-                {copied ? 'Đã copy' : 'Copy prompt'}
-              </button>
-            </div>
-          </section>
+      <details className={styles.help}>
+        <summary>
+          <WandSparkles size={18} /> Chưa có bộ câu hỏi? Tạo bằng AI
+        </summary>
+        <div className={styles.helpBody}>
+          <ol>
+            <li>Sao chép hướng dẫn bên dưới vào ChatGPT, Claude hoặc AI bạn dùng.</li>
+            <li>Điền chủ đề và đối tượng, rồi gửi cho AI.</li>
+            <li>Dán phần JSON AI trả về vào ô nhập phía trên.</li>
+          </ol>
+          <textarea
+            className={styles.promptCode}
+            value={PROMPT_EXAMPLE}
+            readOnly
+            aria-label="Hướng dẫn tạo bộ câu hỏi bằng AI"
+          />
+          <button type="button" className="button button-secondary" onClick={copyPrompt}>
+            {copied ? <Check size={16} /> : <Copy size={16} />}{' '}
+            {copied ? 'Đã sao chép' : 'Sao chép hướng dẫn'}
+          </button>
         </div>
-      )}
+      </details>
     </main>
   );
 }

@@ -74,6 +74,7 @@ export function SiteFooter() {
         <Link href={path('/vi/cach-choi')}>
           {t('Cách chơi')} <ArrowUpRight size={13} />
         </Link>
+        <Link href={path('/vi/danh-gia')}>{t('Đánh giá')}</Link>
         <Link href={path('/vi/chinh-sach-thanh-toan')}>{t('Thanh toán')}</Link>
         <Link href={path('/vi/quyen-rieng-tu')}>{t('Quyền riêng tư')}</Link>
       </nav>

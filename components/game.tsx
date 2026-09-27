@@ -5,6 +5,8 @@ import { AI_PACK_CREATION_ENABLED } from '@/lib/features';
 import { useI18n } from './locale-provider';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { ReviewModal } from './review-modal';
 import { useEffect, useRef, useState } from 'react';
 import {
   ArrowLeft,
@@ -63,6 +65,8 @@ function PackGame({ pack, initialSet, fixedGroup, alternateHref }: GameProps) {
   const [notice, setNotice] = useState('');
   const [attempt, setAttempt] = useState(0);
   const [showDonate, setShowDonate] = useState(false);
+  const [reviewAction, setReviewAction] = useState<'exit' | 'restart' | null>(null);
+  const router = useRouter();
   const lastDraw = useRef(0);
   const accessUntil = useRef(0);
   const stateKey = `tod:game:v1:${pack.id}`;
@@ -424,6 +428,9 @@ function PackGame({ pack, initialSet, fixedGroup, alternateHref }: GameProps) {
               </button>
             </div>
             <div className={styles.smallActions}>
+              <button disabled={!progress?.seenIds.length} onClick={() => setReviewAction('exit')}>
+                {locale === 'en' ? 'Finish game' : 'Kết thúc'}
+              </button>
               <button
                 disabled={!current || complete}
                 onClick={() => current && draw(current.type, true)}
@@ -433,6 +440,10 @@ function PackGame({ pack, initialSet, fixedGroup, alternateHref }: GameProps) {
               <button
                 disabled={!set}
                 onClick={() => {
+                  if (progress?.seenIds.length) {
+                    setReviewAction('restart');
+                    return;
+                  }
                   if (set) {
                     persist(createGroupGameState(set, group, progress?.trialSeenIds ?? []));
                     setNotice(t('Đã xáo trộn. Cùng bắt đầu ván mới!'));
@@ -502,6 +513,17 @@ function PackGame({ pack, initialSet, fixedGroup, alternateHref }: GameProps) {
             'Trình duyệt chưa cho lưu tiến độ. Bạn vẫn chơi được, nhưng có thể mất ván khi đóng trang.',
           )}{' '}
         </p>
+      )}
+      {reviewAction && (
+        <ReviewModal
+          onClose={() => {
+            const action = reviewAction;
+            setReviewAction(null);
+            if (set) persist(createGroupGameState(set, group, progress?.trialSeenIds ?? []));
+            if (action === 'exit') router.push(path('/vi'));
+            else setNotice(t('Đã xáo trộn. Cùng bắt đầu ván mới!'));
+          }}
+        />
       )}
       {showDonate && (
         <div className={styles.modalOverlay} onClick={() => setShowDonate(false)}>
