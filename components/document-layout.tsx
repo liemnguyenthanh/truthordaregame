@@ -6,7 +6,7 @@ import { LocaleProvider } from '@/components/locale-provider';
 import type { Locale } from '@/lib/i18n';
 import '@/app/globals.css';
 
-const GTM_ID = 'G-MF1JWJH7TJ';
+const GTM_ID = 'GTM-5FP2P39P';
 
 const vietnameseMetadata: Metadata = {
   metadataBase: new URL(siteUrl),
