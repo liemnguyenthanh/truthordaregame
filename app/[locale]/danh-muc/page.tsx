@@ -9,10 +9,10 @@ type Props = { params: Promise<{ locale: string }> };
 export async function generateMetadata({ params }: Props) {
   const l = await pageLocale(params);
   return pageMetadata(
-    copy(l, 'Danh mục câu hỏi', 'Truth or Dare Categories'),
+    copy(l, 'Câu hỏi Thật hay Thách theo chủ đề', 'Truth or Dare Categories'),
     copy(
       l,
-      'Chọn câu hỏi Thật hay Thách theo chủ đề bạn bè hoặc cặp đôi.',
+      'Khám phá bộ câu hỏi Thật hay Thách và thử thách vui cho bạn bè, cặp đôi. Chọn chủ đề phù hợp để làm quen, trò chuyện và chơi cùng nhau.',
       'Find Truth or Dare question packs for friends or couples.',
     ),
     '/vi/danh-muc',
@@ -26,7 +26,7 @@ export default async function Categories({ params }: Props) {
     <SiteShell>
       <main id="main" className="page-width content-page">
         <span className="eyebrow">{copy(l, 'TÌM ĐÚNG KHÔNG KHÍ', 'FIND YOUR MOOD')}</span>
-        <h1>{copy(l, 'Chơi cùng ai?', 'Who are you playing with?')}</h1>
+        <h1>{copy(l, 'Câu hỏi Thật hay Thách', 'Who are you playing with?')}</h1>
         <div className="category-grid">
           {getCategories(l).map((c) => (
             <Link

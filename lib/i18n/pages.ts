@@ -24,6 +24,10 @@ export const homeFaq = (locale: Locale) =>
       ]
     : [
         [
+          'Truth or Dare tiếng Việt là gì?',
+          'Truth or Dare tiếng Việt là Thật hay Thách: trò chơi làm quen trong đó bạn chọn trả lời thật lòng hoặc thực hiện một thử thách vui. Đây là một party game cho buổi tụ tập bạn bè hoặc thời gian bên người yêu; cả nhóm có thể chơi chung trên một chiếc điện thoại.',
+        ],
+        [
           'Thật hay Thách chơi như thế nào?',
           'Mỗi người lần lượt chọn Thật để trả lời một câu hỏi hoặc Thách để thực hiện thử thách. Mọi người có thể bỏ qua bất cứ lúc nào. Không có điểm số hay người thắng cuộc.',
         ],

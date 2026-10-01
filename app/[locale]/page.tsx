@@ -15,12 +15,12 @@ export async function generateMetadata({ params }: Props) {
   return pageMetadata(
     copy(
       l,
-      'Thật hay Thách — Chọn một câu, gần nhau hơn',
+      'Thật hay Thách online – Truth or Dare tiếng Việt',
       'Truth or Dare — Questions for Friends and Couples',
     ),
     copy(
       l,
-      'Bộ câu hỏi Thật hay Thách cho bạn bè và cặp đôi. Chơi miễn phí, không cần đăng nhập, ngay trên điện thoại.',
+      'Chơi Thật hay Thách online với câu hỏi và thử thách vui cho bạn bè, cặp đôi. Truth or Dare tiếng Việt có bộ miễn phí, không cần đăng nhập.',
       'Play Truth or Dare online with friends or your partner. Free question packs, no account needed, on one phone.',
     ),
     '/vi',
@@ -44,13 +44,13 @@ export default async function Home({ params }: Props) {
               {t('CUỘC VUI BẮT ĐẦU TỪ MỘT CÂU HỎI', 'GOOD TIMES START WITH A QUESTION')}
             </span>
             <h1>
-              {t('Bớt ngại ngùng.', 'Less awkward.')}
+              {t('Thật hay Thách', 'Less awkward.')}
               <br />
-              <span>{t('Thêm gần nhau.', 'More connected.')}</span>
+              <span>{t('online cùng bạn bè.', 'More connected.')}</span>
             </h1>
             <p>
               {t(
-                'Chọn Thật để hiểu nhau hơn, chọn Thách để cùng bật cười.',
+                'Chơi Truth or Dare tiếng Việt: chọn Thật để hiểu nhau hơn, chọn Thách để cùng bật cười.',
                 'Choose Truth to get to know each other, or Dare for a shared laugh.',
               )}
               <br className="desktop-break" />{' '}
