@@ -29,6 +29,9 @@ export function getCategory(slug: string, locale: Locale = 'vi'): Category | und
 export function getQuestionSet(pack: Pack): QuestionSet {
   return readPublicJson<QuestionSet>(pack.questionFile);
 }
+export function catalogVersion(locale: Locale = 'vi'): string {
+  return readPublicJson<{ contentVersion: string }>(`/${locale}/packs.json`).contentVersion;
+}
 
 /** Imported revisions can differ; fallback requires demonstrably identical source content. */
 export function bundledTranslation(

@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next';
-import { getCategories, getPacks } from '@/lib/live-content';
+import { catalogVersion, getCategories, getPacks } from '@/lib/live-content';
 import { siteUrl, languageAlternates } from '@/lib/seo';
 import { localePath, locales, type Locale } from '@/lib/i18n';
 export const dynamic = 'force-dynamic';
@@ -9,6 +9,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   );
   const entries: MetadataRoute.Sitemap = [];
   for (const { locale, packs } of catalogs) {
+    const lastModified = catalogVersion(locale).slice(0, 10);
     const paths = [
       '/vi',
       '/vi/danh-muc',
@@ -22,6 +23,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       entries.push({
         url: siteUrl + localePath(locale, path),
         alternates: { languages: languageAlternates(path) },
+        lastModified,
         changeFrequency: 'monthly',
         priority: path === '/vi' ? 1 : 0.7,
       });
@@ -33,6 +35,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       entries.push({
         url: siteUrl + localePath(locale, path),
         alternates: { languages: languageAlternates(path, available) },
+        lastModified,
         changeFrequency: 'monthly',
         priority: 0.8,
       });

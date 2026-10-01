@@ -1,0 +1,18 @@
+{
+  "previewPort": 3000,
+  "healthPath": "/vi",
+  "startCommand": "docker compose -f docker-compose.base44.yml up -d",
+  "secrets": [
+    { "name": "SUPABASE_URL", "description": "Supabase project URL (https://<ref>.supabase.co). Optional — app falls back to bundled JSON content without it.", "requiredAtBoot": false },
+    { "name": "SUPABASE_SERVICE_ROLE_KEY", "description": "Supabase service role key (sb_secret_...). Optional — needed for commerce/admin/AI features.", "requiredAtBoot": false },
+    { "name": "RECOVERY_ENCRYPTION_KEY", "description": "64-hex-char AES-256 key for payment recovery codes. Optional — needed for checkout/restore.", "requiredAtBoot": false },
+    { "name": "SEPAY_WEBHOOK_API_KEY", "description": "SePay webhook API key. Optional — needed for payment webhooks.", "requiredAtBoot": false },
+    { "name": "SEPAY_BANK_NAME", "description": "Bank gateway name in SePay (e.g. MBBank). Optional.", "requiredAtBoot": false },
+    { "name": "SEPAY_ACCOUNT_NUMBER", "description": "SePay bank account number. Optional.", "requiredAtBoot": false },
+    { "name": "SEPAY_ACCOUNT_NAME", "description": "SePay bank account holder name. Optional.", "requiredAtBoot": false },
+    { "name": "SEPAY_API_TOKEN", "description": "SePay legacy v1 User API token. Optional — needed for reconciliation.", "requiredAtBoot": false },
+    { "name": "CRON_SECRET", "description": "Random secret protecting the reconciliation endpoint. Optional.", "requiredAtBoot": false },
+    { "name": "AI_GATEWAY_API_KEY", "description": "Vercel AI Gateway API key for AI pack generation. Optional — needed for AI features.", "requiredAtBoot": false },
+    { "name": "ADMIN_PASSWORD", "description": "Server-only admin login password (min 16 chars). Optional — needed for /admin panel.", "requiredAtBoot": false }
+  ]
+}
