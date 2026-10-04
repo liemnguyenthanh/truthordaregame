@@ -1,12 +1,12 @@
 import type { Metadata, Viewport } from 'next';
-import { GoogleTagManager } from '@next/third-parties/google';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import { PwaControls } from '@/components/pwa';
 import { siteUrl } from '@/lib/seo';
 import { LocaleProvider } from '@/components/locale-provider';
 import type { Locale } from '@/lib/i18n';
 import '@/app/globals.css';
 
-const GTM_ID = 'GTM-5FP2P39P';
+const GOOGLE_ANALYTICS_ID = 'G-SGDH5KF8YF';
 
 const vietnameseMetadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -88,15 +88,6 @@ export function DocumentLayout({
   return (
     <html lang={locale}>
       <body>
-        <noscript>
-          <iframe
-            src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
-            height="0"
-            width="0"
-            style={{ display: 'none', visibility: 'hidden' }}
-            title="Google Tag Manager"
-          />
-        </noscript>
         <LocaleProvider locale={locale}>
           <a href="#main" className="skip-link">
             {locale === 'en' ? 'Skip to content' : 'Đến nội dung'}
@@ -104,7 +95,7 @@ export function DocumentLayout({
           {children}
           <PwaControls />
         </LocaleProvider>
-        <GoogleTagManager gtmId={GTM_ID} />
+        <GoogleAnalytics gaId={GOOGLE_ANALYTICS_ID} />
       </body>
     </html>
   );
